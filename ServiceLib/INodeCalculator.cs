@@ -11,7 +11,7 @@ namespace ServiceLibrary
     public interface INodeCalculator
     {
         [OperationContract]
-        int Process(NodeData composite);
+        int Process(List<NodeData> composite);
     }
 
     [DataContract]

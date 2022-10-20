@@ -10,8 +10,9 @@ namespace CSCourseWork
 
             this.EditorInstance = new(this)
             {
-                BackColor = System.Drawing.Color.White,
-                BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle, 
+                // BackColor = System.Drawing.Color.FromArgb(255, 56, 62, 80),
+                BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle,
+                NodeBorderWidth = 3,
                 Location = new System.Drawing.Point(305, 38),
                 Name = "editor_panel",
                 Size = new System.Drawing.Size(506, 438),

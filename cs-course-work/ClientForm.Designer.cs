@@ -37,6 +37,7 @@
             this.connectoperation_button = new System.Windows.Forms.Button();
             this.operationstate_label = new System.Windows.Forms.Label();
             this.connectors_listbox = new System.Windows.Forms.ListBox();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.SuspendLayout();
             // 
             // nodelinks_listview
@@ -120,12 +121,20 @@
             this.connectors_listbox.Size = new System.Drawing.Size(278, 123);
             this.connectors_listbox.TabIndex = 9;
             // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Location = new System.Drawing.Point(12, 210);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(130, 233);
+            this.propertyGrid1.TabIndex = 10;
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(821, 486);
+            this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.connectors_listbox);
             this.Controls.Add(this.operationstate_label);
             this.Controls.Add(this.connectoperation_button);
@@ -152,5 +161,6 @@
         private Button connectoperation_button;
         private Label operationstate_label;
         private ListBox connectors_listbox;
+        private PropertyGrid propertyGrid1;
     }
 }

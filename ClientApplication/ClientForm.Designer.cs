@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.nodelinks_listview = new System.Windows.Forms.ListView();
             this.nodeid_column = new System.Windows.Forms.ColumnHeader();
             this.nodeposition_column = new System.Windows.Forms.ColumnHeader();

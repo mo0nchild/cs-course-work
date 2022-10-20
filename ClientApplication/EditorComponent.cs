@@ -129,7 +129,6 @@ namespace CSCourseWork
             {
                 var shift_x = movingposition_buffer.X * this.NodeSize / size.Width * this.NodeMovingSpeed * 2;
                 var shift_y = movingposition_buffer.Y * this.NodeSize / size.Height * this.NodeMovingSpeed * 2;
-                Console.WriteLine($"{shift_x} - {shift_y}");
 
                 for (int i = 0; i < size.Width; i += this.NodeSize)
                 {

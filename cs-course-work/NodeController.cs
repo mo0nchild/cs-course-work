@@ -6,9 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using static CSCourseWork.EditorComponent;
 using static CSCourseWork.NodesController;
-using static System.Math;
 
 namespace CSCourseWork
 {
@@ -35,7 +33,7 @@ namespace CSCourseWork
         public sealed class NodeInfo : System.Object, IComparable<NodeInfo>, ICloneable
         {
             public Point Position { get; set; } = new(0, 0);
-            public List<NodeInfo> NodeLinks { get; set; } = new();
+            public List<int> NodeLinksID { get; set; } = new();
             public int NodeID { get; set; } = default;
 
             public NodeInfo(int node_id) : base() => this.NodeID = node_id;
@@ -54,35 +52,37 @@ namespace CSCourseWork
 
         public NodesController(): base() => this.NodesList = new SortedSet<NodeInfo>(new NodeComparer());
 
-
-        // переделать чтоб  нормально выглядело 
-        public NodeInfo? this[int ID] 
+        public NodeInfo? this[int node_id] 
         {
             get 
             {
-                foreach (var node_info in this.NodesList) 
-                {
-                    if (node_info.NodeID == ID) return node_info;
-                }
-                return null;
+                if(node_id <= 0 || node_id > this.NodesList.Count) return null;
+                return this.NodesList.ElementAt<NodeInfo>(node_id - 1);
             }
         }
 
+        // ПЕРЕДЕЛАТЬ ЧТОБ ЧЕТКО И КРАСИВО БЫЛО ЕМАё
         public bool NodeCollisionCheck(Point position, int node_id)
         {
-            var select_node = this.NodesList.Where((NodeInfo node_info) => node_info.NodeID == node_id)
-                .Select((NodeInfo node_info) => node_info).ToList<NodeInfo>()[0];
+            NodeInfo? select_node = default(NodeInfo);
+            try 
+            {
+                select_node = this.NodesList.Where((NodeInfo node_info) => node_info.NodeID == node_id)
+                    .ToList<NodeInfo>()[0];
+            }
+            catch (Exception error) { MessageBox.Show(error.Message, "Ошибка"); return false; }
             var node_position = select_node.Position;
 
             double delta_x = node_position.X - position.X, delta_y = node_position.Y - position.Y;
-            if (Sqrt(Pow(delta_x, 2) + Pow(delta_y, 2)) < this.NodeSize * 2) return true;
+            bool check = Math.Sqrt(Math.Pow(delta_x, 2) + Math.Pow(delta_y, 2)) < this.NodeSize;
             
+            if (check == true) return true;
             return false;
         }
 
         public void AddNewNode(int pos_x, int pos_y) 
         {
-            this.NodesList.ToList().ForEach(delegate (NodeInfo node_info) 
+            this.NodesList.ToList<NodeInfo>().ForEach(delegate (NodeInfo node_info) 
             {
                 if (this.NodeCollisionCheck(new Point(pos_x, pos_y), node_info.NodeID))
                 { throw new NodeControllerException("Произошло наложение вершин", node_info); }
@@ -92,55 +92,56 @@ namespace CSCourseWork
 
         public void RemoveNode(int node_id) 
         {
-            this.NodesList.RemoveWhere(delegate(NodeInfo x) { return x.NodeID == node_id; });
-
-            foreach (var item in this.NodesList) 
-            {
-                if(item.NodeID > node_id ) --item.NodeID;
+            foreach (var node_info in this.NodesList
+                .Where((NodeInfo node_info) => node_info.NodeLinksID.Contains(node_id)))
+            { 
+                this.RemoveNodeLinks(node_info.NodeID, node_id); 
             }
+            this.NodesList.RemoveWhere((NodeInfo node_info) => node_info.NodeID == node_id);
+
+            try { for (int id = node_id; id <= this.NodesList.Count; id++) this[id]!.NodeID--; }
+            catch (Exception error) { MessageBox.Show(error.Message, "Ошибка"); }
         }
 
-        // переделать
+
         public void SetNodeLinks(int node_id, int required_links_id)
         {
-            var selectednode_info = this.NodesList.ElementAt(node_id - 1);
-            var requirednode_info = this.NodesList.ElementAt(required_links_id - 1);
+            NodeInfo? selectednode_info = this[node_id], requirednode_info = this[required_links_id];
+            if (selectednode_info == null || requirednode_info == null || node_id == required_links_id) return;
 
-            selectednode_info.NodeLinks.Add(requirednode_info);
-            requirednode_info.NodeLinks.Add(selectednode_info);
+            if (LinkCheck(selectednode_info, required_links_id) && LinkCheck(requirednode_info, node_id)) 
+            {
+                selectednode_info?.NodeLinksID.Add(required_links_id);
+                requirednode_info?.NodeLinksID.Add(node_id);
+            }
+
+            bool LinkCheck(NodeInfo node_info, int required_id)
+            { return node_info.NodeLinksID.Where<int>((int id) => id == required_id).ToList().Count == 0; }
         }
-        // переделать
+        
         public void RemoveNodeLinks(int node_id, int required_links_id)
         {
-            NodesController.NodeInfo selected_node = this.NodesList.ElementAt(node_id);
-            selected_node.NodeLinks.ForEach(delegate (NodeInfo selected_node_link) 
-            {
-                selected_node_link.NodeLinks.RemoveAll(delegate (NodeInfo link) { return link.NodeID == node_id; });
-            });
-            selected_node.NodeLinks.RemoveAll(delegate (NodeInfo link) { return link.NodeID == required_links_id; });
+            this[node_id]?.NodeLinksID.RemoveAll((int id) => id == required_links_id);
+            this[required_links_id]?.NodeLinksID.RemoveAll((int id) => id == node_id);
         }
         // переделать
         public List<NodeConnectorInfo> BuildNodeСonnectors() 
         {
             var result_list = new List<NodeConnectorInfo>();
 
-            foreach (var node_info in this.NodesList) 
+            for (int node_id = 1; node_id <= this.NodesList.Count; node_id++) 
             {
-                foreach (var linknode_info in node_info.NodeLinks) 
+                var node_links = this.NodesList.Where<NodeInfo>((NodeInfo node_info) => node_info.NodeID != node_id);
+                node_links.ToList().ForEach(delegate (NodeInfo link)
                 {
-                    if (result_list.Contains(new NodeConnectorInfo(node_info, linknode_info))
-                        || result_list.Contains(new NodeConnectorInfo(linknode_info, node_info))) continue;
-                    result_list.Add(new NodeConnectorInfo(node_info, linknode_info));
-                }
+                    if (link.NodeLinksID.Contains(node_id)) result_list.Add(new NodeConnectorInfo(this[node_id]!, link));
+                });
             }
-
             return result_list;
         }
 
         public IEnumerator<NodeInfo> GetEnumerator()
-        {
-            foreach (NodesController.NodeInfo item in this.NodesList) yield return item;
-        }
+        { foreach (NodesController.NodeInfo item in this.NodesList) yield return item; }
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }

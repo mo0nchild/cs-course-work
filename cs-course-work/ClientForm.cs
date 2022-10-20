@@ -27,13 +27,13 @@ namespace CSCourseWork
         }
 
         #region Test shit
-        private void ListUpdate() 
+        private void ListUpdate()
         {
             this.nodelinks_listview.Items.Clear();
             foreach (var item in this.EditorInstance.Controller) 
             {
                 string nodelinks = "";
-                foreach (var link in item.NodeLinks) nodelinks += $"{link.NodeID}, ";
+                foreach (var link in item.NodeLinksID) nodelinks += $"{link}, ";
                 this.nodelinks_listview.Items.Add(new ListViewItem(new String[] { item.NodeID.ToString(), nodelinks }));
             }
 

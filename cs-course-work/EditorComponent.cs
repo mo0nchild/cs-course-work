@@ -34,6 +34,7 @@ namespace CSCourseWork
 
         public int NodeBorderWidth { get; private set; } = default(int);
         public Color NodeColor { get; private set; } = default(Color);
+        public Color NodeSelectColor { get; private set; } = Color.Crimson;
         public int NodeSize { get => this.Controller.NodeSize; }
 
         public EditorComponent(Form parent_form, int node_size, int node_border, Color node_color) : base()
@@ -64,10 +65,6 @@ namespace CSCourseWork
                     }
                     break;
                 case EditorModes.RemoveNode:
-                    args.NodeInstance.NodeLinks.ForEach(delegate (NodesController.NodeInfo link_info) 
-                    {
-                        link_info.NodeLinks.Remove(args.NodeInstance);
-                    });
                     this.Controller.RemoveNode(args.NodeInstance.NodeID); 
                     break;
                 default: return;
@@ -87,7 +84,7 @@ namespace CSCourseWork
             }
             else if (args.NodeAction == EditorModes.SelectNode && this.SelectedNodeID.HasValue )
             {
-                this.Controller.NodesList.ElementAt(this.SelectedNodeID.Value - 1).Position = args.ActionPosition;
+                this.Controller[this.SelectedNodeID.Value]!.Position = args.ActionPosition;
             }
             else return; 
             this.Invalidate();
@@ -107,67 +104,42 @@ namespace CSCourseWork
 
                 this.Controller.ToList().ForEach(delegate (NodesController.NodeInfo node_info)
                 {
+                    var node_geometry = new Rectangle(node_info.Position, new Size(this.NodeSize, this.NodeSize));
                     if (SelectedNodeID.HasValue && node_info.NodeID == SelectedNodeID.Value)
                     {
-                        
+                        graphics.FillEllipse(new SolidBrush(this.NodeSelectColor), node_geometry);
                     }
-
-                    var node_geometry = new Rectangle(node_info.Position, new Size(this.NodeSize, this.NodeSize));
-
-                    graphics.FillEllipse(node_brush, node_geometry);
+                    else graphics.FillEllipse(node_brush, node_geometry);
                     graphics.DrawString(node_info.NodeID.ToString(), node_font, Brushes.White, node_info.Position);
                 });
                 node_brush.Dispose();
             }
         }
 
-        //private void EditorComponentClick(object? sender, MouseEventArgs args)
-        //{
-        //    NodesController.NodeInfo? node_info = default;
-        //    foreach (NodesController.NodeInfo node_item in this.Controller) 
-        //    {
-        //        var node_pos = node_item.Position;
-        //        if (Sqrt(Pow(node_pos.X - args.X, 2) + Pow(node_pos.Y - args.Y, 2)) < NodeSize && node_info == null) 
-        //        {
-        //            node_info = node_item;
-        //        }
-        //    }
-        //    if (node_info == null) this.FieldClicked?.Invoke(this, new EditorActionEventArgs(this.Mode, args.Location));
-        //    else 
-        //    {
-        //        this.NodeClicked?.Invoke(this, new EditorActionEventArgs(this.Mode, args.Location)
-        //        {
-        //            NodeInstance = node_info
-        //        });
-        //    }
-        //}
-
-        // обновить версию метода EditorComponentClick до нижней
-        //      |
-        //      V
-
         private void EditorComponentClick(object? sender, MouseEventArgs args)
         {
-            NodesController.NodeInfo? selected_node = default;
+            NodesController.NodeInfo? current_node = default;
             foreach (NodesController.NodeInfo node_item in this.Controller)
             {
                 var collision_check = this.Controller.NodeCollisionCheck(args.Location, node_item.NodeID);
-                if (collision_check) { selected_node = node_item; break; }
+                if (collision_check) { current_node = node_item; break; }
             }
-            if (selected_node != null)
+
+            var selection_switch = default(bool);
+            if (current_node != null)
             {
-                
-                if(!this.SelectedNodeID.HasValue) this.SelectedNodeID = selected_node.NodeID;
+                if (!this.SelectedNodeID.HasValue && this.Mode == EditorModes.SelectNode) 
+                {
+                    this.SelectedNodeID = current_node.NodeID;
+                    selection_switch = true;
+                }
 
                 this.NodeClicked?.Invoke(this, new EditorActionEventArgs(this.Mode, args.Location)
-                { NodeInstance = selected_node });
+                { NodeInstance = current_node });
             }
-            else 
-            {
-                this.FieldClicked?.Invoke(this, new EditorActionEventArgs(this.Mode, args.Location));
-            }
+            else this.FieldClicked?.Invoke(this, new EditorActionEventArgs(this.Mode, args.Location));
 
-            if (this.SelectedNodeID.HasValue) this.SelectedNodeID = null;
+            if (this.SelectedNodeID.HasValue && !selection_switch) this.SelectedNodeID = null;
         }
     }
 }

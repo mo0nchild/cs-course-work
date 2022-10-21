@@ -60,12 +60,7 @@ namespace CSCourseWork
             this.NodeClicked += new EditorActionEventHandler(this.EditorComponentNodeClicked);
             this.FieldClicked += new EditorActionEventHandler(this.EditorComponentFieldClicked);
 
-            this.MouseWheel += new MouseEventHandler(delegate (object? sender, MouseEventArgs args) 
-            {
-                var buffer_delta = this.Controller.NodeSize + Math.Sign(args.Delta) * EditorComponent.DefaultGridDelta;
-                if (buffer_delta > 0) this.Controller.NodeSize = buffer_delta;
-                this.Invalidate(); 
-            });
+            this.MouseWheel += EditorComponent_MouseWheel;
 
             this.MouseUp += new MouseEventHandler(delegate (object? sender, MouseEventArgs args)
                 { if (args.Button == MouseButtons.Right) this.movingbutton_hold = false; });
@@ -73,6 +68,22 @@ namespace CSCourseWork
 
         public EditorComponent(Form parent_form) 
             : this(parent_form, DefaultNodeSize, DefaultNodeBorder, Color.Black) { }
+
+        private void EditorComponent_MouseWheel(object? sender, MouseEventArgs args)
+        {
+            var buffer_delta = this.Controller.NodeSize + Math.Sign(args.Delta) * EditorComponent.DefaultGridDelta;
+            if (buffer_delta > 0)
+            {
+                foreach (var item in this.Controller)
+                {
+                    int position_x = (int)(item.Position.X / this.Controller.NodeSize * buffer_delta),
+                        position_y = (int)(item.Position.Y / this.Controller.NodeSize * buffer_delta);
+                    item.Position = new Point(position_x, position_y);
+                }
+                this.Controller.NodeSize = buffer_delta;
+            }
+            this.Invalidate();
+        }
 
         private void EditorComponentNodeClicked(object? sender, EditorActionEventArgs args) 
         {

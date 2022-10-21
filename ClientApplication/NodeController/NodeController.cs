@@ -115,6 +115,8 @@ namespace CSCourseWork.NodeController
             for (int node_id = 1; node_id <= NodesList.Count; node_id++)
             {
                 var node_links = NodesList.Where((node_info) => node_info.NodeID != node_id);
+                var edge_id = default(int) + 1;
+
                 node_links.ToList().ForEach(delegate (NodeModel link)
                 {
                     foreach (var item in result_list)
@@ -123,7 +125,8 @@ namespace CSCourseWork.NodeController
                             && item.RightNode == this[node_id]!) return;
                     }
 
-                    if (link.NodeLinksID.Contains(node_id)) result_list.Add(new NodeConnectorInfo(this[node_id]!, link));
+                    if (link.NodeLinksID.Contains(node_id)) result_list.Add(
+                        new NodeConnectorInfo(edge_id++, this[node_id]!, link));
                 });
             }
             return result_list;

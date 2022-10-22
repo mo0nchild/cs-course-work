@@ -3,33 +3,34 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
+
 using CSCourseWork.NodeController;
 using static System.Math;
 
 namespace CSCourseWork.EditorComponent
 {
-    internal class EditorComponent : Panel
-    {
-        public enum EditorModes : byte { AddNode, RemoveNode, SelectNode };
-        public class EditorActionEventArgs : EventArgs
-        {
-            public EditorModes NodeAction { get; private set; } = default;
-            public Point ActionPosition { get; private set; } = default;
-            public NodeModel? NodeInstance { get; set; } = default;
-            public EditorActionEventArgs(EditorModes action, Point position)
-                : base() { NodeAction = action; ActionPosition = position; }
-        }
+    internal enum EditorModes : System.SByte { AddNode, RemoveNode, SelectNode };
 
-        public delegate void EditorActionEventHandler(object? sender, EditorActionEventArgs args);
+    internal class EditorActionEventArgs : System.EventArgs
+    {
+        public EditorModes NodeAction { get; private set; } = default;
+        public Point ActionPosition { get; private set; } = default;
+        public NodeModel? NodeInstance { get; set; } = default;
+        public EditorActionEventArgs(EditorModes action, Point position)
+            : base() { NodeAction = action; ActionPosition = position; }
+    }
+
+    internal delegate void EditorActionEventHandler(object? sender, EditorActionEventArgs args);
+
+    internal class EditorComponentBase : System.Windows.Forms.Panel
+    {
         public event EditorActionEventHandler? NodeClicked;
         public event EditorActionEventHandler? FieldClicked;
 
-        public EditorModes Mode { get; set; } = EditorModes.AddNode;
         public INodesControllerWithConnectors Controller { get; private set; } = new NodesController();
+        public EditorModes Mode { get; set; } = EditorModes.AddNode;
         public int? SelectedNodeID { get; private set; } = null;
 
         private bool movingbutton_hold = default;
@@ -47,7 +48,7 @@ namespace CSCourseWork.EditorComponent
 
         public int NodeSize { get => Controller.NodeSize; }
 
-        public EditorComponent(Form parent_form, int node_size, int node_border, Color node_color) : base()
+        public EditorComponentBase(Form parent_form, int node_size, int node_border, Color node_color) : base()
         {
             (Controller.NodeSize, NodeBorderWidth, NodeColor) = (40, node_border, node_color);
             parent_form.Controls.Add(this);
@@ -66,7 +67,7 @@ namespace CSCourseWork.EditorComponent
                 { if (args.Button == MouseButtons.Right) movingbutton_hold = false; });
         }
 
-        public EditorComponent(Form parent_form)
+        public EditorComponentBase(Form parent_form)
             : this(parent_form, DefaultNodeSize, DefaultNodeBorder, Color.Black) { }
 
         private void EditorComponent_MouseWheel(object? sender, MouseEventArgs args)

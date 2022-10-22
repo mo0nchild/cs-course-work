@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net48</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<AssemblySearchPaths>$(AssemblySearchPaths);{GAC}</AssemblySearchPaths>
+		<WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ServiceLibrary\ServiceLibrary.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.ServiceModel"/>
+	</ItemGroup>
+
+</Project>

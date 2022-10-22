@@ -1,13 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <RootNamespace>CSCourseWork</RootNamespace>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<RootNamespace>CSCourseWork</RootNamespace>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AssemblySearchPaths>$(AssemblySearchPaths);{GAC}</AssemblySearchPaths>
+	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="System.ServiceModel.Duplex" Version="4.8.*" />
+	  <PackageReference Include="System.ServiceModel.Federation" Version="4.8.*" />
+	  <PackageReference Include="System.ServiceModel.Http" Version="4.8.*" />
+	  <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.*" />
+	  <PackageReference Include="System.ServiceModel.Security" Version="4.8.*" />
+	</ItemGroup>
 </Project>

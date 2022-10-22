@@ -1,28 +1,28 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 
-namespace ServiceLibrary
+namespace ServiceLibrary.ServiceContracts
 {
-    [ServiceContractAttribute(Name = "NodeProcess")]
+    [ServiceContractAttribute(Name = "GraphCalculator")]
     public interface IGraphCalculator
     {
-        [OperationContract]
-        int Process(List<NodeData> composite);
+        [OperationContractAttribute]
+        int[] FindPathByBFS(int origin_id, int target_id, List<NodeData> node_list);
     }
 
-    [DataContract]
-    public class NodeData
+    [DataContractAttribute]
+    public sealed class NodeData : System.Object
     {
-        [DataMember]
-        public int[] NodeLinksID { get; set; }
+        [DataMemberAttribute]
+        public int[] NodeLinksID { get; set; } = new int[0];
 
-        [DataMember]
-        public int NodeID { get; set; }
-
-
+        [DataMemberAttribute]
+        public int NodeID { get; set; } = default(int);
+        public int NodePathLevel { get; set; } = default(int) + 1;
     }
 }

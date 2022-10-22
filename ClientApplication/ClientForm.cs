@@ -1,8 +1,10 @@
+using CSCourseWork.EditorComponent;
+
 namespace CSCourseWork
 {
     internal partial class ClientForm : Form
     {
-        public EditorComponent EditorInstance { get; private set; }
+        public EditorComponentBase EditorInstance { get; private set; }
 
         public ClientForm()
         {
@@ -19,44 +21,56 @@ namespace CSCourseWork
                 TabIndex = 0
             };
 
-            this.EditorInstance.NodeClicked += new EditorComponent.EditorActionEventHandler(EditorComponentNodeSelected);
-            this.EditorInstance.FieldClicked += new EditorComponent.EditorActionEventHandler(EditorComponentFieldClicked);
+            this.EditorInstance.NodeClicked += new EditorActionEventHandler(EditorComponentNodeSelected);
+            this.EditorInstance.FieldClicked += new EditorActionEventHandler(EditorComponentFieldClicked);
 
-            this.addoperation_button.Click += (sender, args) => this.EditorInstance.Mode = EditorComponent.EditorModes.AddNode;
-            this.deleteoperation_button.Click += (sender, args) => this.EditorInstance.Mode = EditorComponent.EditorModes.RemoveNode;
-            this.connectoperation_button.Click += (sender, args) => this.EditorInstance.Mode = EditorComponent.EditorModes.SelectNode;
+            this.addoperation_button.Click += (sender, args) => this.EditorInstance.Mode = EditorModes.AddNode;
+            this.deleteoperation_button.Click += (sender, args) => this.EditorInstance.Mode = EditorModes.RemoveNode;
+            this.connectoperation_button.Click += (sender, args) => this.EditorInstance.Mode = EditorModes.SelectNode;
+
+
+            this.test.Click += Test_Click;
+        }
+
+        private void Test_Click(object? sender, EventArgs e)
+        {
+            using (var client = new GraphServiceReference.GraphCalculatorClient()) 
+            {
+                var answer = client.FindPathByBFSAsync(new GraphServiceReference.NodeData[0]);
+                Console.WriteLine(answer.Result.Length);
+            }
         }
 
         #region Test shit
-        private void ListUpdate()
-        {
-            this.nodelinks_listview.Items.Clear();
-            foreach (var item in this.EditorInstance.Controller) 
-            {
-                string nodelinks = "";
-                foreach (var link in item.NodeLinksID) nodelinks += $"{link}, ";
-                this.nodelinks_listview.Items.Add(new ListViewItem(new String[] { item.NodeID.ToString(), nodelinks }));
-            }
+        //private void ListUpdate()
+        //{
+        //    this.nodelinks_listview.Items.Clear();
+        //    foreach (var item in this.EditorInstance.Controller) 
+        //    {
+        //        string nodelinks = "";
+        //        foreach (var link in item.NodeLinksID) nodelinks += $"{link}, ";
+        //        this.nodelinks_listview.Items.Add(new ListViewItem(new String[] { item.NodeID.ToString(), nodelinks }));
+        //    }
 
-            this.connectors_listbox.Items.Clear();
-            foreach (var item in this.EditorInstance.Controller.BuildNode—onnectors())
-            {
-                this.connectors_listbox.Items.Add($"{item.LeftNode.NodeID} - {item.RightNode.NodeID}");
+        //    this.connectors_listbox.Items.Clear();
+        //    foreach (var item in this.EditorInstance.Controller.BuildNode—onnectors())
+        //    {
+        //        this.connectors_listbox.Items.Add($"{item.LeftNode.NodeID} - {item.RightNode.NodeID}");
 
-            }
-        }
+        //    }
+        //}
         #endregion
 
-        private void EditorComponentFieldClicked(object? sender, EditorComponent.EditorActionEventArgs args)
+        private void EditorComponentFieldClicked(object? sender, EditorActionEventArgs args)
         {
             // MessageBox.Show("Field Click", "");
-            ListUpdate();
+            //ListUpdate();
         }
 
-        private void EditorComponentNodeSelected(object? sender, EditorComponent.EditorActionEventArgs args)
+        private void EditorComponentNodeSelected(object? sender, EditorActionEventArgs args)
         {
             // MessageBox.Show("Node Clicked", "");
-            ListUpdate();
+            //ListUpdate();
         }
     }
 }

@@ -18,19 +18,20 @@ namespace CSCourseWork.NodeController
     {
         public SortedSet<NodeModel> NodesList { get; set; }
         public NodeModel? this[int node_id] { get; }
-        void AddNewNode(int position_x, int position_y);
-        void RemoveNode(int node_id);
+        public System.Int32 NodeSize { get; set; }
+        public void AddNewNode(int position_x, int position_y);
+        public void RemoveNode(int node_id);
         
     }
 
-    internal interface INodeConnectorsController : INodesController 
+    internal interface INodesControllerWithConnectors : INodesController 
     {
-        void SetNodeLinks(int node_id, int required_links_id);
-        void RemoveNodeLinks(int node_id, int required_links_id);
-        List<NodeConnectorInfo> BuildNodeСonnectors();
+        public void SetNodeLinks(int node_id, int required_links_id);
+        public void RemoveNodeLinks(int node_id, int required_links_id);
+        public List<NodeConnectorInfo> BuildNodeСonnectors();
     }
 
-    internal class NodesController : System.Object, INodeConnectorsController
+    internal class NodesController : System.Object, INodesControllerWithConnectors
     {
         public SortedSet<NodeModel> NodesList { get; set; }
         public int NodeSize { get; set; } = default;

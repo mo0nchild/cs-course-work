@@ -8,7 +8,7 @@ using System.Text;
 namespace ServiceLibrary
 {
     [ServiceContractAttribute(Name = "NodeProcess")]
-    public interface INodeCalculator
+    public interface IGraphCalculator
     {
         [OperationContract]
         int Process(List<NodeData> composite);
@@ -22,5 +22,7 @@ namespace ServiceLibrary
 
         [DataMember]
         public int NodeID { get; set; }
+
+
     }
 }

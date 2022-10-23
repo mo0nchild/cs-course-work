@@ -6,14 +6,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSCourseWork.NodeController
+namespace CSCourseWork.NodesControllers
 {
     public class NodesController : System.Object, INodesControllerWithConnectors
     {
         public SortedSet<NodeModel> NodesList { get; set; }
         public int NodeSize { get; set; } = default;
 
-        public NodesController() : base() => this.NodesList = new SortedSet<NodeModel>(new NodeComparer());
+        public NodesController() : base() => this.NodesList = new SortedSet<NodeModel>(new NodesComparer());
 
         public NodeModel? this[int node_id]
         {
@@ -47,7 +47,7 @@ namespace CSCourseWork.NodeController
             this.NodesList.ToList().ForEach(delegate (NodeModel node_info)
             {
                 if (this.NodeCollisionCheck(new Point(pos_x, pos_y), node_info.NodeID))
-                { throw new NodeControllerException("Произошло наложение вершин", node_info); }
+                { throw new NodesControllerException("Произошло наложение вершин", node_info); }
             });
 
             var node_builded = new NodeModel(this.NodesList.Count + 1) { Position = new Point(pos_x, pos_y) };
@@ -86,9 +86,9 @@ namespace CSCourseWork.NodeController
             this[required_links_id]?.NodeLinksID.RemoveAll((id) => id == node_id);
         }
         // переделать
-        public List<NodeConnectorInfo> BuildNodeСonnectors()
+        public List<NodesConnectorInfo> BuildNodeСonnectors()
         {
-            var result_list = new List<NodeConnectorInfo>();
+            var result_list = new List<NodesConnectorInfo>();
             var edge_id = default(int);
 
             for (int node_id = 1; node_id <= this.NodesList.Count; node_id++)
@@ -103,7 +103,7 @@ namespace CSCourseWork.NodeController
                     }
 
                     if (link.NodeLinksID.Contains(node_id)) 
-                        result_list.Add(new NodeConnectorInfo(edge_id++, link, this[node_id]!));
+                        result_list.Add(new NodesConnectorInfo(edge_id++, link, this[node_id]!));
                 });
             }
             return result_list;

@@ -28,169 +28,418 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.nodelinks_label = new System.Windows.Forms.Label();
-            this.addoperation_button = new System.Windows.Forms.Button();
-            this.deleteoperation_button = new System.Windows.Forms.Button();
-            this.connectoperation_button = new System.Windows.Forms.Button();
-            this.operationstate_label = new System.Windows.Forms.Label();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-            this.treeView1 = new System.Windows.Forms.TreeView();
-            this.test = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientForm));
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Список вершин");
+            this.info_toolstrip_button = new System.Windows.Forms.ToolStripButton();
+            this.app_toolstrip = new System.Windows.Forms.ToolStrip();
+            this.project_toolstrip_button = new System.Windows.Forms.ToolStripDropDownButton();
+            this.create_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
+            this.open_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
+            this.save_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settings_toolstrip_button = new System.Windows.Forms.ToolStripDropDownButton();
+            this.editorconf_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
+            this.accountconf_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
+            this.edges_listview = new System.Windows.Forms.ListView();
+            this.edgeid_column = new System.Windows.Forms.ColumnHeader();
+            this.edgeleftnode_column = new System.Windows.Forms.ColumnHeader();
+            this.edgerightnode_column = new System.Windows.Forms.ColumnHeader();
+            this.nodestree_tabpage = new System.Windows.Forms.TabPage();
+            this.nodes_treeview = new System.Windows.Forms.TreeView();
+            this.app_tabcontrol = new System.Windows.Forms.TabControl();
+            this.edgeslist_tabpage = new System.Windows.Forms.TabPage();
+            this.findpath_button = new System.Windows.Forms.Button();
+            this.app_propertygrid = new System.Windows.Forms.PropertyGrid();
+            this.selectop_button = new System.Windows.Forms.Button();
+            this.deleteop_button = new System.Windows.Forms.Button();
+            this.addop_button = new System.Windows.Forms.Button();
+            this.app_statusstrip = new System.Windows.Forms.StatusStrip();
+            this.progressbar_toolstrip = new System.Windows.Forms.ToolStripProgressBar();
+            this.status_toolstrip_label = new System.Windows.Forms.ToolStripStatusLabel();
+            this.info_textbox = new System.Windows.Forms.TextBox();
+            this.nodeorigin_combobox = new System.Windows.Forms.ComboBox();
+            this.nodetarget_combobox = new System.Windows.Forms.ComboBox();
+            this.nodeorigin_label = new System.Windows.Forms.Label();
+            this.nodetarget_label = new System.Windows.Forms.Label();
+            this.reset_button = new System.Windows.Forms.Button();
+            this.app_toolstrip.SuspendLayout();
+            this.nodestree_tabpage.SuspendLayout();
+            this.app_tabcontrol.SuspendLayout();
+            this.edgeslist_tabpage.SuspendLayout();
+            this.app_statusstrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // nodelinks_label
+            // info_toolstrip_button
             // 
-            this.nodelinks_label.AutoSize = true;
-            this.nodelinks_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.nodelinks_label.Location = new System.Drawing.Point(12, 14);
-            this.nodelinks_label.Name = "nodelinks_label";
-            this.nodelinks_label.Size = new System.Drawing.Size(145, 19);
-            this.nodelinks_label.TabIndex = 4;
-            this.nodelinks_label.Text = "Подключенные узлы:";
+            this.info_toolstrip_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.info_toolstrip_button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.info_toolstrip_button.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.info_toolstrip_button.Image = ((System.Drawing.Image)(resources.GetObject("info_toolstrip_button.Image")));
+            this.info_toolstrip_button.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.info_toolstrip_button.Name = "info_toolstrip_button";
+            this.info_toolstrip_button.Size = new System.Drawing.Size(57, 22);
+            this.info_toolstrip_button.Text = "Справка";
             // 
-            // addoperation_button
+            // app_toolstrip
             // 
-            this.addoperation_button.Location = new System.Drawing.Point(305, 12);
-            this.addoperation_button.Name = "addoperation_button";
-            this.addoperation_button.Size = new System.Drawing.Size(71, 23);
-            this.addoperation_button.TabIndex = 5;
-            this.addoperation_button.Text = "add";
-            this.addoperation_button.UseVisualStyleBackColor = true;
+            this.app_toolstrip.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.app_toolstrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.app_toolstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.project_toolstrip_button,
+            this.settings_toolstrip_button,
+            this.info_toolstrip_button});
+            this.app_toolstrip.Location = new System.Drawing.Point(0, 0);
+            this.app_toolstrip.Name = "app_toolstrip";
+            this.app_toolstrip.Size = new System.Drawing.Size(864, 25);
+            this.app_toolstrip.TabIndex = 23;
+            this.app_toolstrip.Text = "Инструменты";
             // 
-            // deleteoperation_button
+            // project_toolstrip_button
             // 
-            this.deleteoperation_button.Location = new System.Drawing.Point(382, 12);
-            this.deleteoperation_button.Name = "deleteoperation_button";
-            this.deleteoperation_button.Size = new System.Drawing.Size(71, 23);
-            this.deleteoperation_button.TabIndex = 6;
-            this.deleteoperation_button.Text = "delete";
-            this.deleteoperation_button.UseVisualStyleBackColor = true;
+            this.project_toolstrip_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.project_toolstrip_button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.project_toolstrip_button.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.create_toolstrip_menuitem,
+            this.open_toolstrip_menuitem,
+            this.save_toolstrip_menuitem});
+            this.project_toolstrip_button.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.project_toolstrip_button.Image = ((System.Drawing.Image)(resources.GetObject("project_toolstrip_button.Image")));
+            this.project_toolstrip_button.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.project_toolstrip_button.Name = "project_toolstrip_button";
+            this.project_toolstrip_button.Size = new System.Drawing.Size(60, 22);
+            this.project_toolstrip_button.Text = "Проект";
             // 
-            // connectoperation_button
+            // create_toolstrip_menuitem
             // 
-            this.connectoperation_button.Location = new System.Drawing.Point(459, 12);
-            this.connectoperation_button.Name = "connectoperation_button";
-            this.connectoperation_button.Size = new System.Drawing.Size(71, 23);
-            this.connectoperation_button.TabIndex = 7;
-            this.connectoperation_button.Text = "connect";
-            this.connectoperation_button.UseVisualStyleBackColor = true;
+            this.create_toolstrip_menuitem.Name = "create_toolstrip_menuitem";
+            this.create_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
+            this.create_toolstrip_menuitem.Text = "Создать проект";
             // 
-            // operationstate_label
+            // open_toolstrip_menuitem
             // 
-            this.operationstate_label.AutoSize = true;
-            this.operationstate_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.operationstate_label.Location = new System.Drawing.Point(582, 14);
-            this.operationstate_label.Name = "operationstate_label";
-            this.operationstate_label.Size = new System.Drawing.Size(227, 19);
-            this.operationstate_label.TabIndex = 8;
-            this.operationstate_label.Text = "Текущий инструмент: Добавление";
+            this.open_toolstrip_menuitem.Name = "open_toolstrip_menuitem";
+            this.open_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
+            this.open_toolstrip_menuitem.Text = "Открыть проект";
             // 
-            // propertyGrid1
+            // save_toolstrip_menuitem
             // 
-            this.propertyGrid1.Location = new System.Drawing.Point(12, 265);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(253, 212);
-            this.propertyGrid1.TabIndex = 10;
+            this.save_toolstrip_menuitem.Name = "save_toolstrip_menuitem";
+            this.save_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
+            this.save_toolstrip_menuitem.Text = "Сохранить проект";
             // 
-            // treeView1
+            // settings_toolstrip_button
             // 
-            this.treeView1.Location = new System.Drawing.Point(6, 6);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(233, 178);
-            this.treeView1.TabIndex = 11;
+            this.settings_toolstrip_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.settings_toolstrip_button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.settings_toolstrip_button.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editorconf_toolstrip_menuitem,
+            this.accountconf_toolstrip_menuitem});
+            this.settings_toolstrip_button.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.settings_toolstrip_button.Image = ((System.Drawing.Image)(resources.GetObject("settings_toolstrip_button.Image")));
+            this.settings_toolstrip_button.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settings_toolstrip_button.Name = "settings_toolstrip_button";
+            this.settings_toolstrip_button.Size = new System.Drawing.Size(80, 22);
+            this.settings_toolstrip_button.Text = "Настройки";
             // 
-            // test
+            // editorconf_toolstrip_menuitem
             // 
-            this.test.Location = new System.Drawing.Point(190, 12);
-            this.test.Name = "test";
-            this.test.Size = new System.Drawing.Size(75, 23);
-            this.test.TabIndex = 12;
-            this.test.Text = "button1";
-            this.test.UseVisualStyleBackColor = true;
+            this.editorconf_toolstrip_menuitem.Name = "editorconf_toolstrip_menuitem";
+            this.editorconf_toolstrip_menuitem.Size = new System.Drawing.Size(227, 22);
+            this.editorconf_toolstrip_menuitem.Text = "Настройки редактора";
             // 
-            // tabControl1
+            // accountconf_toolstrip_menuitem
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(12, 41);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(253, 218);
-            this.tabControl1.TabIndex = 13;
+            this.accountconf_toolstrip_menuitem.Name = "accountconf_toolstrip_menuitem";
+            this.accountconf_toolstrip_menuitem.Size = new System.Drawing.Size(227, 22);
+            this.accountconf_toolstrip_menuitem.Text = "Параметры учетной записи";
             // 
-            // tabPage1
+            // edges_listview
             // 
-            this.tabPage1.Controls.Add(this.treeView1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 24);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(245, 190);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.edges_listview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.edgeid_column,
+            this.edgeleftnode_column,
+            this.edgerightnode_column});
+            this.edges_listview.FullRowSelect = true;
+            this.edges_listview.GridLines = true;
+            this.edges_listview.Location = new System.Drawing.Point(6, 6);
+            this.edges_listview.MultiSelect = false;
+            this.edges_listview.Name = "edges_listview";
+            this.edges_listview.Size = new System.Drawing.Size(233, 162);
+            this.edges_listview.TabIndex = 14;
+            this.edges_listview.UseCompatibleStateImageBehavior = false;
+            this.edges_listview.View = System.Windows.Forms.View.Details;
             // 
-            // tabPage2
+            // edgeid_column
             // 
-            this.tabPage2.Controls.Add(this.listView1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 24);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(245, 190);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.edgeid_column.Text = "ID";
+            this.edgeid_column.Width = 40;
             // 
-            // listView1
+            // edgeleftnode_column
             // 
-            this.listView1.Location = new System.Drawing.Point(6, 6);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(233, 178);
-            this.listView1.TabIndex = 14;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.edgeleftnode_column.Text = "Источник";
+            this.edgeleftnode_column.Width = 90;
+            // 
+            // edgerightnode_column
+            // 
+            this.edgerightnode_column.Text = "Цель";
+            this.edgerightnode_column.Width = 90;
+            // 
+            // nodestree_tabpage
+            // 
+            this.nodestree_tabpage.Controls.Add(this.nodes_treeview);
+            this.nodestree_tabpage.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.nodestree_tabpage.Location = new System.Drawing.Point(4, 24);
+            this.nodestree_tabpage.Name = "nodestree_tabpage";
+            this.nodestree_tabpage.Padding = new System.Windows.Forms.Padding(3);
+            this.nodestree_tabpage.Size = new System.Drawing.Size(245, 174);
+            this.nodestree_tabpage.TabIndex = 0;
+            this.nodestree_tabpage.Text = "Список вершин";
+            this.nodestree_tabpage.UseVisualStyleBackColor = true;
+            // 
+            // nodes_treeview
+            // 
+            this.nodes_treeview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.nodes_treeview.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.nodes_treeview.FullRowSelect = true;
+            this.nodes_treeview.Location = new System.Drawing.Point(6, 6);
+            this.nodes_treeview.Name = "nodes_treeview";
+            treeNode1.Name = "nodesroot_treeview";
+            treeNode1.Text = "Список вершин";
+            this.nodes_treeview.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.nodes_treeview.Size = new System.Drawing.Size(233, 162);
+            this.nodes_treeview.TabIndex = 11;
+            // 
+            // app_tabcontrol
+            // 
+            this.app_tabcontrol.Controls.Add(this.nodestree_tabpage);
+            this.app_tabcontrol.Controls.Add(this.edgeslist_tabpage);
+            this.app_tabcontrol.Location = new System.Drawing.Point(12, 31);
+            this.app_tabcontrol.Name = "app_tabcontrol";
+            this.app_tabcontrol.SelectedIndex = 0;
+            this.app_tabcontrol.Size = new System.Drawing.Size(253, 202);
+            this.app_tabcontrol.TabIndex = 22;
+            // 
+            // edgeslist_tabpage
+            // 
+            this.edgeslist_tabpage.Controls.Add(this.edges_listview);
+            this.edgeslist_tabpage.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.edgeslist_tabpage.Location = new System.Drawing.Point(4, 24);
+            this.edgeslist_tabpage.Name = "edgeslist_tabpage";
+            this.edgeslist_tabpage.Padding = new System.Windows.Forms.Padding(3);
+            this.edgeslist_tabpage.Size = new System.Drawing.Size(245, 174);
+            this.edgeslist_tabpage.TabIndex = 1;
+            this.edgeslist_tabpage.Text = "Список дуг (ребер)";
+            this.edgeslist_tabpage.UseVisualStyleBackColor = true;
+            // 
+            // findpath_button
+            // 
+            this.findpath_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.findpath_button.Location = new System.Drawing.Point(12, 283);
+            this.findpath_button.Name = "findpath_button";
+            this.findpath_button.Size = new System.Drawing.Size(253, 28);
+            this.findpath_button.TabIndex = 21;
+            this.findpath_button.Text = "Найти путь";
+            this.findpath_button.UseVisualStyleBackColor = true;
+            // 
+            // app_propertygrid
+            // 
+            this.app_propertygrid.HelpBackColor = System.Drawing.Color.White;
+            this.app_propertygrid.Location = new System.Drawing.Point(12, 346);
+            this.app_propertygrid.Name = "app_propertygrid";
+            this.app_propertygrid.Size = new System.Drawing.Size(253, 206);
+            this.app_propertygrid.TabIndex = 20;
+            // 
+            // selectop_button
+            // 
+            this.selectop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.selectop_button.Location = new System.Drawing.Point(460, 31);
+            this.selectop_button.Name = "selectop_button";
+            this.selectop_button.Size = new System.Drawing.Size(82, 27);
+            this.selectop_button.TabIndex = 18;
+            this.selectop_button.Text = "Выбрать";
+            this.selectop_button.UseVisualStyleBackColor = true;
+            // 
+            // deleteop_button
+            // 
+            this.deleteop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.deleteop_button.Location = new System.Drawing.Point(372, 31);
+            this.deleteop_button.Name = "deleteop_button";
+            this.deleteop_button.Size = new System.Drawing.Size(82, 27);
+            this.deleteop_button.TabIndex = 17;
+            this.deleteop_button.Text = "Удалить";
+            this.deleteop_button.UseVisualStyleBackColor = true;
+            // 
+            // addop_button
+            // 
+            this.addop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.addop_button.Location = new System.Drawing.Point(284, 31);
+            this.addop_button.Name = "addop_button";
+            this.addop_button.Size = new System.Drawing.Size(82, 27);
+            this.addop_button.TabIndex = 16;
+            this.addop_button.Text = "Добавить";
+            this.addop_button.UseVisualStyleBackColor = true;
+            // 
+            // app_statusstrip
+            // 
+            this.app_statusstrip.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.app_statusstrip.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.app_statusstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.progressbar_toolstrip,
+            this.status_toolstrip_label});
+            this.app_statusstrip.Location = new System.Drawing.Point(0, 557);
+            this.app_statusstrip.Name = "app_statusstrip";
+            this.app_statusstrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
+            this.app_statusstrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.app_statusstrip.Size = new System.Drawing.Size(864, 24);
+            this.app_statusstrip.SizingGrip = false;
+            this.app_statusstrip.TabIndex = 25;
+            this.app_statusstrip.Text = "Статус";
+            // 
+            // progressbar_toolstrip
+            // 
+            this.progressbar_toolstrip.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.progressbar_toolstrip.Name = "progressbar_toolstrip";
+            this.progressbar_toolstrip.Size = new System.Drawing.Size(150, 18);
+            this.progressbar_toolstrip.Step = 1;
+            this.progressbar_toolstrip.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            // 
+            // status_toolstrip_label
+            // 
+            this.status_toolstrip_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.status_toolstrip_label.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.status_toolstrip_label.Name = "status_toolstrip_label";
+            this.status_toolstrip_label.Size = new System.Drawing.Size(53, 19);
+            this.status_toolstrip_label.Text = "Готово";
+            // 
+            // info_textbox
+            // 
+            this.info_textbox.BackColor = System.Drawing.Color.White;
+            this.info_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.info_textbox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.info_textbox.Location = new System.Drawing.Point(284, 492);
+            this.info_textbox.Multiline = true;
+            this.info_textbox.Name = "info_textbox";
+            this.info_textbox.ReadOnly = true;
+            this.info_textbox.Size = new System.Drawing.Size(568, 60);
+            this.info_textbox.TabIndex = 26;
+            // 
+            // nodeorigin_combobox
+            // 
+            this.nodeorigin_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.nodeorigin_combobox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.nodeorigin_combobox.FormattingEnabled = true;
+            this.nodeorigin_combobox.Location = new System.Drawing.Point(12, 252);
+            this.nodeorigin_combobox.Name = "nodeorigin_combobox";
+            this.nodeorigin_combobox.Size = new System.Drawing.Size(121, 25);
+            this.nodeorigin_combobox.TabIndex = 27;
+            // 
+            // nodetarget_combobox
+            // 
+            this.nodetarget_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.nodetarget_combobox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.nodetarget_combobox.FormattingEnabled = true;
+            this.nodetarget_combobox.Location = new System.Drawing.Point(144, 252);
+            this.nodetarget_combobox.Name = "nodetarget_combobox";
+            this.nodetarget_combobox.Size = new System.Drawing.Size(121, 25);
+            this.nodetarget_combobox.TabIndex = 28;
+            // 
+            // nodeorigin_label
+            // 
+            this.nodeorigin_label.AutoSize = true;
+            this.nodeorigin_label.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.nodeorigin_label.Location = new System.Drawing.Point(12, 236);
+            this.nodeorigin_label.Name = "nodeorigin_label";
+            this.nodeorigin_label.Size = new System.Drawing.Size(102, 13);
+            this.nodeorigin_label.TabIndex = 29;
+            this.nodeorigin_label.Text = "Начальная точка:";
+            // 
+            // nodetarget_label
+            // 
+            this.nodetarget_label.AutoSize = true;
+            this.nodetarget_label.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.nodetarget_label.Location = new System.Drawing.Point(144, 236);
+            this.nodetarget_label.Name = "nodetarget_label";
+            this.nodetarget_label.Size = new System.Drawing.Size(88, 13);
+            this.nodetarget_label.TabIndex = 30;
+            this.nodetarget_label.Text = "Целевая точка:";
+            // 
+            // reset_button
+            // 
+            this.reset_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.reset_button.Location = new System.Drawing.Point(745, 31);
+            this.reset_button.Name = "reset_button";
+            this.reset_button.Size = new System.Drawing.Size(107, 27);
+            this.reset_button.TabIndex = 31;
+            this.reset_button.Text = "Очистить";
+            this.reset_button.UseVisualStyleBackColor = true;
             // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(864, 581);
-            this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.test);
-            this.Controls.Add(this.propertyGrid1);
-            this.Controls.Add(this.operationstate_label);
-            this.Controls.Add(this.connectoperation_button);
-            this.Controls.Add(this.deleteoperation_button);
-            this.Controls.Add(this.addoperation_button);
-            this.Controls.Add(this.nodelinks_label);
+            this.Controls.Add(this.reset_button);
+            this.Controls.Add(this.nodetarget_label);
+            this.Controls.Add(this.nodeorigin_label);
+            this.Controls.Add(this.nodetarget_combobox);
+            this.Controls.Add(this.nodeorigin_combobox);
+            this.Controls.Add(this.info_textbox);
+            this.Controls.Add(this.app_statusstrip);
+            this.Controls.Add(this.app_toolstrip);
+            this.Controls.Add(this.app_tabcontrol);
+            this.Controls.Add(this.findpath_button);
+            this.Controls.Add(this.app_propertygrid);
+            this.Controls.Add(this.selectop_button);
+            this.Controls.Add(this.deleteop_button);
+            this.Controls.Add(this.addop_button);
+            this.MaximumSize = new System.Drawing.Size(880, 620);
+            this.MinimumSize = new System.Drawing.Size(880, 620);
             this.Name = "ClientForm";
             this.Text = "Редактор карты";
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
+            this.app_toolstrip.ResumeLayout(false);
+            this.app_toolstrip.PerformLayout();
+            this.nodestree_tabpage.ResumeLayout(false);
+            this.app_tabcontrol.ResumeLayout(false);
+            this.edgeslist_tabpage.ResumeLayout(false);
+            this.app_statusstrip.ResumeLayout(false);
+            this.app_statusstrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private Label nodelinks_label;
-        private Button addoperation_button;
-        private Button deleteoperation_button;
-        private Button connectoperation_button;
-        private Label operationstate_label;
-        private PropertyGrid propertyGrid1;
-        private TreeView treeView1;
-        private Button test;
-        private TabControl tabControl1;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
-        private ListView listView1;
+        private ToolStripButton info_toolstrip_button;
+        private ToolStrip app_toolstrip;
+        private ListView edges_listview;
+        private TabPage nodestree_tabpage;
+        private TreeView nodes_treeview;
+        private TabControl app_tabcontrol;
+        private TabPage edgeslist_tabpage;
+        private Button findpath_button;
+        private PropertyGrid app_propertygrid;
+        private Button selectop_button;
+        private Button deleteop_button;
+        private Button addop_button;
+        private ToolStripDropDownButton project_toolstrip_button;
+        private ToolStripMenuItem create_toolstrip_menuitem;
+        private ToolStripMenuItem open_toolstrip_menuitem;
+        private ToolStripMenuItem save_toolstrip_menuitem;
+        private ToolStripDropDownButton settings_toolstrip_button;
+        private ToolStripMenuItem editorconf_toolstrip_menuitem;
+        private ToolStripMenuItem accountconf_toolstrip_menuitem;
+        private StatusStrip app_statusstrip;
+        private ToolStripStatusLabel status_toolstrip_label;
+        private ToolStripProgressBar progressbar_toolstrip;
+        private TextBox info_textbox;
+        private ComboBox nodeorigin_combobox;
+        private ComboBox nodetarget_combobox;
+        private Label nodeorigin_label;
+        private Label nodetarget_label;
+        private ColumnHeader edgeid_column;
+        private ColumnHeader edgeleftnode_column;
+        private ColumnHeader edgerightnode_column;
+        private Button reset_button;
     }
 }

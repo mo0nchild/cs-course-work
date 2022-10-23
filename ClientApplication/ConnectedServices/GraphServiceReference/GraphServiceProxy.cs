@@ -11,11 +11,10 @@ namespace GraphServiceReference
 {
     using System.Runtime.Serialization;
     
-    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
     [System.Runtime.Serialization.DataContractAttribute(Name="NodeData", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
-    internal partial class NodeData : object
+    public partial class NodeData : object
     {
         
         private int NodeIDField;
@@ -23,7 +22,7 @@ namespace GraphServiceReference
         private int[] NodeLinksIDField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        internal int NodeID
+        public int NodeID
         {
             get
             {
@@ -36,7 +35,7 @@ namespace GraphServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        internal int[] NodeLinksID
+        public int[] NodeLinksID
         {
             get
             {
@@ -51,21 +50,24 @@ namespace GraphServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="GraphServiceReference.GraphCalculator")]
-    internal interface GraphCalculator
+    public interface GraphCalculator
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GraphCalculator/FindPathByBFS", ReplyAction="http://tempuri.org/GraphCalculator/FindPathByBFSResponse")]
-        System.Threading.Tasks.Task<int[]> FindPathByBFSAsync(GraphServiceReference.NodeData[] composite);
+        int[] FindPathByBFS(int origin_id, int target_id, GraphServiceReference.NodeData[] node_list);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GraphCalculator/FindPathByBFS", ReplyAction="http://tempuri.org/GraphCalculator/FindPathByBFSResponse")]
+        System.Threading.Tasks.Task<int[]> FindPathByBFSAsync(int origin_id, int target_id, GraphServiceReference.NodeData[] node_list);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
-    internal interface GraphCalculatorChannel : GraphServiceReference.GraphCalculator, System.ServiceModel.IClientChannel
+    public interface GraphCalculatorChannel : GraphServiceReference.GraphCalculator, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
-    internal partial class GraphCalculatorClient : System.ServiceModel.ClientBase<GraphServiceReference.GraphCalculator>, GraphServiceReference.GraphCalculator
+    public partial class GraphCalculatorClient : System.ServiceModel.ClientBase<GraphServiceReference.GraphCalculator>, GraphServiceReference.GraphCalculator
     {
         
         /// <summary>
@@ -108,9 +110,14 @@ namespace GraphServiceReference
         {
         }
         
-        public System.Threading.Tasks.Task<int[]> FindPathByBFSAsync(GraphServiceReference.NodeData[] composite)
+        public int[] FindPathByBFS(int origin_id, int target_id, GraphServiceReference.NodeData[] node_list)
         {
-            return base.Channel.FindPathByBFSAsync(composite);
+            return base.Channel.FindPathByBFS(origin_id, target_id, node_list);
+        }
+        
+        public System.Threading.Tasks.Task<int[]> FindPathByBFSAsync(int origin_id, int target_id, GraphServiceReference.NodeData[] node_list)
+        {
+            return base.Channel.FindPathByBFSAsync(origin_id, target_id, node_list);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

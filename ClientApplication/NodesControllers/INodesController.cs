@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSCourseWork.NodeController
+namespace CSCourseWork.NodesControllers
 {
-    public sealed class NodeControllerException : System.Exception
+    public sealed class NodesControllerException : System.Exception
     {
         public NodeModel? Node { get; private set; } = default;
-        public NodeControllerException(string message, NodeModel node) : base(message) => this.Node = node;
+        public NodesControllerException(string message, NodeModel node) : base(message) => this.Node = node;
     }
 
     public interface INodesController : IEnumerable<NodeModel>, IDisposable
@@ -26,6 +26,6 @@ namespace CSCourseWork.NodeController
     {
         public void SetNodeLinks(int node_id, int required_links_id);
         public void RemoveNodeLinks(int node_id, int required_links_id);
-        public List<NodeConnectorInfo> BuildNodeСonnectors();
+        public List<NodesConnectorInfo> BuildNodeСonnectors();
     }
 }

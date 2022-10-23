@@ -77,7 +77,7 @@ namespace ServiceLibrary
                 }
             }
 
-            return new int[] { 0 };
+            return new int[] { };
         }
     }
 }

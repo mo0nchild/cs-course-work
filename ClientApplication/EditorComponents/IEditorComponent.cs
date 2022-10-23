@@ -1,11 +1,12 @@
-﻿using CSCourseWork.NodeController;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSCourseWork.EditorComponent
+using CSCourseWork.NodesControllers;
+
+namespace CSCourseWork.EditorComponents
 {
     public enum EditorModes : System.SByte { AddNode, RemoveNode, SelectNode };
 
@@ -20,25 +21,28 @@ namespace CSCourseWork.EditorComponent
 
     public delegate void EditorActionEventHandler(object? sender, EditorActionEventArgs args);
 
-    public interface IEditorComponent : System.IDisposable
+    public interface IEditorComponent<TNodesController> : System.IDisposable
+        where TNodesController : NodesControllers.INodesControllerWithConnectors
     {
-        public event EditorComponent.EditorActionEventHandler? NodeClicked;
-        public event EditorComponent.EditorActionEventHandler? FieldClicked;
+        public event EditorComponents.EditorActionEventHandler? NodeClicked;
+        public event EditorComponents.EditorActionEventHandler? FieldClicked;
 
-        public INodesControllerWithConnectors Controller { get; }
-        public Nullable<System.Int32> SelectedNodeID { get; }
-        public EditorComponent.EditorModes Mode { get; set; }
+        public Nullable<System.Int32> SelectedNodeID { get; set; }
+        public EditorComponents.EditorModes Mode { get; set; }
+        public TNodesController Controller { get; }
 
         public System.Int32 NodeMovingSpeed { get; set; }
         public System.Drawing.Color NodeColor { get; set; }
         public System.Drawing.Color NodeSelectColor { get; set; }
-
         public System.Int32 NodeSize { get; }
 
-        public void BuildGraphPath(List<NodeConnectorInfo> node_paths);
-        public void PaintEdgeWithArrow(Graphics graphics, NodeConnectorInfo connector, Color color);
+        public void BuildGraphPath(List<NodesConnectorInfo> node_paths);
+        public void PaintEdgeWithArrow(Graphics graphics, NodesConnectorInfo connector, Color color);
         public void PaintNodeInstance(Graphics graphic, NodeModel node_info, Brush node_brush);
     }
 
-    public
+    public sealed class EditorComponentException : System.Exception 
+    {
+        public EditorComponentException(string message) : base(message) { }
+    }
 }

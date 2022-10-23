@@ -8,26 +8,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CSCourseWork.NodeController;
+using CSCourseWork.NodesControllers;
 using static System.Math;
 
-namespace CSCourseWork.EditorComponent
+namespace CSCourseWork.EditorComponents
 {
-    public class EditorComponentBase : System.Windows.Forms.Panel, IEditorComponent
+    public class EditorComponentBase : System.Windows.Forms.Panel, IEditorComponent<NodesController>
     {
         public event EditorActionEventHandler? NodeClicked;
         public event EditorActionEventHandler? FieldClicked;
 
-        public INodesControllerWithConnectors Controller { get; private set; }
+        public NodesController Controller { get; private set; }
         public EditorModes Mode { get; set; } = default(EditorModes);
-        public int? SelectedNodeID { get; private set; } = null;
 
+        private readonly int DefaultGridDelta = 5;
         private bool movingbutton_hold = default(bool);
         private Point movingposition_buffer = default(Point);
-
-        private const int DefaultNodeBorder = 3;
-        private const int DefaultNodeSize = 40;
-        private const int DefaultGridDelta = 5;
 
         public int NodeBorderWidth { get; set; } = default(int);
         public int NodeMovingSpeed { get; set; } = default(int) + 1;
@@ -36,9 +32,18 @@ namespace CSCourseWork.EditorComponent
 
         public int NodeSize { get => this.Controller.NodeSize; }
 
-        public EditorComponentBase(Form parent_form, INodesControllerWithConnectors controller) : base()
+        private int? selected_nodeid = default(int?);
+        public int? SelectedNodeID
         {
-            (this.Controller, this.DoubleBuffered) = (controller, true);
+            set => this.selected_nodeid =
+                (value > 0 || value <= this.Controller.NodesList.Count) ? value : null;
+
+            get => this.selected_nodeid;
+        }
+
+        public EditorComponentBase(Form parent_form, NodesController controller) : base()
+        {
+            (this.Controller, this.DoubleBuffered, this.BorderStyle) = (controller, true, BorderStyle.FixedSingle);
             parent_form.Controls.Add(this);
 
             this.MouseDown += new MouseEventHandler(this.EditorComponentMouseDown);
@@ -53,12 +58,14 @@ namespace CSCourseWork.EditorComponent
                 { if (args.Button == MouseButtons.Right) this.movingbutton_hold = false; });
         }
             
-        public EditorComponentBase(Form parent_form) : this(parent_form, ) { }
+        public EditorComponentBase(Form parent_form) : this(parent_form, new NodesController()) { }
 
-        public void BuildGraphPath(List<NodeConnectorInfo> node_paths)
+        public void BuildGraphPath(List<NodesConnectorInfo> node_paths)
         {
             using (var graphic = this.CreateGraphics())
             {
+                this.EditorComponentPaint(this, new PaintEventArgs(graphic, new Rectangle(this.Location, this.Size)));
+
                 for (var index = 0; index < node_paths.Count; index++)
                 {
                     using var node_brush = new SolidBrush(this.NodeSelectColor);
@@ -91,7 +98,7 @@ namespace CSCourseWork.EditorComponent
             return grid_bitmap;
         }
 
-        public void PaintEdgeWithArrow(Graphics graphics, NodeConnectorInfo connector, Color color) 
+        public void PaintEdgeWithArrow(Graphics graphics, NodesConnectorInfo connector, Color color) 
         {
             int delta_x = connector.RightNode.Position.X - connector.LeftNode.Position.X, // x1 - x0
                 delta_y = connector.RightNode.Position.Y - connector.LeftNode.Position.Y; // y1 - y0
@@ -186,9 +193,9 @@ namespace CSCourseWork.EditorComponent
             if (args.NodeAction == EditorModes.AddNode)
             {
                 try { this.Controller.AddNewNode(args.ActionPosition.X, args.ActionPosition.Y); }
-                catch (NodeControllerException node_error)
+                catch (NodesControllerException node_error)
                 {
-                    MessageBox.Show($"{node_error.Message} - Node: {node_error.Node.NodeID}", "Ошибка"); return;
+                    MessageBox.Show($"{node_error.Message} - Node: {node_error.Node?.NodeID}", "Ошибка"); return;
                 }
             }
             else if (args.NodeAction == EditorModes.SelectNode && this.SelectedNodeID.HasValue)

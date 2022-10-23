@@ -8,42 +8,19 @@ using System.Threading.Tasks;
 
 namespace CSCourseWork.NodeController
 {
-    internal sealed class NodeControllerException : System.Exception
-    {
-        public NodeModel Node { get; private set; }
-        public NodeControllerException(string message, NodeModel node) : base(message) => Node = node;
-    }
-
-    internal interface INodesController : IEnumerable<NodeModel>, IDisposable
-    {
-        public SortedSet<NodeModel> NodesList { get; set; }
-        public NodeModel? this[int node_id] { get; }
-        public System.Int32 NodeSize { get; set; }
-        public void AddNewNode(int position_x, int position_y);
-        public void RemoveNode(int node_id);
-        
-    }
-
-    internal interface INodesControllerWithConnectors : INodesController 
-    {
-        public void SetNodeLinks(int node_id, int required_links_id);
-        public void RemoveNodeLinks(int node_id, int required_links_id);
-        public List<NodeConnectorInfo> BuildNodeСonnectors();
-    }
-
-    internal class NodesController : System.Object, INodesControllerWithConnectors
+    public class NodesController : System.Object, INodesControllerWithConnectors
     {
         public SortedSet<NodeModel> NodesList { get; set; }
         public int NodeSize { get; set; } = default;
 
-        public NodesController() : base() => NodesList = new SortedSet<NodeModel>(new NodeComparer());
+        public NodesController() : base() => this.NodesList = new SortedSet<NodeModel>(new NodeComparer());
 
         public NodeModel? this[int node_id]
         {
             get
             {
-                if (node_id <= 0 || node_id > NodesList.Count) return null;
-                return NodesList.ElementAt(node_id - 1);
+                if (node_id <= 0 || node_id > this.NodesList.Count) return null;
+                return this.NodesList.ElementAt(node_id - 1);
             }
         }
 
@@ -52,7 +29,7 @@ namespace CSCourseWork.NodeController
             NodeModel? select_node = default;
             try
             {
-                select_node = NodesList.Where((node_info) => node_info.NodeID == node_id)
+                select_node = this.NodesList.Where((node_info) => node_info.NodeID == node_id)
                     .ToList()[0];
             }
             catch (Exception error) { MessageBox.Show(error.Message, "Ошибка"); return false; }
@@ -67,40 +44,40 @@ namespace CSCourseWork.NodeController
 
         public void AddNewNode(int pos_x, int pos_y)
         {
-            NodesList.ToList().ForEach(delegate (NodeModel node_info)
+            this.NodesList.ToList().ForEach(delegate (NodeModel node_info)
             {
-                if (NodeCollisionCheck(new Point(pos_x, pos_y), node_info.NodeID))
+                if (this.NodeCollisionCheck(new Point(pos_x, pos_y), node_info.NodeID))
                 { throw new NodeControllerException("Произошло наложение вершин", node_info); }
             });
-            NodesList.Add(new NodeModel(NodesList.Count + 1) { Position = new Point(pos_x, pos_y) });
+
+            var node_builded = new NodeModel(this.NodesList.Count + 1) { Position = new Point(pos_x, pos_y) };
+            this.NodesList.Add(node_builded);
         }
 
         public void RemoveNode(int node_id)
         {
-            foreach (var node_info in NodesList
+            foreach (var node_info in this.NodesList
                 .Where((node_info) => node_info.NodeLinksID.Contains(node_id)))
             {
-                RemoveNodeLinks(node_info.NodeID, node_id);
+                this.RemoveNodeLinks(node_info.NodeID, node_id);
             }
-            NodesList.RemoveWhere((node_info) => node_info.NodeID == node_id);
+            this.NodesList.RemoveWhere((node_info) => node_info.NodeID == node_id);
 
-            try { for (int id = node_id; id <= NodesList.Count; id++) this[id]!.NodeID--; }
+            try { for (int id = node_id; id <= this.NodesList.Count; id++) this[id]!.NodeID--; }
             catch (Exception error) { MessageBox.Show(error.Message, "Ошибка"); }
         }
 
         public void SetNodeLinks(int node_id, int required_links_id)
         {
-            NodeModel? selectednode_info = this[node_id], requirednode_info = this[required_links_id];
-            if (selectednode_info == null || requirednode_info == null || node_id == required_links_id) return;
+            NodeModel? selectednode_info = this[node_id];
 
-            if (LinkCheck(selectednode_info, required_links_id) && LinkCheck(requirednode_info, node_id))
+            if (selectednode_info != null && node_id != required_links_id) 
             {
-                selectednode_info?.NodeLinksID.Add(required_links_id);
-                requirednode_info?.NodeLinksID.Add(node_id);
+                if (LinkCheck(selectednode_info, required_links_id)) selectednode_info?.NodeLinksID.Add(required_links_id);
             }
 
             bool LinkCheck(NodeModel node_info, int required_id)
-            { return node_info.NodeLinksID.Where((id) => id == required_id).ToList().Count == 0; }
+                { return node_info.NodeLinksID.Where((id) => id == required_id).ToList().Count == 0; }
         }
 
         public void RemoveNodeLinks(int node_id, int required_links_id)
@@ -112,32 +89,31 @@ namespace CSCourseWork.NodeController
         public List<NodeConnectorInfo> BuildNodeСonnectors()
         {
             var result_list = new List<NodeConnectorInfo>();
+            var edge_id = default(int);
 
-            for (int node_id = 1; node_id <= NodesList.Count; node_id++)
+            for (int node_id = 1; node_id <= this.NodesList.Count; node_id++)
             {
-                var node_links = NodesList.Where((node_info) => node_info.NodeID != node_id);
-                var edge_id = default(int) + 1;
-
+                var node_links = this.NodesList.Where((node_info) => node_info.NodeID != node_id);
                 node_links.ToList().ForEach(delegate (NodeModel link)
                 {
                     foreach (var item in result_list)
                     {
-                        if (item.LeftNode == this[node_id]! && item.RightNode == link || item.LeftNode == link
-                            && item.RightNode == this[node_id]!) return;
+                        if (this[node_id]!.NodeLinksID == item.RightNode.NodeLinksID && 
+                            item.LeftNode.NodeLinksID == link.NodeLinksID) return;
                     }
 
-                    if (link.NodeLinksID.Contains(node_id)) result_list.Add(
-                        new NodeConnectorInfo(edge_id++, this[node_id]!, link));
+                    if (link.NodeLinksID.Contains(node_id)) 
+                        result_list.Add(new NodeConnectorInfo(edge_id++, link, this[node_id]!));
                 });
             }
             return result_list;
         }
 
         public IEnumerator<NodeModel> GetEnumerator()
-        { foreach (NodeModel item in NodesList) yield return item; }
+        { foreach (NodeModel item in this.NodesList) yield return item; }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        void IDisposable.Dispose() => NodesList.Clear();
+        void IDisposable.Dispose() => this.NodesList.Clear();
     }
 }

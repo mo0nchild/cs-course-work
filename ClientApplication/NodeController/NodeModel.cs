@@ -1,6 +1,6 @@
 ﻿namespace CSCourseWork.NodeController
 {
-    internal record NodeConnectorInfo(int EdgeId, NodeModel LeftNode, NodeModel RightNode) : System.Object;
+    public record NodeConnectorInfo(int EdgeId, NodeModel LeftNode, NodeModel RightNode) : System.Object;
 
     public class NodeComparer : IComparer<NodeModel>
     {
@@ -11,7 +11,7 @@
         }
     }
 
-    internal sealed class NodeModel : object, IComparable<NodeModel>, ICloneable
+    public sealed class NodeModel : object, IComparable<NodeModel>, ICloneable
     {
         public Point Position { get; set; } = new(0, 0);
         public List<int> NodeLinksID { get; set; } = new();

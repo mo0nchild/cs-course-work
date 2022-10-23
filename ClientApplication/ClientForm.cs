@@ -1,4 +1,5 @@
 using CSCourseWork.EditorComponent;
+using CSCourseWork.NodeController;
 
 namespace CSCourseWork
 {
@@ -34,11 +35,14 @@ namespace CSCourseWork
 
         private void Test_Click(object? sender, EventArgs e)
         {
-            using (var client = new GraphServiceReference.GraphCalculatorClient()) 
-            {
-                var answer = client.FindPathByBFSAsync(new GraphServiceReference.NodeData[0]);
-                Console.WriteLine(answer.Result.Length);
-            }
+            //using (var client = new GraphServiceReference.GraphCalculatorClient()) 
+            //{
+            //    var answer = client.FindPathByBFSAsync(new GraphServiceReference.NodeData[0]);
+            //    Console.WriteLine(answer.Result.Length);
+            //}
+
+            var connectors = this.EditorInstance.Controller.BuildNodeÑonnectors();
+            if (connectors.Count > 0) this.EditorInstance.BuildGraphPath(new List<NodeConnectorInfo>() { connectors[0] });
         }
 
         #region Test shit

@@ -39,11 +39,9 @@ namespace ServiceLibrary
                 if (current_node.NodeID == target_id) 
                 {
                     var result = new int[current_node.NodePathLevel];
-
                     for (var index = 0; index < current_node.NodeLinksID.Length; index++) 
                     {
                         var link = current_node.NodeLinksID[index];
-
                         if (node_list[link - 1].NodePathLevel == current_node.NodePathLevel - 1)
                         {
                             result[current_node.NodePathLevel - 1] = current_node.NodeID;

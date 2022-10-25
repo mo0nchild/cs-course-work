@@ -22,7 +22,10 @@ namespace ServiceLibrary.ServiceContracts
         public int[] NodeLinksID { get; set; } = new int[0];
 
         [DataMemberAttribute]
+        public int[] NodeInboxsID { get; set; } = new int[0];
+
+        [DataMemberAttribute]
         public int NodeID { get; set; } = default(int);
-        public int NodePathLevel { get; set; } = default(int) + 1;
+        public int NodePathLevel { get; set; } = default(int);
     }
 }

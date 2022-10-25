@@ -251,32 +251,35 @@
             // 
             // selectop_button
             // 
+            this.selectop_button.BackgroundImage = global::CSCourseWork.Resourses.SelectIcon;
+            this.selectop_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.selectop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.selectop_button.Location = new System.Drawing.Point(460, 31);
+            this.selectop_button.Location = new System.Drawing.Point(356, 28);
             this.selectop_button.Name = "selectop_button";
-            this.selectop_button.Size = new System.Drawing.Size(82, 27);
+            this.selectop_button.Size = new System.Drawing.Size(30, 30);
             this.selectop_button.TabIndex = 18;
-            this.selectop_button.Text = "Выбрать";
             this.selectop_button.UseVisualStyleBackColor = true;
             // 
             // deleteop_button
             // 
+            this.deleteop_button.BackgroundImage = global::CSCourseWork.Resourses.DeleteIcon;
+            this.deleteop_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.deleteop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.deleteop_button.Location = new System.Drawing.Point(372, 31);
+            this.deleteop_button.Location = new System.Drawing.Point(320, 28);
             this.deleteop_button.Name = "deleteop_button";
-            this.deleteop_button.Size = new System.Drawing.Size(82, 27);
+            this.deleteop_button.Size = new System.Drawing.Size(30, 30);
             this.deleteop_button.TabIndex = 17;
-            this.deleteop_button.Text = "Удалить";
             this.deleteop_button.UseVisualStyleBackColor = true;
             // 
             // addop_button
             // 
+            this.addop_button.BackgroundImage = global::CSCourseWork.Resourses.AddIcon;
+            this.addop_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.addop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.addop_button.Location = new System.Drawing.Point(284, 31);
+            this.addop_button.Location = new System.Drawing.Point(284, 28);
             this.addop_button.Name = "addop_button";
-            this.addop_button.Size = new System.Drawing.Size(82, 27);
+            this.addop_button.Size = new System.Drawing.Size(30, 30);
             this.addop_button.TabIndex = 16;
-            this.addop_button.Text = "Добавить";
             this.addop_button.UseVisualStyleBackColor = true;
             // 
             // app_statusstrip

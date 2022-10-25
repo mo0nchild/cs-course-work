@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Configuration;
 using System.Windows.Forms;
+using System.Net.Http.Headers;
+using System.ComponentModel;
+using System.Diagnostics;
 
 using CSCourseWork.EditorComponents;
 using CSCourseWork.NodesControllers;
-using System.ComponentModel;
-using System.Net.Http.Headers;
+using CSCourseWork.Connected_Services.GraphServiceReference;
+using System.ServiceModel;
 
 namespace CSCourseWork
 {
@@ -20,9 +23,9 @@ namespace CSCourseWork
             this.InitializeComponent();
 
             var editor_builder = new EditorComponentBuilder(this, new NodesController())
-                .AddEditorNodeColor(Color.Black, Color.Crimson, Color.White)
-                .AddEditorNodeSize(40, 2)
                 .AddEditorGeometry(new Point(284, 60), new Size(568, 426))
+                .AddEditorNodeColor(Color.Black, Color.Crimson, Color.White)
+                .AddEditorNodeSize(40, 2) 
                 .AddEditorMovingSpeed(2);
             this.EditorInstance = editor_builder.BuildEditor();
 
@@ -36,11 +39,9 @@ namespace CSCourseWork
             this.findpath_button.Click += new EventHandler(FindPathButtonClick);
             this.reset_button.Click += new EventHandler(ResetButtonClick);
 
-            this.edges_listview.DoubleClick += new EventHandler(EdgesListViewDoubleClick);
-            this.edges_listview.Click += new EventHandler(EdgesListViewClick);
-
+            this.edges_listview.MouseClick += new MouseEventHandler(EdgesListViewMouseClick);
             this.nodes_treeview.AfterSelect += new TreeViewEventHandler(NodesTreeViewAfterSelect);
-            this.nodes_treeview.DoubleClick += new EventHandler(NodesTreeViewDoubleClick);
+            this.nodes_treeview.MouseClick += new MouseEventHandler(NodesTreeViewMouseClick);
 
             this.app_propertygrid.PropertyValueChanged += AppPropertyGridPropertyValueChanged;
             this.AddOperationButtonClick(this.addop_button, EventArgs.Empty);
@@ -49,40 +50,49 @@ namespace CSCourseWork
         private void AppPropertyGridPropertyValueChanged(object? s, PropertyValueChangedEventArgs args) 
             => (this.EditorInstance as Panel)?.Invalidate();
 
-        private void EdgesListViewClick(object? sender, EventArgs args)
+        private void BuildContextMenu(Action<ToolStripItemClickedEventArgs> delete_action, Point position, string[] items) 
         {
-            if (this.edges_listview.SelectedItems.Count <= 0) 
-            { 
-                (this.EditorInstance as Panel)?.Invalidate();
-                Console.WriteLine("asdasdasd");
-                return; 
+            var context_menu = new ContextMenuStrip() { AutoSize = true };
+            foreach (var item_text in items) 
+            {
+                context_menu.Items.Add(new ToolStripButton(item_text, Resourses.DeleteIcon) { Width = 100 });
             }
-
-            var selected_edge = this.edges_listview.SelectedIndices[0];
-            var edge_list = this.EditorInstance.Controller.BuildNodeÑonnectors();
-
-            this.EditorInstance.BuildGraphPath(
-                new List<NodesConnectorInfo>() { edge_list[selected_edge] });
+            context_menu.ItemClicked += delegate (object? sender, ToolStripItemClickedEventArgs args)
+            {
+                delete_action(args);
+            };
+            context_menu.Show(this, position);
         }
-        private void EdgesListViewDoubleClick(object? sender, EventArgs args)
+
+        private void EdgesListViewMouseClick(object? sender, MouseEventArgs args)
         {
             if (this.edges_listview.SelectedItems.Count <= 0) return;
 
             var selected_edge = this.edges_listview.SelectedIndices[0];
             var edge_info = this.EditorInstance.Controller.BuildNodeÑonnectors()[selected_edge];
 
-            this.EditorInstance.Controller.RemoveNodeLinks(
-                edge_info.LeftNode.NodeID, edge_info.RightNode.NodeID);
+            this.EditorInstance.BuildGraphPath(new List<NodesConnectorInfo>() { edge_info });
 
-            (this.EditorInstance as Panel)?.Invalidate();
-            this.NodeInfoListUpdate();
+            if (args.Button == MouseButtons.Right)
+            {
+                this.BuildContextMenu(delegate (ToolStripItemClickedEventArgs args)
+                {
+                    if (args.ClickedItem.Text != "Óäàëèòü äóãó") return;
+                    this.EditorInstance.Controller.RemoveNodeLinks(edge_info.LeftNode.NodeID, edge_info.RightNode.NodeID);
+
+                    (this.EditorInstance as Panel)?.Invalidate();
+                    this.NodeInfoListUpdate();
+
+                }, args.Location, new string[] { "Óäàëèòü äóãó" });
+            }
         }
+
         private void NodesTreeViewAfterSelect(object? sender, TreeViewEventArgs args)
         {
             if (args.Node == null) return;
-            switch (args.Node.Level) 
+            switch (args.Node.Level)
             {
-                case 1: 
+                case 1:
                     this.EditorInstance.SelectedNodeID = args.Node.Index + 1;
                     this.app_propertygrid.SelectedObject = this.EditorInstance.Controller[args.Node.Index + 1];
                     break;
@@ -93,28 +103,33 @@ namespace CSCourseWork
                 default: this.app_propertygrid.SelectedObject = this.EditorInstance.SelectedNodeID = null; break;
             }
             (this.EditorInstance as Panel)?.Invalidate();
-            
         }
 
-        private void NodesTreeViewDoubleClick(object? sender, EventArgs args)
+        private void NodesTreeViewMouseClick(object? sender, MouseEventArgs args)
         {
             var treeview_node = this.nodes_treeview.SelectedNode;
+            if (treeview_node != null && treeview_node.Level != 1) return;
 
-            if (treeview_node.Level != 1) return;
-            this.EditorInstance.Controller.RemoveNode(treeview_node.Index + 1);
+            if (args.Button == MouseButtons.Right) 
+            {
+                this.BuildContextMenu(delegate (ToolStripItemClickedEventArgs args)
+                {
+                    if (args.ClickedItem.Text != "Óäàëèòü âåðøèíó") return;
+                    this.EditorInstance.Controller.RemoveNode(treeview_node!.Index + 1);
 
-            (this.EditorInstance as Panel)?.Invalidate();
-            this.NodeInfoListUpdate();
+                    (this.EditorInstance as Panel)?.Invalidate();
+                    this.NodeInfoListUpdate();
+
+                }, args.Location, new string[] { "Óäàëèòü âåðøèíó" });
+            }
         }
 
         private void ResetButtonClick(object? sender, EventArgs args)
         {
             var controller = this.EditorInstance.Controller;
-            while (controller.NodesList.Count > 0) 
-            {
-                controller.RemoveNode(1);
-                (this.EditorInstance as Panel)?.Invalidate();
-            }
+            while (controller.NodesList.Count > 0) controller.RemoveNode(1);
+
+            (this.EditorInstance as Panel)?.Invalidate();
             this.NodeInfoListUpdate();
         }
 
@@ -125,19 +140,21 @@ namespace CSCourseWork
             int nodeid_origin = default, nodeid_target = default;
             try
             {
-                nodeid_origin = int.Parse(this.nodeorigin_combobox.SelectedText.Split(' ')[1]);
-                nodeid_target = int.Parse(this.nodetarget_combobox.SelectedText.Split(' ')[1]);
+                nodeid_origin = int.Parse(this.nodeorigin_combobox.Text.Split(' ')[1]);
+                nodeid_target = int.Parse(this.nodetarget_combobox.Text.Split(' ')[1]);
             }
             catch (System.Exception error) { this.LoggerPrintMessage(error.Message); return; }
 
-            //using (var client = new GraphServiceReference.GraphCalculatorClient())
-            //{
-            //    client.FindPathByBFSAsync(nodeid_origin, nodeid_target, new GraphServiceReference.NodeData[] {})
-            //        .ContinueWith(delegate (Task<int[]> value) 
-            //    {
-            //        this.EditorInstance.BuildGraphPath();
-            //    });
-            //}
+            using (var client = new GraphServiceReference.GraphCalculatorClient())
+            {
+                var service_inputdata = this.EditorInstance.Controller.ConvertToServiceData();
+                try
+                {
+                    var graph_path = client.FindPathByBFS(nodeid_origin, nodeid_target, service_inputdata);
+                    this.EditorInstance.BuildGraphPath(this.EditorInstance.Controller.ConvertToPath(graph_path));
+                }
+                catch (FaultException error) { MessageBox.Show(error.Message); }
+            }
         }
 
         private void SelectOperationButtonClick(object? sender, EventArgs args)
@@ -169,10 +186,16 @@ namespace CSCourseWork
             var treeview_root = this.nodes_treeview.Nodes[0];
             treeview_root.Nodes.Clear();
 
+            this.nodeorigin_combobox.Items.Clear();
+            this.nodetarget_combobox.Items.Clear();
+
             for (var index = 0; index < this.EditorInstance.Controller.NodesList.Count; index++)
             {
                 var node_info = this.EditorInstance.Controller[index + 1]!;
                 treeview_root.Nodes.Add($"Âåðøèíà ID: {node_info.NodeID}");
+
+                this.nodeorigin_combobox.Items.Add($"ID: {node_info.NodeID}");
+                this.nodetarget_combobox.Items.Add($"ID: {node_info.NodeID}");
 
                 foreach (var link_id in node_info.NodeLinksID)
                 {
@@ -201,8 +224,16 @@ namespace CSCourseWork
 
         private void EditorComponentNodeSelected(object? sender, EditorActionEventArgs args)
         {
-            this.NodeInfoListUpdate();
-        }
+            var treeview_rootnode = this.nodes_treeview.Nodes[0];
+            var selected_node = this.EditorInstance.SelectedNodeID;
 
+            this.NodeInfoListUpdate();
+
+            if (selected_node.HasValue) 
+            {
+                this.nodes_treeview.SelectedNode = treeview_rootnode.Nodes[selected_node.Value - 1];
+                this.nodes_treeview.Select();
+            }
+        }
     }
 }

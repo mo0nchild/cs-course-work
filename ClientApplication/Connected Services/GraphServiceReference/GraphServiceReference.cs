@@ -11,6 +11,7 @@ namespace GraphServiceReference
 {
     using System.Runtime.Serialization;
     
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
     [System.Runtime.Serialization.DataContractAttribute(Name="NodeData", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
@@ -18,6 +19,8 @@ namespace GraphServiceReference
     {
         
         private int NodeIDField;
+        
+        private int[] NodeInboxsIDField;
         
         private int[] NodeLinksIDField;
         
@@ -31,6 +34,19 @@ namespace GraphServiceReference
             set
             {
                 this.NodeIDField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int[] NodeInboxsID
+        {
+            get
+            {
+                return this.NodeInboxsIDField;
+            }
+            set
+            {
+                this.NodeInboxsIDField = value;
             }
         }
         

@@ -17,7 +17,6 @@ namespace HostApplication
                 Console.WriteLine($"{typeof(GraphService).FullName} is hosting");
                 Console.ReadKey();
             }
-
         }
     }
 }

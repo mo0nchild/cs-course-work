@@ -19,7 +19,6 @@ namespace CSCourseWork.EditorComponents
         public event EditorActionEventHandler? FieldClicked;
 
         public NodesController Controller { get; private set; }
-        public EditorModes Mode { get; set; } = default(EditorModes);
 
         private readonly int DefaultGridDelta = 5;
         private bool movingbutton_hold = default(bool);
@@ -31,6 +30,21 @@ namespace CSCourseWork.EditorComponents
         public Color NodeSelectColor { get; set; } = Color.Crimson;
 
         public int NodeSize { get => this.Controller.NodeSize; }
+
+        private EditorModes editor_mode = default(EditorModes);
+        public EditorModes Mode 
+        {
+            set {
+                this.editor_mode = value;
+                switch (value) 
+                {
+                    case EditorModes.AddNode: this.Cursor = Cursors.Cross; break;
+                    case EditorModes.RemoveNode: this.Cursor = Cursors.No; break;
+                    case EditorModes.SelectNode: this.Cursor = Cursors.Hand; break;
+                }
+            }
+            get => this.editor_mode;
+        }
 
         private int? selected_nodeid = default(int?);
         public int? SelectedNodeID
@@ -65,7 +79,6 @@ namespace CSCourseWork.EditorComponents
             using (var graphic = this.CreateGraphics())
             {
                 this.EditorComponentPaint(this, new PaintEventArgs(graphic, new Rectangle(this.Location, this.Size)));
-
                 for (var index = 0; index < node_paths.Count; index++)
                 {
                     using var node_brush = new SolidBrush(this.NodeSelectColor);

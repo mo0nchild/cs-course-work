@@ -34,9 +34,9 @@ namespace CSCourseWork.NodesControllers
         int IComparable<NodeModel>.CompareTo(NodeModel? node_other)
         {
             if (node_other == null) throw new NodesControllerException("Comparable node is null", this);
-            return NodeID.CompareTo(node_other.NodeID);
+            return this.NodeID.CompareTo(node_other.NodeID);
         }
 
-        public object Clone() => MemberwiseClone();
+        public object Clone() => this.MemberwiseClone();
     }
 }

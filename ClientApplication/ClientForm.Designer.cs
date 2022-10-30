@@ -61,6 +61,7 @@
             this.nodeorigin_label = new System.Windows.Forms.Label();
             this.nodetarget_label = new System.Windows.Forms.Label();
             this.reset_button = new System.Windows.Forms.Button();
+            this.pointer_panel = new System.Windows.Forms.Panel();
             this.app_toolstrip.SuspendLayout();
             this.nodestree_tabpage.SuspendLayout();
             this.app_tabcontrol.SuspendLayout();
@@ -83,6 +84,7 @@
             // 
             this.app_toolstrip.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.app_toolstrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.app_toolstrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.app_toolstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.project_toolstrip_button,
             this.settings_toolstrip_button,
@@ -244,7 +246,7 @@
             // app_propertygrid
             // 
             this.app_propertygrid.HelpBackColor = System.Drawing.Color.White;
-            this.app_propertygrid.Location = new System.Drawing.Point(12, 346);
+            this.app_propertygrid.Location = new System.Drawing.Point(16, 342);
             this.app_propertygrid.Name = "app_propertygrid";
             this.app_propertygrid.Size = new System.Drawing.Size(253, 206);
             this.app_propertygrid.TabIndex = 20;
@@ -286,10 +288,11 @@
             // 
             this.app_statusstrip.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.app_statusstrip.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.app_statusstrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.app_statusstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.progressbar_toolstrip,
             this.status_toolstrip_label});
-            this.app_statusstrip.Location = new System.Drawing.Point(0, 557);
+            this.app_statusstrip.Location = new System.Drawing.Point(0, 555);
             this.app_statusstrip.Name = "app_statusstrip";
             this.app_statusstrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
             this.app_statusstrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -319,11 +322,11 @@
             this.info_textbox.BackColor = System.Drawing.Color.White;
             this.info_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.info_textbox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.info_textbox.Location = new System.Drawing.Point(284, 492);
+            this.info_textbox.Location = new System.Drawing.Point(284, 493);
             this.info_textbox.Multiline = true;
             this.info_textbox.Name = "info_textbox";
             this.info_textbox.ReadOnly = true;
-            this.info_textbox.Size = new System.Drawing.Size(568, 60);
+            this.info_textbox.Size = new System.Drawing.Size(568, 56);
             this.info_textbox.TabIndex = 26;
             // 
             // nodeorigin_combobox
@@ -369,19 +372,27 @@
             // reset_button
             // 
             this.reset_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.reset_button.Location = new System.Drawing.Point(745, 31);
+            this.reset_button.Location = new System.Drawing.Point(746, 28);
             this.reset_button.Name = "reset_button";
-            this.reset_button.Size = new System.Drawing.Size(107, 27);
+            this.reset_button.Size = new System.Drawing.Size(100, 30);
             this.reset_button.TabIndex = 31;
             this.reset_button.Text = "Очистить";
             this.reset_button.UseVisualStyleBackColor = true;
             // 
+            // pointer_panel
+            // 
+            this.pointer_panel.Location = new System.Drawing.Point(284, 61);
+            this.pointer_panel.Name = "pointer_panel";
+            this.pointer_panel.Size = new System.Drawing.Size(568, 426);
+            this.pointer_panel.TabIndex = 32;
+            // 
             // ClientForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ClientSize = new System.Drawing.Size(864, 581);
+            this.ClientSize = new System.Drawing.Size(864, 579);
+            this.Controls.Add(this.pointer_panel);
             this.Controls.Add(this.reset_button);
             this.Controls.Add(this.nodetarget_label);
             this.Controls.Add(this.nodeorigin_label);
@@ -396,8 +407,9 @@
             this.Controls.Add(this.selectop_button);
             this.Controls.Add(this.deleteop_button);
             this.Controls.Add(this.addop_button);
-            this.MaximumSize = new System.Drawing.Size(880, 620);
-            this.MinimumSize = new System.Drawing.Size(880, 620);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximumSize = new System.Drawing.Size(880, 618);
+            this.MinimumSize = new System.Drawing.Size(880, 618);
             this.Name = "ClientForm";
             this.Text = "Редактор карты";
             this.app_toolstrip.ResumeLayout(false);
@@ -444,5 +456,6 @@
         private ColumnHeader edgeleftnode_column;
         private ColumnHeader edgerightnode_column;
         private Button reset_button;
+        private Panel pointer_panel;
     }
 }

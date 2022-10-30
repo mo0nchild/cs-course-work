@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.LinkLabel;
 
 namespace CSCourseWork.NodesControllers
 {
@@ -27,10 +28,9 @@ namespace CSCourseWork.NodesControllers
         public bool NodeCollisionCheck(Point position, int node_id)
         {
             NodeModel? select_node = default;
-            try
-            {
-                select_node = this.NodesList.Where((node_info) => node_info.NodeID == node_id)
-                    .ToList()[0];
+            try {
+                select_node = this.NodesList.Where(delegate(NodeModel node_info) 
+                    { return node_info.NodeID == node_id; }).ToList()[0];
             }
             catch (Exception error) { MessageBox.Show(error.Message, "Ошибка"); return false; }
             var node_position = select_node.Position;
@@ -57,9 +57,14 @@ namespace CSCourseWork.NodesControllers
         public void RemoveNode(int node_id)
         {
             foreach (var node_info in this.NodesList
-                .Where((node_info) => node_info.NodeLinksID.Contains(node_id)))
+                .Where((NodeModel node_info) => node_info.NodeLinksID.Contains(node_id)))
             {
                 this.RemoveNodeLinks(node_info.NodeID, node_id);
+
+                for (int id = 0; id < node_info.NodeLinksID.Count; id++)
+                {
+                    if (node_info.NodeLinksID[id] >= node_id) node_info.NodeLinksID[id]--;
+                }
             }
             this.NodesList.RemoveWhere((node_info) => node_info.NodeID == node_id);
 
@@ -82,10 +87,17 @@ namespace CSCourseWork.NodesControllers
 
         public void RemoveNodeLinks(int node_id, int required_links_id)
         {
-            this[node_id]?.NodeLinksID.RemoveAll((id) => id == required_links_id);
-            this[required_links_id]?.NodeLinksID.RemoveAll((id) => id == node_id);
+            try 
+            {
+                this[node_id]?.NodeLinksID.RemoveAll((id) => id == required_links_id);
+                this[required_links_id]?.NodeLinksID.RemoveAll((id) => id == node_id);
+            }
+            catch (System.Exception error) 
+            { 
+                MessageBox.Show(error.Message, "Ошибка"); 
+            }
         }
-        // переделать
+
         public List<NodesConnectorInfo> BuildNodeСonnectors()
         {
             var result_list = new List<NodesConnectorInfo>();

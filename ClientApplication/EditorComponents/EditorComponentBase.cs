@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -111,16 +112,33 @@ namespace CSCourseWork.EditorComponents
             return grid_bitmap;
         }
 
-        public void PaintEdgeWithArrow(Graphics graphics, NodesConnectorInfo connector, Color color) 
+        //public void PaintEdgeWithArrow(Graphics graphics, NodesConnectorInfo connector, Color color) 
+        //{
+        //    int delta_x = connector.RightNode.Position.X - connector.LeftNode.Position.X, // x1 - x0
+        //        delta_y = connector.RightNode.Position.Y - connector.LeftNode.Position.Y; // y1 - y0
+
+        //    var S = Math.Sqrt(Math.Pow(delta_x, 2) + Math.Pow(delta_y, 2)) - (this.NodeSize / 2);
+        //    var c = (delta_x == 0) ? 100 : ((double)delta_y / delta_x);
+
+        //    var x = connector.LeftNode.Position.X + Math.Sign(delta_x) * (S / Math.Sqrt(1 + Math.Pow(c, 2)));
+        //    var y = connector.LeftNode.Position.Y + Math.Sign(delta_x) * (S * c / Math.Sqrt(1 + Math.Pow(c, 2)));
+
+        //    var line_pen = new Pen(color, this.NodeSize / 6) { CustomEndCap = new AdjustableArrowCap(3, 4, true) };
+        //    graphics.DrawLine(line_pen, connector.LeftNode.Position, new Point((int)x, (int)y));
+        //}
+
+        public void PaintEdgeWithArrow(Graphics graphics, NodesConnectorInfo connector, Color color)
         {
             int delta_x = connector.RightNode.Position.X - connector.LeftNode.Position.X, // x1 - x0
                 delta_y = connector.RightNode.Position.Y - connector.LeftNode.Position.Y; // y1 - y0
 
-            var S = Math.Sqrt(Math.Pow(delta_x, 2) + Math.Pow(delta_y, 2)) - (this.NodeSize / 2);
-            var c = (double)delta_y / delta_x;
+            double D = Math.Sqrt(Math.Pow(delta_x, 2) + Math.Pow(delta_y, 2)), S = D - (this.NodeSize / 2);
 
-            var x = connector.LeftNode.Position.X + Math.Sign(delta_x) * (S / Math.Sqrt(1 + Math.Pow(c, 2)));
-            var y = connector.LeftNode.Position.Y + Math.Sign(delta_x) * (S * c / Math.Sqrt(1 + Math.Pow(c, 2)));
+            var b = delta_y * (1 - ((double)this.NodeSize / 2 / D));
+            var a = Math.Sqrt(Math.Pow(S, 2) - Math.Pow(b, 2));
+
+            var x = connector.LeftNode.Position.X + Math.Sign(delta_x) * a;
+            var y = connector.LeftNode.Position.Y + b;
 
             var line_pen = new Pen(color, this.NodeSize / 6) { CustomEndCap = new AdjustableArrowCap(3, 4, true) };
             graphics.DrawLine(line_pen, connector.LeftNode.Position, new Point((int)x, (int)y));

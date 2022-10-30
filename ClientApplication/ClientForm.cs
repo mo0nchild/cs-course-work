@@ -23,11 +23,12 @@ namespace CSCourseWork
             this.InitializeComponent();
 
             var editor_builder = new EditorComponentBuilder(this, new NodesController())
-                .AddEditorGeometry(new Point(284, 60), new Size(568, 426))
+                .AddEditorGeometry(this.pointer_panel.Location, this.pointer_panel.Size)
                 .AddEditorNodeColor(Color.Black, Color.Crimson, Color.White)
                 .AddEditorNodeSize(40, 2) 
                 .AddEditorMovingSpeed(2);
             this.EditorInstance = editor_builder.BuildEditor();
+            this.pointer_panel.Hide();
 
             this.EditorInstance.NodeClicked += new EditorActionEventHandler(EditorComponentNodeSelected);
             this.EditorInstance.FieldClicked += new EditorActionEventHandler(EditorComponentFieldClicked);
@@ -151,7 +152,10 @@ namespace CSCourseWork
                 try
                 {
                     var graph_path = client.FindPathByBFS(nodeid_origin, nodeid_target, service_inputdata);
-                    this.EditorInstance.BuildGraphPath(this.EditorInstance.Controller.ConvertToPath(graph_path));
+                    if(graph_path.Length > 0) 
+                    {
+                        this.EditorInstance.BuildGraphPath(this.EditorInstance.Controller.ConvertToPath(graph_path));
+                    }
                 }
                 catch (FaultException error) { MessageBox.Show(error.Message); }
             }

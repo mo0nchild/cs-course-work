@@ -1,3 +1,5 @@
+using CSCourseWork.Windows;
+
 namespace CSCourseWork
 {
     internal static class Program : System.Object

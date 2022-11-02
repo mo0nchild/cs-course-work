@@ -33,7 +33,6 @@
             this.info_toolstrip_button = new System.Windows.Forms.ToolStripButton();
             this.app_toolstrip = new System.Windows.Forms.ToolStrip();
             this.project_toolstrip_button = new System.Windows.Forms.ToolStripDropDownButton();
-            this.create_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
             this.open_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
             this.save_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
             this.settings_toolstrip_button = new System.Windows.Forms.ToolStripDropDownButton();
@@ -62,11 +61,13 @@
             this.nodetarget_label = new System.Windows.Forms.Label();
             this.reset_button = new System.Windows.Forms.Button();
             this.pointer_panel = new System.Windows.Forms.Panel();
+            this.editor_trackbar = new System.Windows.Forms.TrackBar();
             this.app_toolstrip.SuspendLayout();
             this.nodestree_tabpage.SuspendLayout();
             this.app_tabcontrol.SuspendLayout();
             this.edgeslist_tabpage.SuspendLayout();
             this.app_statusstrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.editor_trackbar)).BeginInit();
             this.SuspendLayout();
             // 
             // info_toolstrip_button
@@ -100,7 +101,6 @@
             this.project_toolstrip_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.project_toolstrip_button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.project_toolstrip_button.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.create_toolstrip_menuitem,
             this.open_toolstrip_menuitem,
             this.save_toolstrip_menuitem});
             this.project_toolstrip_button.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
@@ -109,12 +109,6 @@
             this.project_toolstrip_button.Name = "project_toolstrip_button";
             this.project_toolstrip_button.Size = new System.Drawing.Size(60, 22);
             this.project_toolstrip_button.Text = "Проект";
-            // 
-            // create_toolstrip_menuitem
-            // 
-            this.create_toolstrip_menuitem.Name = "create_toolstrip_menuitem";
-            this.create_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
-            this.create_toolstrip_menuitem.Text = "Создать проект";
             // 
             // open_toolstrip_menuitem
             // 
@@ -253,7 +247,7 @@
             // 
             // selectop_button
             // 
-            this.selectop_button.BackgroundImage = global::CSCourseWork.Resourses.SelectIcon;
+            this.selectop_button.BackgroundImage = global::CSCourseWork.Windows.Resourses.SelectIcon;
             this.selectop_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.selectop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.selectop_button.Location = new System.Drawing.Point(356, 28);
@@ -264,7 +258,7 @@
             // 
             // deleteop_button
             // 
-            this.deleteop_button.BackgroundImage = global::CSCourseWork.Resourses.DeleteIcon;
+            this.deleteop_button.BackgroundImage = global::CSCourseWork.Windows.Resourses.DeleteIcon;
             this.deleteop_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.deleteop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.deleteop_button.Location = new System.Drawing.Point(320, 28);
@@ -275,7 +269,7 @@
             // 
             // addop_button
             // 
-            this.addop_button.BackgroundImage = global::CSCourseWork.Resourses.AddIcon;
+            this.addop_button.BackgroundImage = global::CSCourseWork.Windows.Resourses.AddIcon;
             this.addop_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.addop_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.addop_button.Location = new System.Drawing.Point(284, 28);
@@ -386,12 +380,26 @@
             this.pointer_panel.Size = new System.Drawing.Size(568, 426);
             this.pointer_panel.TabIndex = 32;
             // 
+            // editor_trackbar
+            // 
+            this.editor_trackbar.AutoSize = false;
+            this.editor_trackbar.Cursor = System.Windows.Forms.Cursors.SizeWE;
+            this.editor_trackbar.Location = new System.Drawing.Point(633, 34);
+            this.editor_trackbar.Maximum = 100;
+            this.editor_trackbar.Minimum = 1;
+            this.editor_trackbar.Name = "editor_trackbar";
+            this.editor_trackbar.Size = new System.Drawing.Size(107, 24);
+            this.editor_trackbar.TabIndex = 33;
+            this.editor_trackbar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.editor_trackbar.Value = 50;
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(864, 579);
+            this.Controls.Add(this.editor_trackbar);
             this.Controls.Add(this.pointer_panel);
             this.Controls.Add(this.reset_button);
             this.Controls.Add(this.nodetarget_label);
@@ -408,9 +416,11 @@
             this.Controls.Add(this.deleteop_button);
             this.Controls.Add(this.addop_button);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(880, 618);
             this.MinimumSize = new System.Drawing.Size(880, 618);
             this.Name = "ClientForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Редактор карты";
             this.app_toolstrip.ResumeLayout(false);
             this.app_toolstrip.PerformLayout();
@@ -419,6 +429,7 @@
             this.edgeslist_tabpage.ResumeLayout(false);
             this.app_statusstrip.ResumeLayout(false);
             this.app_statusstrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.editor_trackbar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -438,7 +449,6 @@
         private Button deleteop_button;
         private Button addop_button;
         private ToolStripDropDownButton project_toolstrip_button;
-        private ToolStripMenuItem create_toolstrip_menuitem;
         private ToolStripMenuItem open_toolstrip_menuitem;
         private ToolStripMenuItem save_toolstrip_menuitem;
         private ToolStripDropDownButton settings_toolstrip_button;
@@ -457,5 +467,6 @@
         private ColumnHeader edgerightnode_column;
         private Button reset_button;
         private Panel pointer_panel;
+        private TrackBar editor_trackbar;
     }
 }

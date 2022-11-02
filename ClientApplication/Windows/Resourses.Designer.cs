@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CSCourseWork {
+namespace CSCourseWork.Windows {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CSCourseWork {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CSCourseWork.Resourses", typeof(Resourses).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CSCourseWork.Windows.Resourses", typeof(Resourses).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -76,6 +76,16 @@ namespace CSCourseWork {
         internal static System.Drawing.Bitmap DeleteIcon {
             get {
                 object obj = ResourceManager.GetObject("DeleteIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FolderIcon {
+            get {
+                object obj = ResourceManager.GetObject("FolderIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

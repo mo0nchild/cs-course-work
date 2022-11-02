@@ -9,11 +9,21 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\ServiceLibrary\ServiceLibrary.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="System.ServiceModel"/>
+		<Reference Include="System.ServiceModel" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="App.config">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

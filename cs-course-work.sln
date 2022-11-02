@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientApplication", "Client
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLibrary", "ServiceLibrary\ServiceLibrary.csproj", "{A8D29496-B3B4-4ADF-A0E3-1C1B93045D6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostApplication", "HostApplication\HostApplication.csproj", "{7483FAC8-F84D-48EF-BFC7-B0276E3D9D9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostApplication", "HostApplication\HostApplication.csproj", "{7483FAC8-F84D-48EF-BFC7-B0276E3D9D9C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8447DBC0-F57F-4BA9-81FB-DFE16F650755}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

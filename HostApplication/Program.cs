@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Configuration;
 
 using ServiceLibrary;
+using System.Windows.Input;
+using System.Drawing;
 
 namespace HostApplication 
 {
@@ -10,7 +13,7 @@ namespace HostApplication
     {
         public static void Main(string[] args) 
         {
-            using (var service_host = new ServiceHost(typeof(GraphService))) 
+            using (var service_host = new ServiceHost(typeof(GraphService)))
             {
                 service_host.Open();
 

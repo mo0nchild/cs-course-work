@@ -11,27 +11,29 @@ using CSCourseWork.EditorComponents;
 using CSCourseWork.NodesControllers;
 using CSCourseWork.Connected_Services.GraphServiceReference;
 using System.ServiceModel;
+using CSCourseWork.Windows;
 
 namespace CSCourseWork
 {
     internal partial class ClientForm : Form
     {
-        public IEditorComponent<NodesController> EditorInstance { get; private set; }
+        public EditorComponentBase<NodesController> EditorInstance { get; private set; }
 
         public ClientForm()
         {
             this.InitializeComponent();
-
-            var editor_builder = new EditorComponentBuilder(this, new NodesController())
-                .AddEditorGeometry(this.pointer_panel.Location, this.pointer_panel.Size)
-                .AddEditorNodeColor(Color.Black, Color.Crimson, Color.White)
-                .AddEditorNodeSize(40, 2) 
-                .AddEditorMovingSpeed(2);
-            this.EditorInstance = editor_builder.BuildEditor();
             this.pointer_panel.Hide();
+
+            //foreach (var item in FontFamily.Families) Console.WriteLine(item);
+
+            var editor_builder = new EditorComponentBuilder(this, typeof(NodesController))
+                .AddEditorGeometry(this.pointer_panel.Location, this.pointer_panel.Size)
+                .AddEditorConfiguration();
+            this.EditorInstance = editor_builder.BuildEditor();
 
             this.EditorInstance.NodeClicked += new EditorActionEventHandler(EditorComponentNodeSelected);
             this.EditorInstance.FieldClicked += new EditorActionEventHandler(EditorComponentFieldClicked);
+            this.EditorInstance.NodeScaled += new EditorActionEventHandler(EditorInstanceNodeScaled);
 
             this.addop_button.Click += new EventHandler(AddOperationButtonClick);
             this.deleteop_button.Click += new EventHandler(DeleteOperationButtonClick);
@@ -45,7 +47,30 @@ namespace CSCourseWork
             this.nodes_treeview.MouseClick += new MouseEventHandler(NodesTreeViewMouseClick);
 
             this.app_propertygrid.PropertyValueChanged += AppPropertyGridPropertyValueChanged;
+            this.editor_trackbar.ValueChanged += EditorTrackbarValueChanged;
             this.AddOperationButtonClick(this.addop_button, EventArgs.Empty);
+        }
+
+        private void EditorTrackbarValueChanged(object? sender, EventArgs args)
+        {
+            var min_scale = this.EditorInstance.NodeScaleRange.Min;
+            var max_scale = this.EditorInstance.NodeScaleRange.Max;
+
+            var adapted_value = this.editor_trackbar.Value * Math.Abs(max_scale - min_scale) / 100 + min_scale;
+
+            try { this.EditorInstance.ScalingGraphView(adapted_value); }
+            catch (EditorComponentException error) { MessageBox.Show(error.Message, "Œ¯Ë·Í‡"); }
+        }
+
+        private void EditorInstanceNodeScaled(object? sender, EditorActionEventArgs args)
+        {
+            if (args.NodeScale is null) return;
+
+            var min_scale = this.EditorInstance.NodeScaleRange.Min;
+            var max_scale = this.EditorInstance.NodeScaleRange.Max;
+
+            var adapted_value = (double)Math.Abs(args.NodeScale.Value - min_scale) / (max_scale - min_scale) * 100;
+            this.editor_trackbar.Value = ((int)adapted_value <= 0) ? 1 : (int)adapted_value;
         }
 
         private void AppPropertyGridPropertyValueChanged(object? s, PropertyValueChangedEventArgs args) 

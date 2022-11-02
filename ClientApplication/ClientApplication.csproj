@@ -25,7 +25,7 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>Resources.resx</DependentUpon>
 	  </Compile>
-	  <Compile Update="Resourses.Designer.cs">
+	  <Compile Update="Windows\Resourses.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>Resourses.resx</DependentUpon>
@@ -37,7 +37,7 @@
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
-	  <EmbeddedResource Update="Resourses.resx">
+	  <EmbeddedResource Update="Windows\Resourses.resx">
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Resourses.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>

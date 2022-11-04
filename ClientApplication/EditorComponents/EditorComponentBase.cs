@@ -4,11 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
+using CSCourseWork.EditorConfiguration;
 using CSCourseWork.NodesControllers;
+using CSCourseWork.Windows;
 
 namespace CSCourseWork.EditorComponents
 {
     public enum EditorModes : System.SByte { AddNode, RemoveNode, SelectNode };
+
+    public sealed class EditorSettingsAttribute : System.Attribute
+    {
+        public System.String SettingName { get; private set; } = string.Empty;
+        public System.String SettingSection { get; set; } = string.Empty;
+        public EditorSettingsAttribute(string name) : base() => this.SettingName = name;
+    }
 
     public sealed class EditorActionEventArgs : System.EventArgs
     {
@@ -35,19 +44,38 @@ namespace CSCourseWork.EditorComponents
         public virtual event EditorComponents.EditorActionEventHandler? NodeScaled;
 
         public virtual EditorComponents.EditorModes Mode { get; set; } = default;
+        public virtual System.Int32 NodeSize { get; protected set; }
         public TNodesController Controller { get; private set; }
 
-        public virtual System.Int32 NodeMovingSpeed { get; set; } = default(int) + 1;
+        [EditorSettingsAttribute("Диапазон маштабирования", SettingSection = "Камера")]
         public virtual EditorComponents.EditorScale NodeScaleRange { get; set; } = new(10, 100);
-        public virtual System.String NodeFontFamily { get; set; } = new("Arial");
+
+        [EditorConfiguration.EditorConfigTargetAttribute]
+        [EditorSettingsAttribute("Скорость перемещения", SettingSection = "Камера")]
+        public virtual System.Int32 NodeMovingSpeed { get; set; } = default(int) + 1;
+
+        [EditorConfiguration.EditorConfigTargetAttribute]
+        [EditorSettingsAttribute("Шрифт номера", SettingSection = "Вершина")]
+        public virtual EditorComponents.EditorFontFamily NodeFontFamily { get; set; } = new();
+
+        [EditorConfiguration.EditorConfigTargetAttribute]
+        [EditorSettingsAttribute("Ширина границы", SettingSection = "Вершина")]
         public virtual System.Int32 NodeBorderWidth { get; set; } = default(int);
 
-        public virtual EditorComponents.EditorColor NodeColor { get; set; } = default(EditorColor);
+        [EditorSettingsAttribute("Цвет сетки", SettingSection = "Поверхность")]
         public virtual EditorComponents.EditorColor EditorGridColor { get; set; } = default(EditorColor);
+
+        [EditorSettingsAttribute("Цвет выбранной вершины", SettingSection = "Вершина")]
         public virtual EditorComponents.EditorColor NodeSelectColor { get; set; } = default(EditorColor);
+
+        [EditorSettingsAttribute("Цвет поверхности", SettingSection = "Поверхность")]
         public virtual EditorComponents.EditorColor EditorBackColor { get; set; } = default(EditorColor);
+
+        [EditorSettingsAttribute("Цвет вершины", SettingSection = "Вершина")]
+        public virtual EditorComponents.EditorColor NodeColor { get; set; } = default(EditorColor);
+
+        [EditorSettingsAttribute("Цвет шрифта", SettingSection = "Вершина")]
         public virtual EditorComponents.EditorColor NodeFontColor { get; set; } = new(255, 255, 255);
-        public virtual System.Int32 NodeSize { get; protected set; }
 
         private int? selected_nodeid = default(int?);
         public virtual Nullable<System.Int32> SelectedNodeID

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -32,7 +33,7 @@ namespace CSCourseWork.EditorComponents
     {
         public System.Type ControllerType { get; private set; }
         public Form FormLink { get; private set; }
-        public List<EditorConfigProperty> Properties { get; private set; } = new();
+        public Dictionary<string, object> Properties { get; private set; } = new();
 
         private System.Drawing.Point EditorPosition = default(Point);
         private System.Drawing.Size EditorSize = default(Size);
@@ -62,48 +63,52 @@ namespace CSCourseWork.EditorComponents
 
         public IEditorComponentBuilder<NodesController> AddEditorProperty(string name, object value) 
         {
-            var adding_property = new EditorConfigProperty(name, value, value.GetType());
-            var contains_index = default(int?);
-
-            for (int index = 0; index < this.Properties.Count; index++)
-            {
-                if (this.Properties[index].Name == name) { contains_index = index; break; }
-            }
-            if (contains_index.HasValue) { this.Properties[contains_index.Value] = adding_property; }
-            else this.Properties.Add(adding_property);
-
-            return this;
+            if (this.Properties.ContainsKey(name)) { this.Properties[name] = value; }
+            else { this.Properties.Add(name, value); } return this;
         }
 
         public IEditorComponentBuilder<NodesController> AddEditorConfiguration(IEditorConfigProvider provider) 
         {
-            foreach (var property in provider.TakeConfig()) { this.AddEditorProperty(property.Name, property.Value); }
+            foreach (var property in provider.TakeConfig()) 
+            { 
+                this.AddEditorProperty(property.Name, property.Value);
+                //Console.WriteLine($"Name: {property.Name} -> Value: {property.Value}");
+
+                //if(property.Name == "TestType")
+                //{
+                //    var testtype = (EditorTestType)property.Value;
+                //    Console.WriteLine($"\n\tTestType - Text: {testtype.Text}, Range: [min={testtype.Range.Min}], [max={testtype.Range.Max}]\n");
+                //}
+            }
             return this;
         }
 
         public EditorComponentBase<NodesController> BuildEditor()
         {
-            var editor_instance = new EditorComponent(this.FormLink,
-                (Activator.CreateInstance(this.ControllerType) as NodesController)!)
-            {
-                Location = this.EditorPosition,
-                Size = this.EditorSize
+            var controller_instance = (NodesController)(Activator.CreateInstance(this.ControllerType)!);
+            var editor_instance = new EditorComponent(this.FormLink, controller_instance) 
+            { 
+                Location = this.EditorPosition, Size = this.EditorSize 
             };
-
-            foreach (var item in this.Properties) 
+            foreach (KeyValuePair<string, object> item in this.Properties)
             {
-                var property_info = editor_instance.GetType().GetProperty(item.Name);
+                var property_info = editor_instance.GetType().GetProperty(item.Key);
                 if (property_info != null)
                 {
                     try { property_info.SetValue(editor_instance, item.Value); }
-                    catch (System.Exception) { }
+                    catch (System.Exception) { continue; }
                 }
             }
             return editor_instance;
         }
 
         public IEnumerator<EditorConfigProperty> GetEnumerator()
-        { foreach (EditorConfigProperty property in this.Properties) yield return property; }
+        { 
+            foreach (KeyValuePair<string, object> property in this.Properties)
+            {
+                yield return new EditorConfigProperty(property.Key, property.Value, property.Value.GetType());
+            }
+        }
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }

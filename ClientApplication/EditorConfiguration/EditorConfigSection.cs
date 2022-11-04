@@ -38,6 +38,8 @@ namespace CSCourseWork.EditorConfiguration
 
         protected override object GetElementKey(ConfigurationElement element)
         { return ((EditorProperty)element).Name; }
+
+        public new EditorProperty this[string Name] => (EditorProperty)this.BaseGet(Name);
     }
 
     public sealed class EditorProperty : ConfigurationElement
@@ -67,7 +69,7 @@ namespace CSCourseWork.EditorConfiguration
             [ConfigurationProperty("name", IsRequired = true, IsKey = true)]
             public string Name { get => (string)base["name"]; set => base["name"] = value; }
 
-            [ConfigurationProperty("value", IsRequired = true)]
+            [ConfigurationProperty("value", DefaultValue = default(string))]
             public string Value { get => (string)base["value"]; set => base["value"] = value; }
 
             [ConfigurationProperty("type", IsRequired = true)]

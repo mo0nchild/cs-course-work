@@ -40,4 +40,27 @@ namespace CSCourseWork.EditorComponents
         public System.Drawing.Color ConvertToColor()
         { return Color.FromArgb(this.RColorValue, this.GColorValue, this.BColorValue); }
     }
+
+    [EditorConfiguration.EditorConfigTypeAttribute]
+    public struct EditorFontFamily
+    {
+        [EditorConfiguration.EditorConfigPropertyAttribute("font")]
+        public System.String FontFamily { get; set; } = string.Empty;
+
+        public EditorFontFamily() => this.FontFamily = new("Arial");
+    }
+
+    [EditorConfiguration.EditorConfigTypeAttribute]
+    public struct EditorTestType
+    {
+        [EditorConfiguration.EditorConfigPropertyAttribute("text")]
+        public System.String Text { get; set; } = string.Empty;
+
+        [EditorConfiguration.EditorConfigPropertyAttribute("range")]
+        public EditorComponents.EditorScale Range { get; set; } = new();
+
+        public EditorTestType(string text, int min, int max) => (this.Text, this.Range) = (text, new(min, max));
+
+        public EditorTestType() : this("", 0, 100) { }
+    }
 }

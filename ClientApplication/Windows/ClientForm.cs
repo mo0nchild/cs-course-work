@@ -48,7 +48,7 @@ namespace CSCourseWork
 
             this.editorconf_toolstrip_menuitem.Click += (sender, args) => 
             {
-                var settings = new EditorSettings();
+                var settings = new EditorSettings<NodesController>(this.EditorInstance);
                 settings.ShowDialog();
             };
 

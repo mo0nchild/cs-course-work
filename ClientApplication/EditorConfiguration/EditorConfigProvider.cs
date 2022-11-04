@@ -10,15 +10,18 @@ using System.Threading.Tasks;
 
 namespace CSCourseWork.EditorConfiguration
 {
-    public record struct EditorConfigProperty(string Name, object Value, System.Type Type);
+    public record class EditorConfigProperty(string Name, object Value, System.Type Type);
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
     public sealed class EditorConfigTypeAttribute : System.Attribute { }
 
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public sealed class EditorConfigTargetAttribute : System.Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class EditorConfigPropertyAttribute : System.Attribute
     {
-        public System.String Name { get; set; } = string.Empty;
+        public System.String Name { get; private set; } = string.Empty;
         public EditorConfigPropertyAttribute(string name) : base() => this.Name = name;
     }
 
@@ -68,6 +71,49 @@ namespace CSCourseWork.EditorConfiguration
             return property_type;
         }
 
+        private object? GetPropertyInstance(EditorProperty property, EditorConfigSection section) 
+        {
+            var result_property_type = this.GetPropertyType(property.Type);
+            if (result_property_type == null) return null;
+
+            if (property.Building.Value != String.Empty)
+            {
+                return Convert.ChangeType(property.Building.Value, result_property_type);
+            }
+
+            object? property_instance = Activator.CreateInstance(result_property_type, new object[] { });
+            if (property_instance == null) return null;
+
+            foreach (EditorPropertyBuilding.PropertyParams param in property.Building)
+            {
+                var param_type = GetPropertyType(param.Type);
+                if (param_type == null) continue;
+
+                object? param_value = default(object);
+
+                if (!param_type.IsPrimitive && param_type != typeof(string) && param_type != typeof(DateTime))
+                {
+                    if (param_type.GetCustomAttribute<EditorConfigTypeAttribute>(true) == null 
+                        || param.Reference == string.Empty) continue;
+
+                    param_value = this.GetPropertyInstance(section.EditorProperties[param.Reference], section);
+                }
+                else param_value = Convert.ChangeType(param.Value, param_type);
+                PropertyInfo? property_iteminfo = default;
+
+                foreach (var property_item in result_property_type.GetProperties())
+                {
+                    var property_attribute = property_item.GetCustomAttribute<EditorConfigPropertyAttribute>(true);
+                    if (property_attribute != null && property_attribute.Name == param.Name)
+                    {
+                        property_iteminfo = property_item; break;
+                    }
+                }
+                if (property_iteminfo != null) property_iteminfo.SetValue(property_instance, param_value);
+            }
+            return property_instance;
+        }
+
         public List<EditorConfigProperty> TakeConfig()
         {
             var config = IEditorConfigProvider.GetConfiguration(this.ConfigFilePath);
@@ -81,44 +127,10 @@ namespace CSCourseWork.EditorConfiguration
 
             foreach (EditorProperty property in section.EditorProperties) 
             {
-                var result_property_type = GetPropertyType(property.Type);
-                if (result_property_type == null) continue;
-
-                if (property.Building.Value != String.Empty) 
-                {
-                    var result_property_value = Convert.ChangeType(property.Building.Value, result_property_type);
-                    result.Add(new EditorConfigProperty(property.Name, result_property_value, result_property_type));
-                    continue;
-                }
-
-                object? property_instance = Activator.CreateInstance(result_property_type, new object[] { });
+                var property_instance = this.GetPropertyInstance(property, section);
                 if (property_instance == null) continue;
 
-                foreach (EditorPropertyBuilding.PropertyParams param in property.Building) 
-                {
-                    var param_type = GetPropertyType(param.Type);
-                    if (param_type == null) continue;
-
-
-                    if (!param_type.IsPrimitive && param_type != typeof(string) && param_type != typeof(DateTime)) 
-                    {
-                        // обработка сложных типов
-                    }
-
-                    var param_value = Convert.ChangeType(param.Value, param_type);
-                    PropertyInfo? property_iteminfo = default;
-
-                    foreach (var property_item in result_property_type.GetProperties()) 
-                    {
-                        var property_attribute = property_item.GetCustomAttribute<EditorConfigPropertyAttribute>();
-                        if(property_attribute != null && property_attribute.Name == param.Name) 
-                        { 
-                            property_iteminfo = property_item; break; 
-                        }
-                    }
-                    if (property_iteminfo != null) property_iteminfo.SetValue(property_instance, param_value);
-                }
-                result.Add(new EditorConfigProperty(property.Name, property_instance, result_property_type));
+                result.Add(new EditorConfigProperty(property.Name, property_instance, property_instance.GetType()));
             }
             return result;
         }

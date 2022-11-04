@@ -1,6 +1,6 @@
 ﻿namespace CSCourseWork.Windows
 {
-    partial class EditorSettings
+    public partial class EditorSettings<TNodeController> : System.Windows.Forms.Form
     {
         /// <summary>
         /// Required designer variable.
@@ -35,6 +35,8 @@
             this.settinglist_treeview = new System.Windows.Forms.TreeView();
             this.settinglist_label = new System.Windows.Forms.Label();
             this.properties_panel = new System.Windows.Forms.FlowLayoutPanel();
+            this.search_textbox = new System.Windows.Forms.TextBox();
+            this.search_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // accept_button
@@ -61,7 +63,7 @@
             // 
             this.properties_label.AutoSize = true;
             this.properties_label.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.properties_label.Location = new System.Drawing.Point(266, 9);
+            this.properties_label.Location = new System.Drawing.Point(266, 56);
             this.properties_label.Name = "properties_label";
             this.properties_label.Size = new System.Drawing.Size(126, 15);
             this.properties_label.TabIndex = 3;
@@ -70,6 +72,7 @@
             // settinglist_treeview
             // 
             this.settinglist_treeview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.settinglist_treeview.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.settinglist_treeview.Location = new System.Drawing.Point(12, 28);
             this.settinglist_treeview.Name = "settinglist_treeview";
             this.settinglist_treeview.Size = new System.Drawing.Size(242, 346);
@@ -92,17 +95,40 @@
             this.properties_panel.BackColor = System.Drawing.Color.White;
             this.properties_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.properties_panel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.properties_panel.Location = new System.Drawing.Point(266, 28);
+            this.properties_panel.Location = new System.Drawing.Point(266, 74);
+            this.properties_panel.Margin = new System.Windows.Forms.Padding(5);
             this.properties_panel.Name = "properties_panel";
-            this.properties_panel.Size = new System.Drawing.Size(288, 300);
+            this.properties_panel.Padding = new System.Windows.Forms.Padding(5);
+            this.properties_panel.Size = new System.Drawing.Size(288, 260);
             this.properties_panel.TabIndex = 8;
             this.properties_panel.WrapContents = false;
+            // 
+            // search_textbox
+            // 
+            this.search_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.search_textbox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.search_textbox.Location = new System.Drawing.Point(266, 28);
+            this.search_textbox.Name = "search_textbox";
+            this.search_textbox.Size = new System.Drawing.Size(288, 25);
+            this.search_textbox.TabIndex = 9;
+            // 
+            // search_label
+            // 
+            this.search_label.AutoSize = true;
+            this.search_label.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.search_label.Location = new System.Drawing.Point(266, 10);
+            this.search_label.Name = "search_label";
+            this.search_label.Size = new System.Drawing.Size(166, 15);
+            this.search_label.TabIndex = 10;
+            this.search_label.Text = "Список настроек редактора: ";
             // 
             // EditorSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(569, 386);
+            this.Controls.Add(this.search_label);
+            this.Controls.Add(this.search_textbox);
             this.Controls.Add(this.properties_panel);
             this.Controls.Add(this.settinglist_label);
             this.Controls.Add(this.settinglist_treeview);
@@ -127,5 +153,7 @@
         private TreeView settinglist_treeview;
         private Label settinglist_label;
         private FlowLayoutPanel properties_panel;
+        private TextBox search_textbox;
+        private Label search_label;
     }
 }

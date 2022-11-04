@@ -119,10 +119,11 @@ namespace CSCourseWork.EditorComponents
                 var shift_x = this.movingposition_buffer.X * this.NodeSize / size.Width * this.NodeMovingSpeed * 2;
                 var shift_y = this.movingposition_buffer.Y * this.NodeSize / size.Height * this.NodeMovingSpeed * 2;
 
+                using var grid_color = new SolidBrush(this.EditorGridColor.ConvertToColor());
                 for (int i = 0; i < size.Width; i += this.NodeSize)
                 {
-                    grid_graphic.DrawLine(new Pen(Brushes.Gray), new Point(i + shift_x, 0), new Point(i + shift_x, size.Height));
-                    grid_graphic.DrawLine(new Pen(Brushes.Gray), new Point(0, i + shift_y), new Point(size.Width, i + shift_y));
+                    grid_graphic.DrawLine(new Pen(grid_color), new Point(i + shift_x, 0), new Point(i + shift_x, size.Height));
+                    grid_graphic.DrawLine(new Pen(grid_color), new Point(0, i + shift_y), new Point(size.Width, i + shift_y));
                 }
             }
             return grid_bitmap;
@@ -168,7 +169,7 @@ namespace CSCourseWork.EditorComponents
             graphic.FillEllipse(node_brush, node_geometry);
             graphic.DrawEllipse(new Pen(Brushes.DimGray, this.NodeBorderWidth), node_geometry);
 
-            using (var node_font = new Font(this.NodeFontFamily, this.NodeSize / 2)) 
+            using (var node_font = new Font(this.NodeFontFamily.FontFamily, this.NodeSize / 2)) 
             {
                 using var font_color = new SolidBrush(this.NodeFontColor.ConvertToColor());
                 graphic.DrawString(node_info.NodeID.ToString(), node_font, font_color, node_position);

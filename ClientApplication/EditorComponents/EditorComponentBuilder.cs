@@ -15,7 +15,7 @@ using CSCourseWork.NodesControllers;
 
 namespace CSCourseWork.EditorComponents
 {
-    public interface IEditorComponentBuilder<TController> : IEnumerable<EditorComponentProperty>
+    public interface IEditorComponentBuilder<TController> : IEnumerable<EditorConfigProperty>
         where TController : NodesControllers.INodesControllerWithConnectors, new()
     {
         public IEditorComponentBuilder<TController> AddEditorGeometry(Point position, Size size);
@@ -28,13 +28,11 @@ namespace CSCourseWork.EditorComponents
         public EditorComponentBase<TController> BuildEditor();
     }
 
-    public record struct EditorComponentProperty(object PropertyValue, System.Type Type);
-
     public sealed class EditorComponentBuilder : System.Object, IEditorComponentBuilder<NodesController>
     {
         public System.Type ControllerType { get; private set; }
         public Form FormLink { get; private set; }
-        public Dictionary<string, EditorComponentProperty> Properties { get; private set; } = new();
+        public List<EditorConfigProperty> Properties { get; private set; } = new();
 
         private System.Drawing.Point EditorPosition = default(Point);
         private System.Drawing.Size EditorSize = default(Size);
@@ -64,19 +62,22 @@ namespace CSCourseWork.EditorComponents
 
         public IEditorComponentBuilder<NodesController> AddEditorProperty(string name, object value) 
         {
-            var value_type = value.GetType();
-            if (this.Properties.ContainsKey(name))
+            var adding_property = new EditorConfigProperty(name, value, value.GetType());
+            var contains_index = default(int?);
+
+            for (int index = 0; index < this.Properties.Count; index++)
             {
-                this.Properties[name] = new EditorComponentProperty(value, value_type);
+                if (this.Properties[index].Name == name) { contains_index = index; break; }
             }
-            else this.Properties.Add(name, new EditorComponentProperty(value, value_type));
+            if (contains_index.HasValue) { this.Properties[contains_index.Value] = adding_property; }
+            else this.Properties.Add(adding_property);
+
             return this;
         }
 
         public IEditorComponentBuilder<NodesController> AddEditorConfiguration(IEditorConfigProvider provider) 
         {
-            var config_data = provider.TakeConfig();
-
+            foreach (var property in provider.TakeConfig()) { this.AddEditorProperty(property.Name, property.Value); }
             return this;
         }
 
@@ -91,18 +92,18 @@ namespace CSCourseWork.EditorComponents
 
             foreach (var item in this.Properties) 
             {
-                var property_info = editor_instance.GetType().GetProperty(item.Key);
+                var property_info = editor_instance.GetType().GetProperty(item.Name);
                 if (property_info != null)
                 {
-                    try { property_info.SetValue(editor_instance, item.Value.PropertyValue); }
+                    try { property_info.SetValue(editor_instance, item.Value); }
                     catch (System.Exception) { }
                 }
             }
             return editor_instance;
         }
 
-        public IEnumerator<EditorComponentProperty> GetEnumerator()
-        { foreach (var prop in this.Properties) yield return prop.Value; }
+        public IEnumerator<EditorConfigProperty> GetEnumerator()
+        { foreach (EditorConfigProperty property in this.Properties) yield return property; }
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }

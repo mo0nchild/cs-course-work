@@ -16,13 +16,12 @@ namespace CSCourseWork.EditorConfiguration
         public EditorPropertiesCollection EditorProperties => (EditorPropertiesCollection)base["properties"];
     }
 
-
-    [ConfigurationCollection(typeof(EditorProperty), AddItemName = "item")]
+    [ConfigurationCollection(typeof(EditorNamespace), AddItemName = "item")]
     public sealed class EditorNamespacesCollection : ConfigurationElementCollection
     {
-        public class EditorNamespace : ConfigurationElement
+        public sealed class EditorNamespace : ConfigurationElement
         {
-            [ConfigurationProperty("value", DefaultValue = default(string), IsKey = true, IsRequired = true)]
+            [ConfigurationProperty("value", IsKey = true, IsRequired = true)]
             public string Value { get => (string)base["value"]; set => base["value"] = value; }
         }
 
@@ -31,7 +30,6 @@ namespace CSCourseWork.EditorConfiguration
         protected override object GetElementKey(ConfigurationElement element)
         { return ((EditorNamespace)element).Value; }
     }
-
 
     [ConfigurationCollection(typeof(EditorProperty), AddItemName = "property")]
     public sealed class EditorPropertiesCollection : ConfigurationElementCollection
@@ -64,21 +62,25 @@ namespace CSCourseWork.EditorConfiguration
         [ConfigurationProperty("value", DefaultValue = default(string))]
         public string Value { get => (string)base["value"]; set => base["value"] = value; }
 
-        public class PropertyParams : ConfigurationElement
+        public sealed class PropertyParams : ConfigurationElement
         {
+            [ConfigurationProperty("name", IsRequired = true, IsKey = true)]
+            public string Name { get => (string)base["name"]; set => base["name"] = value; }
+
             [ConfigurationProperty("value", IsRequired = true)]
             public string Value { get => (string)base["value"]; set => base["value"] = value; }
 
             [ConfigurationProperty("type", IsRequired = true)]
             public string Type { get => (string)base["type"]; set => base["type"] = value; }
+
+            [ConfigurationProperty("ref", DefaultValue = default(string))]
+            public string Reference { get => (string)base["ref"]; set => base["ref"] = value; }
         }
 
         protected override ConfigurationElement CreateNewElement() => new PropertyParams();
 
         protected override object GetElementKey(ConfigurationElement element)
-        {
-            return ((PropertyParams)element).Value;
-        }
+        { return ((PropertyParams)element).Name; }
     }
 
 }

@@ -16,9 +16,6 @@ namespace CSCourseWork.EditorComponents
 {
     public class EditorComponent : EditorComponents.EditorComponentBase<NodesController>
     {
-        public override event EditorComponents.EditorActionEventHandler? NodeClicked;
-        public override event EditorComponents.EditorActionEventHandler? FieldClicked;
-
         public override event EditorComponents.EditorActionEventHandler? NodeScaled;
 
         private const int DefaultGridDelta = 5, MinimunScaleValue = 10, NodeDefaultSize = 10;
@@ -57,15 +54,6 @@ namespace CSCourseWork.EditorComponents
             get => this.editor_mode;
         }
 
-        private int? selected_nodeid = default(int?);
-        public override int? SelectedNodeID
-        {
-            set => this.selected_nodeid =
-                (value > 0 || value <= this.Controller.NodesList.Count) ? value : null;
-
-            get => this.selected_nodeid;
-        }
-
         private EditorComponents.EditorScale node_scale = new(MinimunScaleValue, 100);
         public override EditorComponents.EditorScale NodeScaleRange
         {
@@ -85,19 +73,23 @@ namespace CSCourseWork.EditorComponents
         {
             (this.DoubleBuffered, this.BorderStyle, this.NodeSize) = (true, BorderStyle.FixedSingle, NodeDefaultSize);
 
-            this.MouseDown += new MouseEventHandler(this.EditorComponentMouseDown);
+            this.MouseWheel += new MouseEventHandler(this.EditorComponent_MouseWheel);
             this.MouseMove += new MouseEventHandler(this.EditorComponentMouseMove);
-            this.Paint += new PaintEventHandler(this.EditorComponentPaint);
 
             this.NodeClicked += new EditorActionEventHandler(this.EditorComponentNodeClicked);
             this.FieldClicked += new EditorActionEventHandler(this.EditorComponentFieldClicked);
 
-            this.MouseWheel += new MouseEventHandler(this.EditorComponent_MouseWheel);
             this.MouseUp += new MouseEventHandler(delegate (object? sender, MouseEventArgs args)
-                { if (args.Button == MouseButtons.Right) this.movingbutton_hold = false; });
+            { if (args.Button == MouseButtons.Right) this.movingbutton_hold = false; });
         }
             
         public EditorComponent(Form parent_form) : this(parent_form, new NodesController()) { }
+
+        protected override void OnEditorComponentClick(object? sender, MouseEventArgs args)
+        {
+            if (args.Button == MouseButtons.Right) { this.movingbutton_hold = true; return; }
+            base.OnEditorComponentClick(sender, args);
+        }
 
         public override void BuildGraphPath(List<NodesConnectorInfo> node_paths)
         {
@@ -119,7 +111,7 @@ namespace CSCourseWork.EditorComponents
             }
         }
 
-        private Image BuildEditorGrid(Size size)
+        protected override Image BuildEditorGrid(Size size)
         {
             var grid_bitmap = new Bitmap(size.Width, size.Height);
             using (var grid_graphic = Graphics.FromImage(grid_bitmap))
@@ -178,7 +170,8 @@ namespace CSCourseWork.EditorComponents
 
             using (var node_font = new Font(this.NodeFontFamily, this.NodeSize / 2)) 
             {
-                graphic.DrawString(node_info.NodeID.ToString(), node_font, Brushes.White, node_position);
+                using var font_color = new SolidBrush(this.NodeFontColor.ConvertToColor());
+                graphic.DrawString(node_info.NodeID.ToString(), node_font, font_color, node_position);
             }
         }
 
@@ -206,22 +199,6 @@ namespace CSCourseWork.EditorComponents
 
             this.NodeScaled?.Invoke(this, new EditorActionEventArgs(this.Mode, default)
             { NodeScale = buffer_delta });
-        }
-
-        private void EditorComponentPaint(object? sender, PaintEventArgs args)
-        {
-            using (var grid_image = this.BuildEditorGrid(this.Size)) args.Graphics.DrawImage(grid_image, new Point(0, 0));
-
-            foreach (var connector in this.Controller.BuildNodeСonnectors())
-            { this.PaintEdgeWithArrow(args.Graphics, connector, this.NodeColor.ConvertToColor()); }
-
-            this.Controller.ToList().ForEach(delegate (NodeModel node_info)
-            {
-                var node_color = (this.SelectedNodeID.HasValue && node_info.NodeID == this.SelectedNodeID.Value)
-                    ? this.NodeSelectColor : this.NodeColor;
-
-                this.PaintNodeInstance(args.Graphics, node_info, new SolidBrush(node_color.ConvertToColor()));
-            });
         }
 
         private void EditorComponentNodeClicked(object? sender, EditorActionEventArgs args)
@@ -269,34 +246,6 @@ namespace CSCourseWork.EditorComponents
             }
             else return;
             this.Invalidate();
-        }
-
-        private void EditorComponentMouseDown(object? sender, MouseEventArgs args)
-        {
-            if (args.Button == MouseButtons.Right) { this.movingbutton_hold = true; return; }
-
-            NodeModel? current_node = default;
-            foreach (var node_item in this.Controller)
-            {
-                var collision_check = this.Controller.NodeCollisionCheck(args.Location, node_item.NodeID);
-                if (collision_check) { current_node = node_item; break; }
-            }
-
-            var selection_switch = default(bool);
-            if (current_node != null)
-            {
-                if (!this.SelectedNodeID.HasValue && this.Mode == EditorModes.SelectNode)
-                {
-                    this.SelectedNodeID = current_node.NodeID;
-                    selection_switch = true;
-                }
-
-                this.NodeClicked?.Invoke(this, new EditorActionEventArgs(this.Mode, args.Location)
-                { NodeInstance = current_node });
-            }
-            else this.FieldClicked?.Invoke(this, new EditorActionEventArgs(this.Mode, args.Location));
-
-            if (this.SelectedNodeID.HasValue && !selection_switch) this.SelectedNodeID = null;
         }
     }
 }

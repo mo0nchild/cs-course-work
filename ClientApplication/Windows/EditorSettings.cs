@@ -15,7 +15,7 @@ namespace CSCourseWork.Windows
         public EditorSettings()
         {
             this.InitializeComponent();
-            
+
         }
     }
 }

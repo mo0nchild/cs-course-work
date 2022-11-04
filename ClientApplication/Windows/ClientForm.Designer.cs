@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientForm));
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Список вершин");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Список вершин");
             this.info_toolstrip_button = new System.Windows.Forms.ToolStripButton();
             this.app_toolstrip = new System.Windows.Forms.ToolStrip();
             this.project_toolstrip_button = new System.Windows.Forms.ToolStripDropDownButton();
@@ -150,6 +150,7 @@
             // 
             // edges_listview
             // 
+            this.edges_listview.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.edges_listview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.edgeid_column,
             this.edgeleftnode_column,
@@ -193,15 +194,15 @@
             // 
             // nodes_treeview
             // 
-            this.nodes_treeview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.nodes_treeview.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.nodes_treeview.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.nodes_treeview.FullRowSelect = true;
             this.nodes_treeview.Location = new System.Drawing.Point(6, 6);
             this.nodes_treeview.Name = "nodes_treeview";
-            treeNode1.Name = "nodesroot_treeview";
-            treeNode1.Text = "Список вершин";
+            treeNode2.Name = "nodesroot_treeview";
+            treeNode2.Text = "Список вершин";
             this.nodes_treeview.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
+            treeNode2});
             this.nodes_treeview.Size = new System.Drawing.Size(233, 162);
             this.nodes_treeview.TabIndex = 11;
             // 

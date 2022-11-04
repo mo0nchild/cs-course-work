@@ -12,6 +12,7 @@ using CSCourseWork.NodesControllers;
 using CSCourseWork.Connected_Services.GraphServiceReference;
 using System.ServiceModel;
 using CSCourseWork.Windows;
+using CSCourseWork.EditorConfiguration;
 
 namespace CSCourseWork
 {
@@ -21,14 +22,11 @@ namespace CSCourseWork
 
         public ClientForm()
         {
-            this.InitializeComponent();
-            this.pointer_panel.Hide();
-
-            //foreach (var item in FontFamily.Families) Console.WriteLine(item);
+            this.InitializeComponent(); this.pointer_panel.Hide();
 
             var editor_builder = new EditorComponentBuilder(this, typeof(NodesController))
                 .AddEditorGeometry(this.pointer_panel.Location, this.pointer_panel.Size)
-                .AddEditorConfiguration();
+                .AddEditorConfiguration(new EditorConfigProvider(null));
             this.EditorInstance = editor_builder.BuildEditor();
 
             this.EditorInstance.NodeClicked += new EditorActionEventHandler(EditorComponentNodeSelected);
@@ -45,6 +43,16 @@ namespace CSCourseWork
             this.edges_listview.MouseClick += new MouseEventHandler(EdgesListViewMouseClick);
             this.nodes_treeview.AfterSelect += new TreeViewEventHandler(NodesTreeViewAfterSelect);
             this.nodes_treeview.MouseClick += new MouseEventHandler(NodesTreeViewMouseClick);
+
+
+
+            this.editorconf_toolstrip_menuitem.Click += (sender, args) => 
+            {
+                var settings = new EditorSettings();
+                settings.ShowDialog();
+            };
+
+
 
             this.app_propertygrid.PropertyValueChanged += AppPropertyGridPropertyValueChanged;
             this.editor_trackbar.ValueChanged += EditorTrackbarValueChanged;
@@ -246,10 +254,7 @@ namespace CSCourseWork
             }
         }
 
-        private void EditorComponentFieldClicked(object? sender, EditorActionEventArgs args)
-        {
-            this.NodeInfoListUpdate();
-        }
+        private void EditorComponentFieldClicked(object? sender, EditorActionEventArgs args) => this.NodeInfoListUpdate();
 
         private void EditorComponentNodeSelected(object? sender, EditorActionEventArgs args)
         {

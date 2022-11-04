@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.editor_colordialog = new System.Windows.Forms.ColorDialog();
             this.accept_button = new System.Windows.Forms.Button();
             this.export_button = new System.Windows.Forms.Button();
             this.properties_label = new System.Windows.Forms.Label();
@@ -145,8 +144,6 @@
         }
 
         #endregion
-
-        private ColorDialog editor_colordialog;
         private Button accept_button;
         private Button export_button;
         private Label properties_label;

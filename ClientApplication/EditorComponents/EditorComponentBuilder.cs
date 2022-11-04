@@ -70,7 +70,7 @@ namespace CSCourseWork.EditorComponents
         public IEditorComponentBuilder<NodesController> AddEditorConfiguration(IEditorConfigProvider provider) 
         {
             foreach (var property in provider.TakeConfig()) 
-            { 
+            {
                 this.AddEditorProperty(property.Name, property.Value);
                 //Console.WriteLine($"Name: {property.Name} -> Value: {property.Value}");
 
@@ -86,8 +86,8 @@ namespace CSCourseWork.EditorComponents
         public EditorComponentBase<NodesController> BuildEditor()
         {
             var controller_instance = (NodesController)(Activator.CreateInstance(this.ControllerType)!);
-            var editor_instance = new EditorComponent(this.FormLink, controller_instance) 
-            { 
+            var editor_instance = new EditorComponent(this.FormLink, controller_instance)
+            {
                 Location = this.EditorPosition, Size = this.EditorSize 
             };
             foreach (KeyValuePair<string, object> item in this.Properties)
@@ -103,11 +103,9 @@ namespace CSCourseWork.EditorComponents
         }
 
         public IEnumerator<EditorConfigProperty> GetEnumerator()
-        { 
+        {
             foreach (KeyValuePair<string, object> property in this.Properties)
-            {
-                yield return new EditorConfigProperty(property.Key, property.Value, property.Value.GetType());
-            }
+            { yield return new EditorConfigProperty(property.Key, property.Value); }
         }
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();

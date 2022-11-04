@@ -27,6 +27,9 @@ namespace CSCourseWork.Windows
 
         private static Hashtable TypeHandlers = new Hashtable() 
         {
+            ["EditorScale"] = new TypeSettingHandler(EditorScaleSettingHandler),
+            ["EditorColor"] = new TypeSettingHandler(EditorColorSettingHandler),
+            ["EditorFontFamily"] = new TypeSettingHandler(EditorFontFamilySettingHandler),
             ["Int32"] = new TypeSettingHandler(Int32SettingHandler),
         };
 
@@ -63,107 +66,99 @@ namespace CSCourseWork.Windows
             var int_control = new NumericUpDown() { Value = (int)property.Value, 
                 Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
 
-            int_control.ValueChanged += delegate (object? sender, EventArgs args)
-            {
-                property = new EditorConfigProperty(property.Name, (int)int_control.Value, property.Type);
-            };
+            int_control.ValueChanged += delegate { property.Value = (int)int_control.Value; };
             group.Controls.Add(int_control);
+        }
+
+        private static void EditorFontFamilySettingHandler(Panel group, EditorConfigProperty property)
+        {
+            var font_control = new ComboBox() { DropDownStyle = ComboBoxStyle.DropDownList,
+                Width = 200, Font = new Font("Segoe UI", 10) };
+
+            foreach (var fontfamily in FontFamily.Families) font_control.Items.Add(fontfamily.Name);
+            font_control.Text = ((EditorFontFamily)property.Value).FontFamily;
+
+            font_control.SelectedValueChanged += delegate (object? sender, EventArgs args)
+            {
+                var font_value = new EditorFontFamily() { FontFamily = font_control.Text };
+                property.Value = font_value;
+            };
+            group.Controls.Add(font_control);
+        }
+
+        private static void EditorScaleSettingHandler(Panel group, EditorConfigProperty property)
+        {
+            var scale_value = (EditorScale)property.Value;
+
+            var min_control = new NumericUpDown() { Name = "min", Value = scale_value.Min, 
+                Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
+
+            var max_control = new NumericUpDown() { Name = "max", Value = scale_value.Max,
+                Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
+
+            var scale_handler = delegate (object? sender, EventArgs args)
+            {
+                var control = (sender as NumericUpDown)!;
+
+                if (control.Name == "min") scale_value.Min = (int)min_control.Value;
+                else if (control.Name == "max") scale_value.Max = (int)max_control.Value;
+                else return;
+
+                property.Value = scale_value;
+            };
+
+            min_control.ValueChanged += new EventHandler(scale_handler);
+            max_control.ValueChanged += new EventHandler(scale_handler);
+
+            var controls_group = new FlowLayoutPanel()
+            { WrapContents = false, FlowDirection = FlowDirection.LeftToRight, AutoSize = true };
+
+            controls_group.Controls.Add(min_control);
+            controls_group.Controls.Add(max_control);
+
+            group.Controls.Add(controls_group);
+        }
+
+        private static void EditorColorSettingHandler(Panel group, EditorConfigProperty property)
+        {
+            var color_control = new Button() { Text = string.Empty, Font = new Font("Segoe UI", 10),
+                BackColor = ((EditorColor)property.Value).ConvertToColor(), Size = new(75, 30) };
+
+            color_control.Click += delegate (object? sender, EventArgs args)
+            {
+                var color_dialog = new ColorDialog() { FullOpen = true };
+                if (color_dialog.ShowDialog() != DialogResult.OK) return;
+
+                color_control.BackColor = color_dialog.Color;
+                property.Value = new EditorColor(color_dialog.Color.R, color_dialog.Color.G, color_dialog.Color.B);
+            };
+
+            group.Controls.Add(color_control);
         }
 
         private void SettinglistTreeviewNodeMouseClick(object? sender, TreeNodeMouseClickEventArgs args)
         {
             this.properties_panel.Controls.Clear();
+
+            EditorConfiguration.EditorConfigProperty node_property;
             if (args.Node.Level == 0)
             {
                 foreach (TreeNode node in args.Node.Nodes)
-                { ControlsPanelAdd(node.Text, this.SettingsBuffer[node.Text]); }
+                {
+                    node_property = this.SettingsBuffer[node.Text];
+                    ControlsPanelAdd(node.Text, ref node_property); 
+                }
+                return;
             }
-            else ControlsPanelAdd(args.Node.Text, this.SettingsBuffer[args.Node.Text]);
+            node_property = this.SettingsBuffer[args.Node.Text];
+            ControlsPanelAdd(args.Node.Text, ref node_property);
 
-            void ControlsPanelAdd(string name, EditorConfigProperty property_config) 
+            void ControlsPanelAdd(string name, ref EditorConfigProperty property_config) 
             {
                 this.properties_panel.Controls.Add(new Label() { Text = $"{name}:", AutoSize = true });
 
-                ((TypeSettingHandler)TypeHandlers[property_config.Type.Name]!)?.Invoke(
+                (TypeHandlers[property_config.Type.Name] as TypeSettingHandler)?.Invoke(
                     this.properties_panel, property_config);
-
-                switch (property_config.Type.Name) 
-                {
-                    case "Int32":
-                        
-
-                    case "EditorScale":
-                        var scale_value = (EditorScale)property_config.Value;
-
-                        var min_control = new NumericUpDown() { Name = "min", Value = scale_value.Min,
-                            Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
-
-                        var max_control = new NumericUpDown() { Name = "max", Value = scale_value.Max,
-                            Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
-
-                        var scale_handler = delegate (object? sender, EventArgs args)
-                        {
-                            var control = (sender as NumericUpDown)!;
-
-                            if (control.Name == "min") scale_value.Min = (int)min_control.Value;
-                            else if (control.Name == "max") scale_value.Max = (int)max_control.Value;
-                            else return;
-
-                            this.SettingsBuffer[name] = new EditorConfigProperty(
-                                property_config.Name, scale_value, property_config.Type);
-                        };
-
-                        min_control.ValueChanged += new EventHandler(scale_handler);
-                        max_control.ValueChanged += new EventHandler(scale_handler);
-
-                        var controls_group = new FlowLayoutPanel()
-                        { WrapContents = false, FlowDirection = FlowDirection.LeftToRight, AutoSize = true };
-
-                        controls_group.Controls.Add(min_control);
-                        controls_group.Controls.Add(max_control);
-
-                        this.properties_panel.Controls.Add(controls_group);
-                        break;
-
-                    case "EditorColor":
-                        var color_control = new Button() { Text = string.Empty, Font = new Font("Segoe UI", 10),
-                            BackColor = ((EditorColor)property_config.Value).ConvertToColor(), Size = new (75, 30) };
-
-                        color_control.Click += delegate (object? sender, EventArgs args)
-                        {
-                            if (this.editor_colordialog.ShowDialog() != DialogResult.OK) return;
-
-                            var color_value = this.editor_colordialog.Color;
-                            color_control.BackColor = color_value;
-
-                            var editor_color = new EditorColor(color_value.R, color_value.G, color_value.B);
-                            this.SettingsBuffer[name] = new EditorConfigProperty(
-                                property_config.Name, editor_color, property_config.Type);
-                        };
-
-                        this.properties_panel.Controls.Add(color_control);
-                        break;
-
-                    case "EditorFontFamily":
-
-                        var font_control = new ComboBox() { DropDownStyle = ComboBoxStyle.DropDownList,
-                            Width = 200, Font = new Font("Segoe UI", 10) };
-
-                        foreach (var fontfamily in FontFamily.Families) font_control.Items.Add(fontfamily.Name);
-                        font_control.Text = ((EditorFontFamily)property_config.Value).FontFamily;
-
-                        font_control.SelectedValueChanged += delegate (object? sender, EventArgs args) 
-                        {
-                            var font_value = new EditorFontFamily() { FontFamily = font_control.Text };
-
-                            this.SettingsBuffer[name] = new EditorConfigProperty(
-                                property_config.Name, font_value , property_config.Type);
-                        };
-                        this.properties_panel.Controls.Add(font_control);
-                        break;
-
-                    default: break;
-                }
             }
         }
 
@@ -182,13 +177,13 @@ namespace CSCourseWork.Windows
                 var buffer_value = properties.GetValue(this.EditorInstance);
 
                 if (setting_attribute == null || buffer_value == null) continue;
-                var buffer = new EditorConfigProperty(properties.Name, buffer_value, buffer_value.GetType());
+                var buffer = new EditorConfigProperty(properties.Name, buffer_value);
 
-                if (this.settings_buffer.ContainsKey(setting_attribute.SettingName))
+                if (this.SettingsBuffer.ContainsKey(setting_attribute.SettingName))
                 {
-                    this.settings_buffer[setting_attribute.SettingName] = buffer;
+                    this.SettingsBuffer[setting_attribute.SettingName] = buffer;
                 }
-                else this.settings_buffer.Add(setting_attribute.SettingName, buffer);
+                else this.SettingsBuffer.Add(setting_attribute.SettingName, buffer);
 
                 var selected_section = (setting_attribute.SettingSection == string.Empty) ? 0 : default(int?);
                 for (int index = 1; index < this.settinglist_treeview.Nodes.Count; index++)

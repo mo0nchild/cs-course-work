@@ -10,7 +10,16 @@ using System.Threading.Tasks;
 
 namespace CSCourseWork.EditorConfiguration
 {
-    public record class EditorConfigProperty(string Name, object Value, System.Type Type);
+    //public record class EditorConfigProperty(string Name, object Value, System.Type Type);
+    public sealed class EditorConfigProperty : System.Object
+    {
+        public System.String Name { get; private set; } = String.Empty;
+        public System.Object Value { get; set; } = default(object)!;
+
+        public EditorConfigProperty(string name, object value) : base() => (this.Name, this.Value) = (name, value);
+        public System.Type Type { get => this.Value!.GetType(); }
+    }
+
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
     public sealed class EditorConfigTypeAttribute : System.Attribute { }
@@ -31,7 +40,8 @@ namespace CSCourseWork.EditorConfiguration
         public System.String? ConfigFilePath { get; set; }
 
         public List<EditorConfiguration.EditorConfigProperty> TakeConfig();
-        public IEditorConfigProvider PutConfig(System.Object property);
+        public IEditorConfigProvider PutConfigProperty(System.String name, System.Object property);
+        public IEditorConfigProvider PutConfigObject(System.Object @object);
 
         protected static Configuration GetConfiguration(string? filepath)
         {
@@ -47,10 +57,36 @@ namespace CSCourseWork.EditorConfiguration
 
         public EditorConfigProvider(string? filepath) : base() => this.ConfigFilePath = filepath;
 
-        public IEditorConfigProvider PutConfig(object property)
+        public IEditorConfigProvider PutConfigObject(object @object)
+        {
+            return this;
+        }
+
+        public IEditorConfigProvider PutConfigProperty(string name, object property)
         {
 
             return this;
+        }
+
+        public List<EditorConfigProperty> TakeConfig()
+        {
+            var config = IEditorConfigProvider.GetConfiguration(this.ConfigFilePath);
+            var section = (EditorConfigSection)config.GetSection("editor.settings");
+
+            var result = new List<EditorConfigProperty>();
+            this.UsingNamespaces.Clear();
+
+            foreach (EditorNamespacesCollection.EditorNamespace @namespace in section.UsingNamespaces)
+            { this.UsingNamespaces.Add(@namespace.Value); }
+
+            foreach (EditorProperty property in section.EditorProperties)
+            {
+                var property_instance = this.GetPropertyInstance(property, section);
+                if (property_instance == null) continue;
+
+                result.Add(new EditorConfigProperty(property.Name, property_instance));
+            }
+            return result;
         }
 
         private System.Type? GetPropertyType(string type_string)
@@ -112,27 +148,6 @@ namespace CSCourseWork.EditorConfiguration
                 if (property_iteminfo != null) property_iteminfo.SetValue(property_instance, param_value);
             }
             return property_instance;
-        }
-
-        public List<EditorConfigProperty> TakeConfig()
-        {
-            var config = IEditorConfigProvider.GetConfiguration(this.ConfigFilePath);
-            var section = (EditorConfigSection)config.GetSection("editor.settings");
-
-            var result = new List<EditorConfigProperty>();
-            this.UsingNamespaces.Clear();
-
-            foreach (EditorNamespacesCollection.EditorNamespace @namespace in section.UsingNamespaces) 
-            { this.UsingNamespaces.Add(@namespace.Value); }
-
-            foreach (EditorProperty property in section.EditorProperties) 
-            {
-                var property_instance = this.GetPropertyInstance(property, section);
-                if (property_instance == null) continue;
-
-                result.Add(new EditorConfigProperty(property.Name, property_instance, property_instance.GetType()));
-            }
-            return result;
         }
 
         public IEnumerator<EditorConfigProperty> GetEnumerator() => this.TakeConfig().GetEnumerator();

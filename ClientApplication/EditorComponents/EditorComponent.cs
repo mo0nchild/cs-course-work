@@ -26,8 +26,8 @@ namespace CSCourseWork.EditorComponents
 
         public override EditorColor EditorBackColor 
         {
-            get => new EditorColor(BackColor.R, BackColor.G, BackColor.B);
-            set => this.BackColor = value.ConvertToColor();
+            get => new EditorColor(this.BackColor.R, this.BackColor.G, this.BackColor.B);
+            set => this.BackColor = value;
         }
 
         public override int NodeSize 
@@ -44,7 +44,7 @@ namespace CSCourseWork.EditorComponents
         {
             set {
                 this.editor_mode = value;
-                switch (value) 
+                switch (value)
                 {
                     case EditorModes.AddNode: this.Cursor = Cursors.Cross; break;
                     case EditorModes.RemoveNode: this.Cursor = Cursors.No; break;
@@ -54,16 +54,14 @@ namespace CSCourseWork.EditorComponents
             get => this.editor_mode;
         }
 
-        private EditorComponents.EditorScale node_scale = new(MinimunScaleValue, 100);
+        private EditorComponents.EditorScale node_scale = new(1, 100);
         public override EditorComponents.EditorScale NodeScaleRange
         {
             get { return this.node_scale; }
             set {
-                if (value.Min < MinimunScaleValue || value.Max < MinimunScaleValue
-                    || value.Max - value.Min < MinimunScaleValue) 
-                {
-                    throw new EditorComponentException("Неверные значение масштаба");
-                }
+                if (value.Max - value.Min <= 0)
+                { throw new EditorComponentException("Неверные значение масштаба"); }
+
                 this.NodeSize = (value.Max - value.Min) / 2 + value.Min;
                 this.node_scale = value;
             }
@@ -98,9 +96,9 @@ namespace CSCourseWork.EditorComponents
                 this.EditorComponentPaint(this, new PaintEventArgs(graphic, new Rectangle(this.Location, this.Size)));
                 for (var index = 0; index < node_paths.Count; index++)
                 {
-                    using var node_brush = new SolidBrush(this.NodeSelectColor.ConvertToColor());
+                    using var node_brush = new SolidBrush(this.NodeSelectColor);
 
-                    this.PaintEdgeWithArrow(graphic, node_paths[index], this.NodeSelectColor.ConvertToColor());
+                    this.PaintEdgeWithArrow(graphic, node_paths[index], this.NodeSelectColor);
                     this.PaintNodeInstance(graphic, node_paths[index].LeftNode, node_brush);
 
                     if (index == node_paths.Count - 1)
@@ -119,7 +117,7 @@ namespace CSCourseWork.EditorComponents
                 var shift_x = this.movingposition_buffer.X * this.NodeSize / size.Width * this.NodeMovingSpeed * 2;
                 var shift_y = this.movingposition_buffer.Y * this.NodeSize / size.Height * this.NodeMovingSpeed * 2;
 
-                using var grid_color = new SolidBrush(this.EditorGridColor.ConvertToColor());
+                using var grid_color = new SolidBrush(this.EditorGridColor);
                 for (int i = 0; i < size.Width; i += this.NodeSize)
                 {
                     grid_graphic.DrawLine(new Pen(grid_color), new Point(i + shift_x, 0), new Point(i + shift_x, size.Height));
@@ -171,7 +169,7 @@ namespace CSCourseWork.EditorComponents
 
             using (var node_font = new Font(this.NodeFontFamily.FontFamily, this.NodeSize / 2)) 
             {
-                using var font_color = new SolidBrush(this.NodeFontColor.ConvertToColor());
+                using var font_color = new SolidBrush(this.NodeFontColor);
                 graphic.DrawString(node_info.NodeID.ToString(), node_font, font_color, node_position);
             }
         }

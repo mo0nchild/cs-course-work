@@ -74,8 +74,6 @@ namespace CSCourseWork.EditorComponents
             foreach (var property in provider.TakeConfig()) 
             {
                 this.AddEditorProperty(property.Name, property.Value);
-                //Console.WriteLine($"Name: {property.Name} -> Value: {property.Value}");
-
                 //if(property.Name == "TestType")
                 //{
                 //    var testtype = (EditorTestType)property.Value;

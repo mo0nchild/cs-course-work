@@ -12,6 +12,7 @@ namespace CSCourseWork.EditorComponents
 {
     public enum EditorModes : System.SByte { AddNode, RemoveNode, SelectNode };
 
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class EditorSettingsAttribute : System.Attribute
     {
         public System.String SettingName { get; private set; } = string.Empty;
@@ -99,14 +100,14 @@ namespace CSCourseWork.EditorComponents
             using (var grid_image = this.BuildEditorGrid(this.Size)) args.Graphics.DrawImage(grid_image, new Point(0, 0));
 
             foreach (var connector in this.Controller.BuildNodeСonnectors())
-            { this.PaintEdgeWithArrow(args.Graphics, connector, this.NodeColor.ConvertToColor()); }
+            { this.PaintEdgeWithArrow(args.Graphics, connector, this.NodeColor); }
 
             this.Controller.ToList().ForEach(delegate (NodeModel node_info)
             {
                 var node_color = (this.SelectedNodeID.HasValue && node_info.NodeID == this.SelectedNodeID.Value)
                     ? this.NodeSelectColor : this.NodeColor;
 
-                this.PaintNodeInstance(args.Graphics, node_info, new SolidBrush(node_color.ConvertToColor()));
+                this.PaintNodeInstance(args.Graphics, node_info, new SolidBrush(node_color));
             });
         }
 

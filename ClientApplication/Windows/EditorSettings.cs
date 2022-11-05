@@ -46,14 +46,43 @@ namespace CSCourseWork.Windows
 
             this.accept_button.Click += new EventHandler(AcceptButtonClick);
             this.export_button.Click += new EventHandler(ExportButtonClick);
+            this.save_button.Click += new EventHandler(SaveButtonClick);
         }
 
         private void SearchTextboxTextChanged(object? sender, System.EventArgs args)
             => this.SettingListInitialize(this.search_textbox.Text);
 
+        private void SaveButtonClick(object? sender, EventArgs e)
+        {
+
+        }
+        
         private void ExportButtonClick(object? sender, System.EventArgs args)
         {
-            
+            EditorConfiguration.EditorConfigProvider export_config;
+            using (var configfile_dialog = new OpenFileDialog())
+            {
+                configfile_dialog.InitialDirectory = Directory.GetCurrentDirectory();
+                configfile_dialog.Filter = "configuration files (*.config)|*.config";
+
+                if (configfile_dialog.ShowDialog() != DialogResult.OK) return;
+                export_config = new EditorConfigProvider(configfile_dialog.FileName);
+                //this.ConfigProvider.ConfigFilePath = configfile_dialog.FileName;
+                //export_config = (EditorConfigProvider)this.ConfigProvider;
+            }
+
+            foreach (var export_property in export_config.TakeConfig())
+            {
+                string? setting_key = default;
+                foreach (var setting in this.SettingsBuffer)
+                {
+                    if (setting.Value.Name == export_property.Name &&
+                        setting.Value.Type == export_property.Type) { setting_key = setting.Key; }
+                }
+                if (setting_key != null)
+                { this.SettingsBuffer[setting_key].Value = export_property.Value; }
+            }
+            this.SettingListInitialize(string.Empty);
         }
 
         private void AcceptButtonClick(object? sender, System.EventArgs args)
@@ -95,10 +124,10 @@ namespace CSCourseWork.Windows
             var scale_value = (EditorScale)property.Value;
 
             var min_control = new NumericUpDown() { Name = "min", Value = scale_value.Min, 
-                Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
+                Minimum = 10, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
 
             var max_control = new NumericUpDown() { Name = "max", Value = scale_value.Max,
-                Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
+                Minimum = 10, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
 
             var scale_handler = delegate (object? sender, EventArgs args)
             {
@@ -126,7 +155,7 @@ namespace CSCourseWork.Windows
         private static void EditorColorSettingHandler(Panel group, EditorConfigProperty property)
         {
             var color_control = new Button() { Text = string.Empty, Font = new Font("Segoe UI", 10),
-                BackColor = ((EditorColor)property.Value).ConvertToColor(), Size = new(75, 30) };
+                BackColor = ((EditorColor)property.Value), Size = new(75, 30) };
 
             color_control.Click += delegate (object? sender, EventArgs args)
             {
@@ -136,7 +165,6 @@ namespace CSCourseWork.Windows
                 color_control.BackColor = color_dialog.Color;
                 property.Value = new EditorColor(color_dialog.Color.R, color_dialog.Color.G, color_dialog.Color.B);
             };
-
             group.Controls.Add(color_control);
         }
 
@@ -169,9 +197,11 @@ namespace CSCourseWork.Windows
         private void SettingListInitialize(string find_setting)
         {
             this.settinglist_treeview.Nodes.Clear();
-            this.settinglist_treeview.Nodes.Add("Прочее");
+            this.properties_panel.Controls.Clear();
 
+            this.settinglist_treeview.Nodes.Add("Прочее");
             var search_pattern = ($"[\\w ]*{find_setting}[\\w ]*");
+
             foreach (var properties in this.EditorInstance.GetType().GetProperties())
             {
                 if (properties.PropertyType.GetCustomAttribute<EditorConfigTypeAttribute>(true) == null
@@ -183,12 +213,10 @@ namespace CSCourseWork.Windows
                 if (setting_attribute == null || buffer_value == null) continue;
                 var buffer = new EditorConfigProperty(properties.Name, buffer_value);
 
-                if (this.SettingsBuffer.ContainsKey(setting_attribute.SettingName))
+                if (this.SettingsBuffer.ContainsKey(setting_attribute.SettingName) != true)
                 {
-                    this.SettingsBuffer[setting_attribute.SettingName] = buffer;
+                    this.SettingsBuffer.Add(setting_attribute.SettingName, buffer);
                 }
-                else this.SettingsBuffer.Add(setting_attribute.SettingName, buffer);
-
                 var selected_section = (setting_attribute.SettingSection == string.Empty) ? 0 : default(int?);
                 for (int index = 1; index < this.settinglist_treeview.Nodes.Count; index++)
                 {

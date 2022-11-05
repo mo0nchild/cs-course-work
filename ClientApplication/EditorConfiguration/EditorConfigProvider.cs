@@ -52,8 +52,10 @@ namespace CSCourseWork.EditorConfiguration
 
         protected static Configuration GetConfiguration(string? filepath)
         {
-            if (filepath != null) return ConfigurationManager.OpenExeConfiguration(filepath);
-            return ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            if (filepath == null) return ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            var fileMap = new ExeConfigurationFileMap() { ExeConfigFilename = filepath };
+            return ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
         }
     }
 
@@ -66,8 +68,15 @@ namespace CSCourseWork.EditorConfiguration
 
         public IEditorConfigProvider PutConfigObject(object @object)
         {
+            foreach (var property in @object.GetType().GetProperties())
+            {
+                var property_type = property.PropertyType;
 
-
+                if (property.GetCustomAttribute<EditorConfigTargetAttribute>(true) == null &&
+                    property_type.GetCustomAttribute<EditorConfigTypeAttribute>(true) == null) continue;
+                
+                this.PutConfigProperty(property.Name, property.GetValue(@object)!);
+            }
             return this;
         }
 
@@ -172,24 +181,16 @@ namespace CSCourseWork.EditorConfiguration
 
                 if (property_item_type.IsPrimitive || property_item_type == typeof(string))
                 {
-                    @param = new EditorPropertyBuilding.PropertyParams()
-                    {
-                        Name = property_item_attribute.Name,
-                        Value = property_item.GetValue(property)?.ToString()!,
-                        Type = property_item_type.Name
-                    };
+                    @param = new EditorPropertyBuilding.PropertyParams() { Name = property_item_attribute.Name,
+                        Value = property_item.GetValue(property)?.ToString()!, Type = property_item_type.Name };
                 }
                 else if (property_item_type.GetCustomAttribute<EditorConfigTypeAttribute>(true) != null)
                 {
                     var reference_name = Guid.NewGuid();
                     this.PutConfigProperty(reference_name.ToString(), property_item.GetValue(property)!);
 
-                    @param = new EditorPropertyBuilding.PropertyParams()
-                    {
-                        Name = property_item_attribute.Name,
-                        Type = property_item_type.Name,
-                        Reference = reference_name.ToString()
-                    };
+                    @param = new EditorPropertyBuilding.PropertyParams() { Name = property_item_attribute.Name,
+                        Type = property_item_type.Name, Reference = reference_name.ToString() };
                 }
                 else continue;
                 config_property.Building.AddParam(@param);

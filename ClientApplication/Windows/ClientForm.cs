@@ -18,20 +18,11 @@ namespace CSCourseWork
 {
     internal partial class ClientForm : Form
     {
-        public EditorComponentBase<NodesController> EditorInstance { get; private set; }
+        private EditorComponentBase<NodesController> EditorInstance { get; set; } = default!;
 
         public ClientForm()
         {
-            this.InitializeComponent(); this.pointer_panel.Hide();
-
-            var editor_builder = new EditorComponentBuilder(this, typeof(NodesController))
-                .AddEditorGeometry(this.pointer_panel.Location, this.pointer_panel.Size)
-                .AddEditorConfiguration(new EditorConfigProvider(null));
-            this.EditorInstance = editor_builder.BuildEditor();
-
-            this.EditorInstance.NodeClicked += new EditorActionEventHandler(EditorComponentNodeSelected);
-            this.EditorInstance.FieldClicked += new EditorActionEventHandler(EditorComponentFieldClicked);
-            this.EditorInstance.NodeScaled += new EditorActionEventHandler(EditorInstanceNodeScaled);
+            this.InitializeComponent(); this.InstallEditorComponent("editor_panel");
 
             this.addop_button.Click += new EventHandler(AddOperationButtonClick);
             this.deleteop_button.Click += new EventHandler(DeleteOperationButtonClick);
@@ -44,19 +35,35 @@ namespace CSCourseWork
             this.nodes_treeview.AfterSelect += new TreeViewEventHandler(NodesTreeViewAfterSelect);
             this.nodes_treeview.MouseClick += new MouseEventHandler(NodesTreeViewMouseClick);
 
-
-
-            this.editorconf_toolstrip_menuitem.Click += (sender, args) => 
-            {
-                var settings = new EditorSettings<NodesController>(this.EditorInstance);
-                settings.ShowDialog();
-            };
-
-
-
             this.app_propertygrid.PropertyValueChanged += AppPropertyGridPropertyValueChanged;
             this.editor_trackbar.ValueChanged += EditorTrackbarValueChanged;
+
+            this.editorconf_toolstrip_menuitem.Click += delegate (object? sender, EventArgs args)
+            {
+                var settings = new EditorSettings<NodesController>(this.EditorInstance!,
+                    new EditorConfigProvider(null));
+
+                if (settings.ShowDialog() == DialogResult.OK) this.InstallEditorComponent("editor_panel");
+            };
             this.AddOperationButtonClick(this.addop_button, EventArgs.Empty);
+        }
+
+        private void InstallEditorComponent(string editor_name)
+        {
+            this.pointer_panel.Hide(); this.Controls.RemoveByKey(editor_name);
+            var editor_builder = new EditorComponentBuilder(this, typeof(NodesController));
+
+            editor_builder.AddEditorGeometry(this.pointer_panel.Location, this.pointer_panel.Size)
+                .AddEditorConfiguration(new EditorConfigProvider(null));
+
+            if (this.EditorInstance != null) editor_builder.ControllerInstance = this.EditorInstance.Controller;
+            this.status_toolstrip_label.Text = "Настройки редактора загружены";
+
+            this.EditorInstance = editor_builder.BuildEditor(editor_name);
+            this.EditorInstance.NodeScaled += new EditorActionEventHandler(EditorInstanceNodeScaled);
+
+            this.EditorInstance.FieldClicked += new EditorActionEventHandler(EditorComponentFieldClicked);
+            this.EditorInstance.NodeClicked += new EditorActionEventHandler(EditorComponentNodeSelected);
         }
 
         private void EditorTrackbarValueChanged(object? sender, EventArgs args)
@@ -163,7 +170,9 @@ namespace CSCourseWork
             var controller = this.EditorInstance.Controller;
             while (controller.NodesList.Count > 0) controller.RemoveNode(1);
 
+            this.status_toolstrip_label.Text = "Поверхность редактора очищена";
             (this.EditorInstance as Panel)?.Invalidate();
+
             this.NodeInfoListUpdate();
         }
 
@@ -197,6 +206,7 @@ namespace CSCourseWork
         private void SelectOperationButtonClick(object? sender, EventArgs args)
         {
             this.EditorInstance.Mode = EditorModes.SelectNode;
+            this.status_toolstrip_label.Text = "Выбран инструмент соединения";
 
             this.addop_button.Enabled = this.deleteop_button.Enabled = true;
             (sender as Button)!.Enabled = false;
@@ -205,6 +215,7 @@ namespace CSCourseWork
         private void DeleteOperationButtonClick(object? sender, EventArgs args)
         {
             this.EditorInstance.Mode = EditorModes.RemoveNode;
+            this.status_toolstrip_label.Text = "Выбран инструмент удаления";
 
             this.addop_button.Enabled = this.selectop_button.Enabled = true;
             (sender as Button)!.Enabled = false;
@@ -213,6 +224,7 @@ namespace CSCourseWork
         private void AddOperationButtonClick(object? sender, EventArgs args)
         {
             this.EditorInstance.Mode = EditorModes.AddNode;
+            this.status_toolstrip_label.Text = "Выбран инструмент добавления";
 
             this.selectop_button.Enabled = this.deleteop_button.Enabled = true;
             (sender as Button)!.Enabled = false;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -22,7 +23,9 @@ namespace CSCourseWork.Windows
     {
         public delegate void TypeSettingHandler(Panel group, EditorConfiguration.EditorConfigProperty property);
 
-        private EditorComponentBase<TNodeController> EditorInstance { get; set; }
+        private EditorComponentBase<TNodeController> EditorInstance { get; set; } = default!;
+        private IEditorConfigProvider ConfigProvider { get; set; } = default!;
+
         private Dictionary<string, EditorConfigProperty> SettingsBuffer { get; set; } = new();
 
         private static Hashtable TypeHandlers = new Hashtable() 
@@ -33,9 +36,9 @@ namespace CSCourseWork.Windows
             ["Int32"] = new TypeSettingHandler(Int32SettingHandler),
         };
 
-        public EditorSettings(EditorComponentBase<TNodeController> editor)
+        public EditorSettings(EditorComponentBase<TNodeController> editor, IEditorConfigProvider config_provider)
         {
-            this.EditorInstance = editor;
+            (this.EditorInstance, this.ConfigProvider) = (editor, config_provider);
             this.InitializeComponent(); this.SettingListInitialize(string.Empty);
 
             this.settinglist_treeview.NodeMouseClick += SettinglistTreeviewNodeMouseClick;
@@ -55,10 +58,11 @@ namespace CSCourseWork.Windows
 
         private void AcceptButtonClick(object? sender, System.EventArgs args)
         {
-            foreach (var item in this.SettingsBuffer) 
+            foreach (var item in this.SettingsBuffer)
             {
-                Console.WriteLine($"{item.Key} -> {item.Value.Name}, {item.Value.Value}");
+                this.ConfigProvider.PutConfigProperty(item.Value.Name, item.Value.Value);
             }
+            this.DialogResult = DialogResult.OK;
         }
 
         private static void Int32SettingHandler(Panel group, EditorConfigProperty property)

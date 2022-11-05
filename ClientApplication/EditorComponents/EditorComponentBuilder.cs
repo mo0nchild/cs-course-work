@@ -25,8 +25,7 @@ namespace CSCourseWork.EditorComponents
 
         public void SetLinkToNodeController(System.Type controller_type);
         public void SetLinkToForm(Form form_link);
-
-        public EditorComponentBase<TController> BuildEditor();
+        public EditorComponentBase<TController> BuildEditor(System.String name);
     }
 
     public sealed class EditorComponentBuilder : System.Object, IEditorComponentBuilder<NodesController>
@@ -37,6 +36,9 @@ namespace CSCourseWork.EditorComponents
 
         private System.Drawing.Point EditorPosition = default(Point);
         private System.Drawing.Size EditorSize = default(Size);
+
+        private NodesControllers.NodesController? controller_instance = default(NodesController);
+        public NodesController? ControllerInstance { set => controller_instance = value; }
 
         public EditorComponentBuilder(Form form_link, Type controller_type) : base() 
         {
@@ -83,13 +85,17 @@ namespace CSCourseWork.EditorComponents
             return this;
         }
 
-        public EditorComponentBase<NodesController> BuildEditor()
+        public EditorComponentBase<NodesController> BuildEditor(string name)
         {
-            var controller_instance = (NodesController)(Activator.CreateInstance(this.ControllerType)!);
-            var editor_instance = new EditorComponent(this.FormLink, controller_instance)
+            if (this.controller_instance == null)
+            { this.controller_instance = (NodesController)(Activator.CreateInstance(this.ControllerType)!); }
+
+            var editor_instance = new EditorComponent(this.controller_instance)
             {
-                Location = this.EditorPosition, Size = this.EditorSize 
+                Location = this.EditorPosition, Size = this.EditorSize, Name = name
             };
+            this.FormLink.Controls.Add(editor_instance);
+
             foreach (KeyValuePair<string, object> item in this.Properties)
             {
                 var property_info = editor_instance.GetType().GetProperty(item.Key);

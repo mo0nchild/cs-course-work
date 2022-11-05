@@ -72,13 +72,13 @@ namespace CSCourseWork.NodesControllers
             catch (Exception error) { MessageBox.Show(error.Message, "Ошибка"); }
         }
 
-        public void SetNodeLinks(int node_id, int required_links_id)
+        public void SetNodeLinks(int node_id, int required_link_id)
         {
             NodeModel? selectednode_info = this[node_id];
 
-            if (selectednode_info != null && node_id != required_links_id) 
+            if (selectednode_info != null && node_id != required_link_id) 
             {
-                if (LinkCheck(selectednode_info, required_links_id)) selectednode_info?.NodeLinksID.Add(required_links_id);
+                if (LinkCheck(selectednode_info, required_link_id)) selectednode_info?.NodeLinksID.Add(required_link_id);
             }
 
             bool LinkCheck(NodeModel node_info, int required_id)

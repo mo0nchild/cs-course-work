@@ -86,12 +86,12 @@ namespace CSCourseWork.EditorComponents
             get => this.selected_nodeid;
         }
 
-        public EditorComponentBase(TNodesController controller, Form parent_form) : base()
+        public EditorComponentBase(TNodesController controller) : base()
         { 
-            this.Controller = controller; parent_form.Controls.Add(this);
-
             this.MouseDown += new MouseEventHandler(this.OnEditorComponentClick);
             this.Paint += new PaintEventHandler(this.EditorComponentPaint);
+
+            this.Controller = controller;
         }
 
         protected void EditorComponentPaint(object? sender, PaintEventArgs args)
@@ -135,12 +135,10 @@ namespace CSCourseWork.EditorComponents
 
         protected abstract System.Drawing.Image BuildEditorGrid(Size size);
 
-        public abstract void BuildGraphPath(List<NodesConnectorInfo> node_paths);
-
         public abstract void PaintEdgeWithArrow(Graphics graphics, NodesConnectorInfo connector, Color color);
-
         public abstract void PaintNodeInstance(Graphics graphic, NodeModel node_info, Brush node_brush);
 
+        public abstract void BuildGraphPath(List<NodesConnectorInfo> node_paths);
         public abstract void ScalingGraphView(int scale_value);
     }
 }

@@ -69,7 +69,7 @@ namespace CSCourseWork.EditorComponents
             }
         }
 
-        public EditorComponent(Form parent_form, NodesController controller) : base(controller, parent_form)
+        public EditorComponent(NodesController controller) : base(controller)
         {
             (this.DoubleBuffered, this.BorderStyle, this.NodeSize) = (true, BorderStyle.FixedSingle, NodeDefaultSize);
 
@@ -83,7 +83,7 @@ namespace CSCourseWork.EditorComponents
             { if (args.Button == MouseButtons.Right) this.movingbutton_hold = false; });
         }
             
-        public EditorComponent(Form parent_form) : this(parent_form, new NodesController()) { }
+        public EditorComponent() : this(new NodesController()) { }
 
         protected override void OnEditorComponentClick(object? sender, MouseEventArgs args)
         {

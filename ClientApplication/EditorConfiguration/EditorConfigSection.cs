@@ -25,6 +25,8 @@ namespace CSCourseWork.EditorConfiguration
             public string Value { get => (string)base["value"]; set => base["value"] = value; }
         }
 
+        public void AddNamespace(EditorNamespace @namespace) => base.BaseAdd(@namespace);
+
         protected override ConfigurationElement CreateNewElement() => new EditorNamespace();
 
         protected override object GetElementKey(ConfigurationElement element)
@@ -38,6 +40,9 @@ namespace CSCourseWork.EditorConfiguration
 
         protected override object GetElementKey(ConfigurationElement element)
         { return ((EditorProperty)element).Name; }
+
+        public void AddProperty(EditorProperty property) => base.BaseAdd(property);
+        public void RemoveProperty(string property_name) => base.BaseRemove(property_name);
 
         public new EditorProperty this[string Name] => (EditorProperty)this.BaseGet(Name);
     }
@@ -79,10 +84,13 @@ namespace CSCourseWork.EditorConfiguration
             public string Reference { get => (string)base["ref"]; set => base["ref"] = value; }
         }
 
+        public new PropertyParams this[string Name] => (PropertyParams)this.BaseGet(Name);
+        public void AddParam(PropertyParams @param) => base.BaseAdd(@param);
+        public void ClearParams() => base.BaseClear();
+
         protected override ConfigurationElement CreateNewElement() => new PropertyParams();
 
         protected override object GetElementKey(ConfigurationElement element)
         { return ((PropertyParams)element).Name; }
     }
-
 }

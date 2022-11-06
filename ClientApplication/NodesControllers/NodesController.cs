@@ -18,8 +18,7 @@ namespace CSCourseWork.NodesControllers
 
         public NodeModel? this[int node_id]
         {
-            get
-            {
+            get {
                 if (node_id <= 0 || node_id > this.NodesList.Count) return null;
                 return this.NodesList.ElementAt(node_id - 1);
             }
@@ -44,7 +43,7 @@ namespace CSCourseWork.NodesControllers
 
         public void AddNewNode(int pos_x, int pos_y)
         {
-            this.NodesList.ToList().ForEach(delegate (NodeModel node_info)
+            this.NodesList.ToList().ForEach(delegate (NodesControllers.NodeModel node_info)
             {
                 if (this.NodeCollisionCheck(new Point(pos_x, pos_y), node_info.NodeID))
                 { throw new NodesControllerException("Произошло наложение вершин", node_info); }
@@ -56,11 +55,18 @@ namespace CSCourseWork.NodesControllers
 
         public void RemoveNode(int node_id)
         {
-            foreach (var node_info in this.NodesList
-                .Where((NodeModel node_info) => node_info.NodeLinksID.Contains(node_id)))
+            //foreach (var node_info in this.NodesList
+            //    .Where((NodeModel node_info) => node_info.NodeLinksID.Contains(node_id)))
+            //{
+            //    this.RemoveNodeLinks(node_info.NodeID, node_id);
+            //    for (int id = 0; id < node_info.NodeLinksID.Count; id++)
+            //    {
+            //        if (node_info.NodeLinksID[id] >= node_id) node_info.NodeLinksID[id]--;
+            //    }
+            //}
+            foreach (NodesControllers.NodeModel node_info in this.NodesList)
             {
-                this.RemoveNodeLinks(node_info.NodeID, node_id);
-
+                if (node_info.NodeLinksID.Contains(node_id)) this.RemoveNodeLinks(node_info.NodeID, node_id);
                 for (int id = 0; id < node_info.NodeLinksID.Count; id++)
                 {
                     if (node_info.NodeLinksID[id] >= node_id) node_info.NodeLinksID[id]--;
@@ -74,28 +80,24 @@ namespace CSCourseWork.NodesControllers
 
         public void SetNodeLinks(int node_id, int required_link_id)
         {
-            NodeModel? selectednode_info = this[node_id];
+            NodesControllers.NodeModel? selectednode_info = this[node_id];
 
             if (selectednode_info != null && node_id != required_link_id) 
             {
                 if (LinkCheck(selectednode_info, required_link_id)) selectednode_info?.NodeLinksID.Add(required_link_id);
             }
 
-            bool LinkCheck(NodeModel node_info, int required_id)
-                { return node_info.NodeLinksID.Where((id) => id == required_id).ToList().Count == 0; }
+            bool LinkCheck(NodesControllers.NodeModel node_info, int required_id)
+            { return node_info.NodeLinksID.Where((id) => id == required_id).ToList().Count == 0; }
         }
 
         public void RemoveNodeLinks(int node_id, int required_links_id)
         {
-            try 
-            {
+            try {
                 this[node_id]?.NodeLinksID.RemoveAll((id) => id == required_links_id);
                 this[required_links_id]?.NodeLinksID.RemoveAll((id) => id == node_id);
             }
-            catch (System.Exception error) 
-            { 
-                MessageBox.Show(error.Message, "Ошибка"); 
-            }
+            catch (System.Exception error) { MessageBox.Show(error.Message, "Ошибка"); }
         }
 
         public List<NodesConnectorInfo> BuildNodeСonnectors()

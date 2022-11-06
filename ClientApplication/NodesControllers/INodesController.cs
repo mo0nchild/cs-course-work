@@ -8,24 +8,25 @@ namespace CSCourseWork.NodesControllers
 {
     public sealed class NodesControllerException : System.Exception
     {
-        public NodeModel? Node { get; private set; } = default;
+        public NodesControllers.NodeModel? Node { get; private set; } = default;
         public NodesControllerException(string message, NodeModel node) : base(message) => this.Node = node;
     }
 
-    public interface INodesController : IEnumerable<NodeModel>, IDisposable
+    public interface INodesController : IEnumerable<NodesControllers.NodeModel>, IDisposable
     {
-        public SortedSet<NodeModel> NodesList { get; set; }
-        public NodeModel? this[int node_id] { get; }
+        public SortedSet<NodesControllers.NodeModel> NodesList { get; set; }
+        public NodesControllers.NodeModel? this[System.Int32 node_id] { get; }
         public System.Int32 NodeSize { get; set; }
-        public void AddNewNode(int position_x, int position_y);
-        public void RemoveNode(int node_id);
-        public bool NodeCollisionCheck(Point position, int node_id);
+
+        public void AddNewNode(System.Int32 position_x, System.Int32 position_y);
+        public void RemoveNode(System.Int32 node_id);
+        public bool NodeCollisionCheck(Point position, System.Int32 node_id);
     }
 
     public interface INodesControllerWithConnectors : INodesController
     {
-        public void SetNodeLinks(int node_id, int required_links_id);
-        public void RemoveNodeLinks(int node_id, int required_links_id);
-        public List<NodesConnectorInfo> BuildNodeСonnectors();
+        public void SetNodeLinks(System.Int32 node_id, System.Int32 required_links_id);
+        public void RemoveNodeLinks(System.Int32 node_id, System.Int32 required_links_id);
+        public List<NodesControllers.NodesConnectorInfo> BuildNodeСonnectors();
     }
 }

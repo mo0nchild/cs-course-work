@@ -36,15 +36,14 @@
             this.properties_panel = new System.Windows.Forms.FlowLayoutPanel();
             this.search_textbox = new System.Windows.Forms.TextBox();
             this.search_label = new System.Windows.Forms.Label();
-            this.save_button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // accept_button
             // 
             this.accept_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.accept_button.Location = new System.Drawing.Point(458, 340);
+            this.accept_button.Location = new System.Drawing.Point(412, 342);
             this.accept_button.Name = "accept_button";
-            this.accept_button.Size = new System.Drawing.Size(96, 33);
+            this.accept_button.Size = new System.Drawing.Size(142, 33);
             this.accept_button.TabIndex = 4;
             this.accept_button.Text = "Принять";
             this.accept_button.UseVisualStyleBackColor = true;
@@ -52,9 +51,9 @@
             // export_button
             // 
             this.export_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.export_button.Location = new System.Drawing.Point(266, 341);
+            this.export_button.Location = new System.Drawing.Point(266, 342);
             this.export_button.Name = "export_button";
-            this.export_button.Size = new System.Drawing.Size(86, 33);
+            this.export_button.Size = new System.Drawing.Size(142, 33);
             this.export_button.TabIndex = 5;
             this.export_button.Text = "Загрузить";
             this.export_button.UseVisualStyleBackColor = true;
@@ -122,28 +121,17 @@
             this.search_label.TabIndex = 10;
             this.search_label.Text = "Список настроек редактора: ";
             // 
-            // save_button
-            // 
-            this.save_button.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.save_button.Location = new System.Drawing.Point(358, 341);
-            this.save_button.Name = "save_button";
-            this.save_button.Size = new System.Drawing.Size(94, 32);
-            this.save_button.TabIndex = 11;
-            this.save_button.Text = "Сохранить";
-            this.save_button.UseVisualStyleBackColor = true;
-            // 
             // EditorSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(569, 386);
-            this.Controls.Add(this.save_button);
+            this.Controls.Add(this.accept_button);
             this.Controls.Add(this.search_label);
             this.Controls.Add(this.search_textbox);
             this.Controls.Add(this.properties_panel);
             this.Controls.Add(this.settinglist_label);
             this.Controls.Add(this.settinglist_treeview);
-            this.Controls.Add(this.accept_button);
             this.Controls.Add(this.export_button);
             this.Controls.Add(this.properties_label);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -164,6 +152,5 @@
         private FlowLayoutPanel properties_panel;
         private TextBox search_textbox;
         private Label search_label;
-        private Button save_button;
     }
 }

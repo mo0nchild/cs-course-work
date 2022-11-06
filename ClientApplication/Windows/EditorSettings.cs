@@ -46,16 +46,10 @@ namespace CSCourseWork.Windows
 
             this.accept_button.Click += new EventHandler(AcceptButtonClick);
             this.export_button.Click += new EventHandler(ExportButtonClick);
-            this.save_button.Click += new EventHandler(SaveButtonClick);
         }
 
         private void SearchTextboxTextChanged(object? sender, System.EventArgs args)
             => this.SettingListInitialize(this.search_textbox.Text);
-
-        private void SaveButtonClick(object? sender, EventArgs e)
-        {
-
-        }
         
         private void ExportButtonClick(object? sender, System.EventArgs args)
         {
@@ -67,11 +61,16 @@ namespace CSCourseWork.Windows
 
                 if (configfile_dialog.ShowDialog() != DialogResult.OK) return;
                 export_config = new EditorConfigProvider(configfile_dialog.FileName);
-                //this.ConfigProvider.ConfigFilePath = configfile_dialog.FileName;
-                //export_config = (EditorConfigProvider)this.ConfigProvider;
             }
 
-            foreach (var export_property in export_config.TakeConfig())
+            List<EditorConfiguration.EditorConfigProperty> export_properies = default!;
+
+            try { export_properies = export_config.TakeConfig(); }
+            catch(System.Exception error)
+            {
+                MessageBox.Show($"Невозможно загрузить конфигурацию: {error.Message}", "Ошибка"); return;
+            }
+            foreach (var export_property in export_properies)
             {
                 string? setting_key = default;
                 foreach (var setting in this.SettingsBuffer)

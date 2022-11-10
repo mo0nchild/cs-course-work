@@ -1,9 +1,11 @@
-﻿using System;
+﻿using GraphServiceReference;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,17 +46,61 @@ namespace CSCourseWork.Windows
 
         private void RegisterButtonClick(object? sender, EventArgs args)
         {
-            
+            System.Guid? profile_id = default!;
+            using (var register = new GraphServiceReference.ProfileControllerClient())
+            {
+                try {
+                    profile_id = register.Registration(new ProfileData()
+                    {
+                        Email = this.reg_email_textbox.Text, Password = this.reg_password_textbox.Text,
+                        UserName = this.reg_name_textbox.Text, ProjectsPath = this.reg_filepath_textbox.Text
+                    });
+                }
+                catch (FaultException<GraphServiceReference.ProfileControllerException> error) 
+                { MessageBox.Show(error.Detail.Message, "Ошибка"); return; }
+
+                catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
+            }
+            MessageBox.Show("Учётная запись была создана", "Готово");
+
+            var client_form = new ClientForm(profile_id.Value);
+            client_form.FormClosed += (sender, args) => this.Show();
+
+            client_form.Show(); this.Hide();
         }
 
         private void LoginButtonClick(object? sender, EventArgs args)
         {
-            
+            string username = this.auth_name_textbox.Text, password = this.auth_password_textbox.Text;
+            System.Guid? profile_id = default!;
+
+            using (var authorize = new GraphServiceReference.ProfileControllerClient())
+            {
+                try { profile_id = authorize.Authorization(username, password); }
+                catch (FaultException<GraphServiceReference.ProfileControllerException> error) 
+                { 
+                    MessageBox.Show(error.Detail.Message, "Ошибка"); return; 
+                }
+                catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
+            }
+
+            if (profile_id == null) { MessageBox.Show("Невозвожно зайти в профиль", "Ошибка"); return; }
+            var client_form = new ClientForm(profile_id.Value);
+
+            client_form.FormClosed += (sender, args) => this.Show();
+            client_form.Show(); this.Hide();
         }
 
         private void FilepathButtonClick(object? sender, EventArgs args)
         {
-            
+            using (var filedialog = new FolderBrowserDialog()) 
+            {
+                var result = filedialog.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(filedialog.SelectedPath))
+                {
+                    this.reg_filepath_textbox.Text = filedialog.SelectedPath;
+                }
+            }
         }
     }
 }

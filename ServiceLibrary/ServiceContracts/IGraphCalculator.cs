@@ -11,21 +11,22 @@ namespace ServiceLibrary.ServiceContracts
     [ServiceContractAttribute(Name = "GraphCalculator")]
     public interface IGraphCalculator
     {
+        [FaultContract(typeof(System.Exception))]
         [OperationContractAttribute]
-        int[] FindPathByBFS(int origin_id, int target_id, List<NodeData> node_list);
+        System.Int32[] FindPathByBFS(int origin_id, int target_id, List<NodeData> node_list);
     }
 
     [DataContractAttribute]
     public sealed class NodeData : System.Object
     {
         [DataMemberAttribute]
-        public int[] NodeLinksID { get; set; } = new int[0];
+        public System.Int32[] NodeLinksID { get; set; } = new System.Int32[0];
 
         [DataMemberAttribute]
-        public int[] NodeInboxsID { get; set; } = new int[0];
+        public System.Int32[] NodeInboxsID { get; set; } = new System.Int32[0];
 
         [DataMemberAttribute]
-        public int NodeID { get; set; } = default(int);
-        public int NodePathLevel { get; set; } = default(int);
+        public System.Int32 NodeID { get; set; } = default(System.Int32);
+        public System.Int32 NodePathLevel { get; set; } = default(System.Int32);
     }
 }

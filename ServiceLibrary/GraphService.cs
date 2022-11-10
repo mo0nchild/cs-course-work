@@ -10,7 +10,7 @@ namespace ServiceLibrary
 {
     [ServiceBehaviorAttribute(InstanceContextMode = InstanceContextMode.PerSession, 
         IncludeExceptionDetailInFaults = true)]
-    public class GraphService : System.Object, ServiceContracts.IGraphCalculator
+    public class GraphService : ServiceTypes.ProjectDispatcher, ServiceContracts.IGraphCalculator
     {
         private List<NodeData> TestList { get; set; } = new List<NodeData>()
         {
@@ -24,12 +24,13 @@ namespace ServiceLibrary
 
         public int[] FindPathByBFS(int origin_id, int target_id, List<NodeData> node_list)
         {
-            if (origin_id == target_id) throw new Exception("Совпадение начального и целевого узла ");
+            if (origin_id == target_id)
+            { throw new FaultException<Exception>(new Exception("Совпадение начального и целевого узла ")); }
 
             var node_queue = new Queue<NodeData>(new NodeData[] { node_list[origin_id - 1] });
             var node_visited = new List<int>() { origin_id };
 
-            while (node_queue.Count > 0) 
+            while (node_queue.Count > 0)
             {
                 var current_node = node_queue.Dequeue();
                 if (current_node.NodeID == target_id) 

@@ -47,6 +47,10 @@
     <Compile Include="ServiceContracts\IGraphCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GraphService.cs" />
+    <Compile Include="ServiceContracts\IProfileController.cs" />
+    <Compile Include="ServiceContracts\IProjectDispatcher.cs" />
+    <Compile Include="ServiceTypes\ProfileController.cs" />
+    <Compile Include="ServiceTypes\ProjectDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig">

@@ -15,7 +15,7 @@ namespace CSCourseWork
             // see https://aka.ms/applicationconfiguration.
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new ClientForm());
+            Application.Run(new AuthForm());
         }
     }
 }

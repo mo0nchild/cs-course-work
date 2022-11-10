@@ -117,9 +117,9 @@
             this.search_label.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.search_label.Location = new System.Drawing.Point(266, 10);
             this.search_label.Name = "search_label";
-            this.search_label.Size = new System.Drawing.Size(166, 15);
+            this.search_label.Size = new System.Drawing.Size(107, 15);
             this.search_label.TabIndex = 10;
-            this.search_label.Text = "Список настроек редактора: ";
+            this.search_label.Text = "Поиск параметра:";
             // 
             // EditorSettings
             // 

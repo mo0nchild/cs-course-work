@@ -210,8 +210,9 @@
             this.reg_filepath_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.reg_filepath_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.reg_filepath_textbox.Location = new System.Drawing.Point(21, 180);
-            this.reg_filepath_textbox.MaxLength = 100;
+            this.reg_filepath_textbox.MaxLength = 200;
             this.reg_filepath_textbox.Name = "reg_filepath_textbox";
+            this.reg_filepath_textbox.ReadOnly = true;
             this.reg_filepath_textbox.Size = new System.Drawing.Size(325, 29);
             this.reg_filepath_textbox.TabIndex = 10;
             // 
@@ -277,10 +278,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(417, 348);
+            this.ClientSize = new System.Drawing.Size(418, 349);
             this.Controls.Add(this.auth_tabcontrol);
+            this.MaximumSize = new System.Drawing.Size(434, 388);
+            this.MinimumSize = new System.Drawing.Size(434, 388);
             this.Name = "AuthForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Авторизация";
             this.auth_tabcontrol.ResumeLayout(false);
             this.authorization_tabpage.ResumeLayout(false);

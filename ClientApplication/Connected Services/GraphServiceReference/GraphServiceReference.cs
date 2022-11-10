@@ -64,12 +64,117 @@ namespace GraphServiceReference
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ProfileData", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+    public partial class ProfileData : object
+    {
+        
+        private string EmailField;
+        
+        private string PasswordField;
+        
+        private string ProjectsPathField;
+        
+        private string UserNameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Email
+        {
+            get
+            {
+                return this.EmailField;
+            }
+            set
+            {
+                this.EmailField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Password
+        {
+            get
+            {
+                return this.PasswordField;
+            }
+            set
+            {
+                this.PasswordField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ProjectsPath
+        {
+            get
+            {
+                return this.ProjectsPathField;
+            }
+            set
+            {
+                this.ProjectsPathField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string UserName
+        {
+            get
+            {
+                return this.UserNameField;
+            }
+            set
+            {
+                this.UserNameField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ProfileControllerException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+    public partial class ProfileControllerException : object
+    {
+        
+        private string ActionField;
+        
+        private string MessageField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Action
+        {
+            get
+            {
+                return this.ActionField;
+            }
+            set
+            {
+                this.ActionField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message
+        {
+            get
+            {
+                return this.MessageField;
+            }
+            set
+            {
+                this.MessageField = value;
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="GraphServiceReference.GraphCalculator")]
     public interface GraphCalculator
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GraphCalculator/FindPathByBFS", ReplyAction="http://tempuri.org/GraphCalculator/FindPathByBFSResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(System.Exception), Action="http://tempuri.org/GraphCalculator/FindPathByBFSExceptionFault", Name="Exception", Namespace="http://schemas.datacontract.org/2004/07/System")]
         int[] FindPathByBFS(int origin_id, int target_id, GraphServiceReference.NodeData[] node_list);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GraphCalculator/FindPathByBFS", ReplyAction="http://tempuri.org/GraphCalculator/FindPathByBFSResponse")]
@@ -182,6 +287,193 @@ namespace GraphServiceReference
         {
             
             NetTcpBinding_GraphCalculator,
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="GraphServiceReference.ProfileController")]
+    public interface ProfileController
+    {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Authorization", ReplyAction="http://tempuri.org/ProfileController/AuthorizationResponse")]
+        System.Nullable<System.Guid> Authorization(string username, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Authorization", ReplyAction="http://tempuri.org/ProfileController/AuthorizationResponse")]
+        System.Threading.Tasks.Task<System.Nullable<System.Guid>> AuthorizationAsync(string username, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Registration", ReplyAction="http://tempuri.org/ProfileController/RegistrationResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProfileControllerException), Action="http://tempuri.org/ProfileController/RegistrationProfileControllerExceptionFault", Name="ProfileControllerException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        System.Guid Registration(GraphServiceReference.ProfileData profiledata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Registration", ReplyAction="http://tempuri.org/ProfileController/RegistrationResponse")]
+        System.Threading.Tasks.Task<System.Guid> RegistrationAsync(GraphServiceReference.ProfileData profiledata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/SetupProfile", ReplyAction="http://tempuri.org/ProfileController/SetupProfileResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProfileControllerException), Action="http://tempuri.org/ProfileController/SetupProfileProfileControllerExceptionFault", Name="ProfileControllerException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        void SetupProfile(System.Guid userid, GraphServiceReference.ProfileData profiledata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/SetupProfile", ReplyAction="http://tempuri.org/ProfileController/SetupProfileResponse")]
+        System.Threading.Tasks.Task SetupProfileAsync(System.Guid userid, GraphServiceReference.ProfileData profiledata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/ReadProfile", ReplyAction="http://tempuri.org/ProfileController/ReadProfileResponse")]
+        GraphServiceReference.ProfileData ReadProfile(System.Guid userid);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/ReadProfile", ReplyAction="http://tempuri.org/ProfileController/ReadProfileResponse")]
+        System.Threading.Tasks.Task<GraphServiceReference.ProfileData> ReadProfileAsync(System.Guid userid);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/DeleteProfile", ReplyAction="http://tempuri.org/ProfileController/DeleteProfileResponse")]
+        void DeleteProfile(System.Guid userid);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/DeleteProfile", ReplyAction="http://tempuri.org/ProfileController/DeleteProfileResponse")]
+        System.Threading.Tasks.Task DeleteProfileAsync(System.Guid userid);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    public interface ProfileControllerChannel : GraphServiceReference.ProfileController, System.ServiceModel.IClientChannel
+    {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    public partial class ProfileControllerClient : System.ServiceModel.ClientBase<GraphServiceReference.ProfileController>, GraphServiceReference.ProfileController
+    {
+        
+        /// <summary>
+        /// Реализуйте этот разделяемый метод для настройки конечной точки службы.
+        /// </summary>
+        /// <param name="serviceEndpoint">Настраиваемая конечная точка</param>
+        /// <param name="clientCredentials">Учетные данные клиента.</param>
+        static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
+        
+        public ProfileControllerClient() : 
+                base(ProfileControllerClient.GetDefaultBinding(), ProfileControllerClient.GetDefaultEndpointAddress())
+        {
+            this.Endpoint.Name = EndpointConfiguration.NetTcpBinding_ProfileController.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProfileControllerClient(EndpointConfiguration endpointConfiguration) : 
+                base(ProfileControllerClient.GetBindingForEndpoint(endpointConfiguration), ProfileControllerClient.GetEndpointAddress(endpointConfiguration))
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProfileControllerClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(ProfileControllerClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProfileControllerClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(ProfileControllerClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProfileControllerClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress)
+        {
+        }
+        
+        public System.Nullable<System.Guid> Authorization(string username, string password)
+        {
+            return base.Channel.Authorization(username, password);
+        }
+        
+        public System.Threading.Tasks.Task<System.Nullable<System.Guid>> AuthorizationAsync(string username, string password)
+        {
+            return base.Channel.AuthorizationAsync(username, password);
+        }
+        
+        public System.Guid Registration(GraphServiceReference.ProfileData profiledata)
+        {
+            return base.Channel.Registration(profiledata);
+        }
+        
+        public System.Threading.Tasks.Task<System.Guid> RegistrationAsync(GraphServiceReference.ProfileData profiledata)
+        {
+            return base.Channel.RegistrationAsync(profiledata);
+        }
+        
+        public void SetupProfile(System.Guid userid, GraphServiceReference.ProfileData profiledata)
+        {
+            base.Channel.SetupProfile(userid, profiledata);
+        }
+        
+        public System.Threading.Tasks.Task SetupProfileAsync(System.Guid userid, GraphServiceReference.ProfileData profiledata)
+        {
+            return base.Channel.SetupProfileAsync(userid, profiledata);
+        }
+        
+        public GraphServiceReference.ProfileData ReadProfile(System.Guid userid)
+        {
+            return base.Channel.ReadProfile(userid);
+        }
+        
+        public System.Threading.Tasks.Task<GraphServiceReference.ProfileData> ReadProfileAsync(System.Guid userid)
+        {
+            return base.Channel.ReadProfileAsync(userid);
+        }
+        
+        public void DeleteProfile(System.Guid userid)
+        {
+            base.Channel.DeleteProfile(userid);
+        }
+        
+        public System.Threading.Tasks.Task DeleteProfileAsync(System.Guid userid)
+        {
+            return base.Channel.DeleteProfileAsync(userid);
+        }
+        
+        public virtual System.Threading.Tasks.Task OpenAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
+        }
+        
+        public virtual System.Threading.Tasks.Task CloseAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
+        }
+        
+        private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
+        {
+            if ((endpointConfiguration == EndpointConfiguration.NetTcpBinding_ProfileController))
+            {
+                System.ServiceModel.NetTcpBinding result = new System.ServiceModel.NetTcpBinding();
+                result.MaxBufferSize = int.MaxValue;
+                result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                result.MaxReceivedMessageSize = int.MaxValue;
+                return result;
+            }
+            throw new System.InvalidOperationException(string.Format("Не удалось найти конечную точку с именем \"{0}\".", endpointConfiguration));
+        }
+        
+        private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
+        {
+            if ((endpointConfiguration == EndpointConfiguration.NetTcpBinding_ProfileController))
+            {
+                return new System.ServiceModel.EndpointAddress("net.tcp://localhost:8733/GraphService/profile");
+            }
+            throw new System.InvalidOperationException(string.Format("Не удалось найти конечную точку с именем \"{0}\".", endpointConfiguration));
+        }
+        
+        private static System.ServiceModel.Channels.Binding GetDefaultBinding()
+        {
+            return ProfileControllerClient.GetBindingForEndpoint(EndpointConfiguration.NetTcpBinding_ProfileController);
+        }
+        
+        private static System.ServiceModel.EndpointAddress GetDefaultEndpointAddress()
+        {
+            return ProfileControllerClient.GetEndpointAddress(EndpointConfiguration.NetTcpBinding_ProfileController);
+        }
+        
+        public enum EndpointConfiguration
+        {
+            
+            NetTcpBinding_ProfileController,
         }
     }
 }

@@ -19,10 +19,12 @@ namespace CSCourseWork
     internal partial class ClientForm : Form
     {
         private EditorComponentBase<NodesController> EditorInstance { get; set; } = default!;
+        private System.Guid ProfileID { get; set; } = default;
 
-        public ClientForm()
+        public ClientForm(System.Guid profile_id)
         {
             this.InitializeComponent(); this.InstallEditorComponent("editor_panel");
+            this.ProfileID = profile_id;
 
             this.addop_button.Click += new EventHandler(AddOperationButtonClick);
             this.deleteop_button.Click += new EventHandler(DeleteOperationButtonClick);
@@ -45,7 +47,27 @@ namespace CSCourseWork
 
                 if (settings.ShowDialog() == DialogResult.OK) this.InstallEditorComponent("editor_panel");
             };
+            this.info_toolstrip_button.Click += delegate (object? sender, EventArgs args)
+            {
+                MessageBox.Show("БИСТ-214 Тюленев Данил; " +
+                    "Тема: Определение пути с минимальным числом дуг на основе поиска в ширину.");
+            };
+            this.accountconf_toolstrip_menuitem.Click += new EventHandler(AccountConfigurationClick);
+
             this.AddOperationButtonClick(this.addop_button, EventArgs.Empty);
+        }
+
+        private void AccountConfigurationClick(object? sender, EventArgs e)
+        {
+            var profile_settings = new ProfileSettings(this.ProfileID);
+            var dialog_result = profile_settings.ShowDialog();
+
+            if(dialog_result == DialogResult.Abort)
+            {
+                this.Close();
+            }
+
+            this.status_toolstrip_label.Text = "Данные учёной записи изменены";
         }
 
         private void InstallEditorComponent(string editor_name)
@@ -188,19 +210,17 @@ namespace CSCourseWork
             }
             catch (System.Exception error) { this.LoggerPrintMessage(error.Message); return; }
 
-            using (var client = new GraphServiceReference.GraphCalculatorClient())
-            {
+            try {
+                using var client = new GraphServiceReference.GraphCalculatorClient();
+
                 var service_inputdata = this.EditorInstance.Controller.ConvertToServiceData();
-                try
-                {
-                    var graph_path = client.FindPathByBFS(nodeid_origin, nodeid_target, service_inputdata);
-                    if(graph_path.Length > 0) 
-                    {
-                        this.EditorInstance.BuildGraphPath(this.EditorInstance.Controller.ConvertToPath(graph_path));
-                    }
-                }
-                catch (FaultException error) { MessageBox.Show(error.Message); }
+                var graph_path = client.FindPathByBFS(nodeid_origin, nodeid_target, service_inputdata);
+
+                if (graph_path.Length > 0)
+                { this.EditorInstance.BuildGraphPath(this.EditorInstance.Controller.ConvertToPath(graph_path)); }
             }
+            catch (FaultException<System.Exception> error) { MessageBox.Show(error.Detail.Message, "Ошибка"); }
+            catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); }
         }
 
         private void SelectOperationButtonClick(object? sender, EventArgs args)

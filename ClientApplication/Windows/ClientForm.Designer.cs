@@ -421,7 +421,7 @@
             this.MaximumSize = new System.Drawing.Size(880, 618);
             this.MinimumSize = new System.Drawing.Size(880, 618);
             this.Name = "ClientForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Редактор карты";
             this.app_toolstrip.ResumeLayout(false);
             this.app_toolstrip.PerformLayout();

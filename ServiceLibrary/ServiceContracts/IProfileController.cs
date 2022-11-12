@@ -16,13 +16,13 @@ namespace ServiceLibrary.ServiceContracts
         [OperationContractAttribute]
         System.Guid? Authorization(System.String username, System.String password);
 
-        [FaultContract(typeof(ProfileControllerException))]
+        [FaultContractAttribute(typeof(ProfileControllerException))]
         [OperationContractAttribute]
         System.Guid Registration(ServiceContracts.ProfileData profiledata);
 
-        [FaultContract(typeof(ProfileControllerException))]
+        [FaultContractAttribute(typeof(ProfileControllerException))]
         [OperationContractAttribute]
-        void SetupProfile(System.Guid userid, ServiceContracts.ProfileData profiledata);
+        void SetupProfile(System.Guid userid, ServiceContracts.ProfileData profile_data);
 
         [OperationContractAttribute]
         ServiceContracts.ProfileData ReadProfile(System.Guid userid);
@@ -32,29 +32,35 @@ namespace ServiceLibrary.ServiceContracts
     }
 
     [DataContractAttribute]
-    public enum ProfileControllerAction : System.SByte { Authorization, Registration, Setup, Delete }
+    public enum ProfileControllerAction : System.SByte 
+    { 
+        [EnumMemberAttribute] None, [EnumMemberAttribute] Authorization, [EnumMemberAttribute] Registration, 
+        [EnumMemberAttribute] Setup,  [EnumMemberAttribute] Delete 
+    }
 
-    [DataContractAttribute]
+    [DataContractAttribute, SerializableAttribute]
     public sealed class ProfileControllerException : System.Object
     {
         [DataMemberAttribute]
-        public ServiceContracts.ProfileControllerAction? Action { get; private set; } = default;
+        public ServiceContracts.ProfileControllerAction Action { get; private set; } = default;
+
         [DataMemberAttribute]
         public System.String Message { get; private set; } = default;
 
-        public ProfileControllerException(string message, ProfileControllerAction action)
-            : base() => (this.Message, this.Action) = (message, action);
+        public ProfileControllerException(string message, ProfileControllerAction action): base() 
+            => (this.Message, this.Action) = (message, action);
 
-        public ProfileControllerException(string message): base() { this.Message = message; }
+        public ProfileControllerException(string message) : this(message, ProfileControllerAction.None) { }
     }
 
+    [System.AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public sealed class ProfilePropertyAttribute : System.Attribute
     {
         public System.String PropertyName { get; private set; } = default;
         public ProfilePropertyAttribute(string name) : base() => this.PropertyName = name;
     }
 
-    [DataContractAttribute]
+    [DataContractAttribute, SerializableAttribute]
     public sealed class ProfileData : System.Object
     {
         [DataMemberAttribute]

@@ -24,6 +24,10 @@ namespace GraphServiceReference
         
         private int[] NodeLinksIDField;
         
+        private double PositionXField;
+        
+        private double PositionYField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public int NodeID
         {
@@ -60,6 +64,54 @@ namespace GraphServiceReference
             set
             {
                 this.NodeLinksIDField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double PositionX
+        {
+            get
+            {
+                return this.PositionXField;
+            }
+            set
+            {
+                this.PositionXField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double PositionY
+        {
+            get
+            {
+                return this.PositionYField;
+            }
+            set
+            {
+                this.PositionYField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GraphCalculatorException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+    public partial class GraphCalculatorException : object
+    {
+        
+        private string MessageField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message
+        {
+            get
+            {
+                return this.MessageField;
+            }
+            set
+            {
+                this.MessageField = value;
             }
         }
     }
@@ -137,12 +189,12 @@ namespace GraphServiceReference
     public partial class ProfileControllerException : object
     {
         
-        private string ActionField;
+        private GraphServiceReference.ProfileControllerAction ActionField;
         
         private string MessageField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Action
+        public GraphServiceReference.ProfileControllerAction Action
         {
             get
             {
@@ -169,12 +221,122 @@ namespace GraphServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ProfileControllerAction", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+    public enum ProfileControllerAction : sbyte
+    {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        None = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Authorization = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Registration = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Setup = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Delete = 4,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+    public partial class ProjectDispatcherException : object
+    {
+        
+        private string MessageField;
+        
+        private string ProjectNameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message
+        {
+            get
+            {
+                return this.MessageField;
+            }
+            set
+            {
+                this.MessageField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ProjectName
+        {
+            get
+            {
+                return this.ProjectNameField;
+            }
+            set
+            {
+                this.ProjectNameField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ProjectInfo", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+    public partial class ProjectInfo : object
+    {
+        
+        private System.DateTime CreateTimeField;
+        
+        private string FileNameField;
+        
+        private string ProjectNameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime CreateTime
+        {
+            get
+            {
+                return this.CreateTimeField;
+            }
+            set
+            {
+                this.CreateTimeField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FileName
+        {
+            get
+            {
+                return this.FileNameField;
+            }
+            set
+            {
+                this.FileNameField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ProjectName
+        {
+            get
+            {
+                return this.ProjectNameField;
+            }
+            set
+            {
+                this.ProjectNameField = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="GraphServiceReference.GraphCalculator")]
     public interface GraphCalculator
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GraphCalculator/FindPathByBFS", ReplyAction="http://tempuri.org/GraphCalculator/FindPathByBFSResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(System.Exception), Action="http://tempuri.org/GraphCalculator/FindPathByBFSExceptionFault", Name="Exception", Namespace="http://schemas.datacontract.org/2004/07/System")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.GraphCalculatorException), Action="http://tempuri.org/GraphCalculator/FindPathByBFSGraphCalculatorExceptionFault", Name="GraphCalculatorException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
         int[] FindPathByBFS(int origin_id, int target_id, GraphServiceReference.NodeData[] node_list);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GraphCalculator/FindPathByBFS", ReplyAction="http://tempuri.org/GraphCalculator/FindPathByBFSResponse")]
@@ -310,10 +472,10 @@ namespace GraphServiceReference
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/SetupProfile", ReplyAction="http://tempuri.org/ProfileController/SetupProfileResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProfileControllerException), Action="http://tempuri.org/ProfileController/SetupProfileProfileControllerExceptionFault", Name="ProfileControllerException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
-        void SetupProfile(System.Guid userid, GraphServiceReference.ProfileData profiledata);
+        void SetupProfile(System.Guid userid, GraphServiceReference.ProfileData profile_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/SetupProfile", ReplyAction="http://tempuri.org/ProfileController/SetupProfileResponse")]
-        System.Threading.Tasks.Task SetupProfileAsync(System.Guid userid, GraphServiceReference.ProfileData profiledata);
+        System.Threading.Tasks.Task SetupProfileAsync(System.Guid userid, GraphServiceReference.ProfileData profile_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/ReadProfile", ReplyAction="http://tempuri.org/ProfileController/ReadProfileResponse")]
         GraphServiceReference.ProfileData ReadProfile(System.Guid userid);
@@ -398,14 +560,14 @@ namespace GraphServiceReference
             return base.Channel.RegistrationAsync(profiledata);
         }
         
-        public void SetupProfile(System.Guid userid, GraphServiceReference.ProfileData profiledata)
+        public void SetupProfile(System.Guid userid, GraphServiceReference.ProfileData profile_data)
         {
-            base.Channel.SetupProfile(userid, profiledata);
+            base.Channel.SetupProfile(userid, profile_data);
         }
         
-        public System.Threading.Tasks.Task SetupProfileAsync(System.Guid userid, GraphServiceReference.ProfileData profiledata)
+        public System.Threading.Tasks.Task SetupProfileAsync(System.Guid userid, GraphServiceReference.ProfileData profile_data)
         {
-            return base.Channel.SetupProfileAsync(userid, profiledata);
+            return base.Channel.SetupProfileAsync(userid, profile_data);
         }
         
         public GraphServiceReference.ProfileData ReadProfile(System.Guid userid)
@@ -474,6 +636,251 @@ namespace GraphServiceReference
         {
             
             NetTcpBinding_ProfileController,
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="GraphServiceReference.ProjectDispatcher")]
+    public interface ProjectDispatcher
+    {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ExportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ExportProjectResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectTransfer/ExportProjectProjectDispatcherExceptionFault", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        void ExportProject(string project_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ExportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ExportProjectResponse")]
+        System.Threading.Tasks.Task ExportProjectAsync(string project_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ImportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ImportProjectResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectTransfer/ImportProjectProjectDispatcherExceptionFault", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        void ImportProject(string project_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ImportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ImportProjectResponse")]
+        System.Threading.Tasks.Task ImportProjectAsync(string project_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/GetProjectsInfo", ReplyAction="http://tempuri.org/ProjectDispatcher/GetProjectsInfoResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/GetProjectsInfoProjectDispatcherExceptionFau" +
+            "lt", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        GraphServiceReference.ProjectInfo[] GetProjectsInfo();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/GetProjectsInfo", ReplyAction="http://tempuri.org/ProjectDispatcher/GetProjectsInfoResponse")]
+        System.Threading.Tasks.Task<GraphServiceReference.ProjectInfo[]> GetProjectsInfoAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/SetProjectsDirectory", ReplyAction="http://tempuri.org/ProjectDispatcher/SetProjectsDirectoryResponse")]
+        bool SetProjectsDirectory(string directory_path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/SetProjectsDirectory", ReplyAction="http://tempuri.org/ProjectDispatcher/SetProjectsDirectoryResponse")]
+        System.Threading.Tasks.Task<bool> SetProjectsDirectoryAsync(string directory_path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/TakeProjectData", ReplyAction="http://tempuri.org/ProjectDispatcher/TakeProjectDataResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/TakeProjectDataProjectDispatcherExceptionFau" +
+            "lt", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        GraphServiceReference.NodeData[] TakeProjectData(string project_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/TakeProjectData", ReplyAction="http://tempuri.org/ProjectDispatcher/TakeProjectDataResponse")]
+        System.Threading.Tasks.Task<GraphServiceReference.NodeData[]> TakeProjectDataAsync(string project_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/PutProjectData", ReplyAction="http://tempuri.org/ProjectDispatcher/PutProjectDataResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/PutProjectDataProjectDispatcherExceptionFaul" +
+            "t", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        void PutProjectData(string project_name, GraphServiceReference.NodeData[] nodes_field);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/PutProjectData", ReplyAction="http://tempuri.org/ProjectDispatcher/PutProjectDataResponse")]
+        System.Threading.Tasks.Task PutProjectDataAsync(string project_name, GraphServiceReference.NodeData[] nodes_field);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/CreateProject", ReplyAction="http://tempuri.org/ProjectDispatcher/CreateProjectResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/CreateProjectProjectDispatcherExceptionFault" +
+            "", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        void CreateProject(GraphServiceReference.ProjectInfo project_info);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/CreateProject", ReplyAction="http://tempuri.org/ProjectDispatcher/CreateProjectResponse")]
+        System.Threading.Tasks.Task CreateProjectAsync(GraphServiceReference.ProjectInfo project_info);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/DeleteProject", ReplyAction="http://tempuri.org/ProjectDispatcher/DeleteProjectResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/DeleteProjectProjectDispatcherExceptionFault" +
+            "", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        void DeleteProject(string project_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/DeleteProject", ReplyAction="http://tempuri.org/ProjectDispatcher/DeleteProjectResponse")]
+        System.Threading.Tasks.Task DeleteProjectAsync(string project_name);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    public interface ProjectDispatcherChannel : GraphServiceReference.ProjectDispatcher, System.ServiceModel.IClientChannel
+    {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    public partial class ProjectDispatcherClient : System.ServiceModel.ClientBase<GraphServiceReference.ProjectDispatcher>, GraphServiceReference.ProjectDispatcher
+    {
+        
+        /// <summary>
+        /// Реализуйте этот разделяемый метод для настройки конечной точки службы.
+        /// </summary>
+        /// <param name="serviceEndpoint">Настраиваемая конечная точка</param>
+        /// <param name="clientCredentials">Учетные данные клиента.</param>
+        static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
+        
+        public ProjectDispatcherClient() : 
+                base(ProjectDispatcherClient.GetDefaultBinding(), ProjectDispatcherClient.GetDefaultEndpointAddress())
+        {
+            this.Endpoint.Name = EndpointConfiguration.NetTcpBinding_ProjectDispatcher.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProjectDispatcherClient(EndpointConfiguration endpointConfiguration) : 
+                base(ProjectDispatcherClient.GetBindingForEndpoint(endpointConfiguration), ProjectDispatcherClient.GetEndpointAddress(endpointConfiguration))
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProjectDispatcherClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(ProjectDispatcherClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProjectDispatcherClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(ProjectDispatcherClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public ProjectDispatcherClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress)
+        {
+        }
+        
+        public void ExportProject(string project_name)
+        {
+            base.Channel.ExportProject(project_name);
+        }
+        
+        public System.Threading.Tasks.Task ExportProjectAsync(string project_name)
+        {
+            return base.Channel.ExportProjectAsync(project_name);
+        }
+        
+        public void ImportProject(string project_name)
+        {
+            base.Channel.ImportProject(project_name);
+        }
+        
+        public System.Threading.Tasks.Task ImportProjectAsync(string project_name)
+        {
+            return base.Channel.ImportProjectAsync(project_name);
+        }
+        
+        public GraphServiceReference.ProjectInfo[] GetProjectsInfo()
+        {
+            return base.Channel.GetProjectsInfo();
+        }
+        
+        public System.Threading.Tasks.Task<GraphServiceReference.ProjectInfo[]> GetProjectsInfoAsync()
+        {
+            return base.Channel.GetProjectsInfoAsync();
+        }
+        
+        public bool SetProjectsDirectory(string directory_path)
+        {
+            return base.Channel.SetProjectsDirectory(directory_path);
+        }
+        
+        public System.Threading.Tasks.Task<bool> SetProjectsDirectoryAsync(string directory_path)
+        {
+            return base.Channel.SetProjectsDirectoryAsync(directory_path);
+        }
+        
+        public GraphServiceReference.NodeData[] TakeProjectData(string project_name)
+        {
+            return base.Channel.TakeProjectData(project_name);
+        }
+        
+        public System.Threading.Tasks.Task<GraphServiceReference.NodeData[]> TakeProjectDataAsync(string project_name)
+        {
+            return base.Channel.TakeProjectDataAsync(project_name);
+        }
+        
+        public void PutProjectData(string project_name, GraphServiceReference.NodeData[] nodes_field)
+        {
+            base.Channel.PutProjectData(project_name, nodes_field);
+        }
+        
+        public System.Threading.Tasks.Task PutProjectDataAsync(string project_name, GraphServiceReference.NodeData[] nodes_field)
+        {
+            return base.Channel.PutProjectDataAsync(project_name, nodes_field);
+        }
+        
+        public void CreateProject(GraphServiceReference.ProjectInfo project_info)
+        {
+            base.Channel.CreateProject(project_info);
+        }
+        
+        public System.Threading.Tasks.Task CreateProjectAsync(GraphServiceReference.ProjectInfo project_info)
+        {
+            return base.Channel.CreateProjectAsync(project_info);
+        }
+        
+        public void DeleteProject(string project_name)
+        {
+            base.Channel.DeleteProject(project_name);
+        }
+        
+        public System.Threading.Tasks.Task DeleteProjectAsync(string project_name)
+        {
+            return base.Channel.DeleteProjectAsync(project_name);
+        }
+        
+        public virtual System.Threading.Tasks.Task OpenAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
+        }
+        
+        public virtual System.Threading.Tasks.Task CloseAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
+        }
+        
+        private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
+        {
+            if ((endpointConfiguration == EndpointConfiguration.NetTcpBinding_ProjectDispatcher))
+            {
+                System.ServiceModel.NetTcpBinding result = new System.ServiceModel.NetTcpBinding();
+                result.MaxBufferSize = int.MaxValue;
+                result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                result.MaxReceivedMessageSize = int.MaxValue;
+                return result;
+            }
+            throw new System.InvalidOperationException(string.Format("Не удалось найти конечную точку с именем \"{0}\".", endpointConfiguration));
+        }
+        
+        private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
+        {
+            if ((endpointConfiguration == EndpointConfiguration.NetTcpBinding_ProjectDispatcher))
+            {
+                return new System.ServiceModel.EndpointAddress("net.tcp://localhost:8733/GraphService/project");
+            }
+            throw new System.InvalidOperationException(string.Format("Не удалось найти конечную точку с именем \"{0}\".", endpointConfiguration));
+        }
+        
+        private static System.ServiceModel.Channels.Binding GetDefaultBinding()
+        {
+            return ProjectDispatcherClient.GetBindingForEndpoint(EndpointConfiguration.NetTcpBinding_ProjectDispatcher);
+        }
+        
+        private static System.ServiceModel.EndpointAddress GetDefaultEndpointAddress()
+        {
+            return ProjectDispatcherClient.GetEndpointAddress(EndpointConfiguration.NetTcpBinding_ProjectDispatcher);
+        }
+        
+        public enum EndpointConfiguration
+        {
+            
+            NetTcpBinding_ProjectDispatcher,
         }
     }
 }

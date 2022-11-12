@@ -61,10 +61,10 @@
             // properties_label
             // 
             this.properties_label.AutoSize = true;
-            this.properties_label.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.properties_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.properties_label.Location = new System.Drawing.Point(266, 56);
             this.properties_label.Name = "properties_label";
-            this.properties_label.Size = new System.Drawing.Size(126, 15);
+            this.properties_label.Size = new System.Drawing.Size(145, 19);
             this.properties_label.TabIndex = 3;
             this.properties_label.Text = "Доступные свойства: ";
             // 
@@ -80,10 +80,10 @@
             // settinglist_label
             // 
             this.settinglist_label.AutoSize = true;
-            this.settinglist_label.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.settinglist_label.Location = new System.Drawing.Point(12, 9);
+            this.settinglist_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.settinglist_label.Location = new System.Drawing.Point(12, 6);
             this.settinglist_label.Name = "settinglist_label";
-            this.settinglist_label.Size = new System.Drawing.Size(166, 15);
+            this.settinglist_label.Size = new System.Drawing.Size(193, 19);
             this.settinglist_label.TabIndex = 7;
             this.settinglist_label.Text = "Список настроек редактора: ";
             // 
@@ -94,11 +94,11 @@
             this.properties_panel.BackColor = System.Drawing.Color.White;
             this.properties_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.properties_panel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.properties_panel.Location = new System.Drawing.Point(266, 74);
+            this.properties_panel.Location = new System.Drawing.Point(266, 76);
             this.properties_panel.Margin = new System.Windows.Forms.Padding(5);
             this.properties_panel.Name = "properties_panel";
             this.properties_panel.Padding = new System.Windows.Forms.Padding(5);
-            this.properties_panel.Size = new System.Drawing.Size(288, 260);
+            this.properties_panel.Size = new System.Drawing.Size(288, 258);
             this.properties_panel.TabIndex = 8;
             this.properties_panel.WrapContents = false;
             // 
@@ -114,10 +114,10 @@
             // search_label
             // 
             this.search_label.AutoSize = true;
-            this.search_label.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.search_label.Location = new System.Drawing.Point(266, 10);
+            this.search_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.search_label.Location = new System.Drawing.Point(266, 6);
             this.search_label.Name = "search_label";
-            this.search_label.Size = new System.Drawing.Size(107, 15);
+            this.search_label.Size = new System.Drawing.Size(123, 19);
             this.search_label.TabIndex = 10;
             this.search_label.Text = "Поиск параметра:";
             // 

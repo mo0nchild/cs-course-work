@@ -6,6 +6,8 @@ using System.Configuration;
 using ServiceLibrary;
 using System.Windows.Input;
 using System.Drawing;
+using System.IO;
+using System.Text;
 
 namespace HostApplication 
 {

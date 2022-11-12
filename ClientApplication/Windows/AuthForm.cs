@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +15,8 @@ namespace CSCourseWork.Windows
 {
     internal partial class AuthForm : Form
     {
+        private const System.Int32 MinCharacter = 5;
+
         public AuthForm()
         {
             this.InitializeComponent();
@@ -25,6 +28,14 @@ namespace CSCourseWork.Windows
             this.filepath_button.Click += new EventHandler(FilepathButtonClick);
             this.login_button.Click += new EventHandler(LoginButtonClick);
             this.register_button.Click += new EventHandler(RegisterButtonClick);
+
+            this.skip_linklabel.Click += delegate
+            {
+                var client_form = new ClientForm(null);
+                client_form.FormClosed += (sender, args) => this.Show();
+
+                client_form.Show(); this.Hide();
+            };
         }
 
         private void CheckboxCheckedChanged(object? sender, EventArgs args)
@@ -46,14 +57,22 @@ namespace CSCourseWork.Windows
 
         private void RegisterButtonClick(object? sender, EventArgs args)
         {
+            string username = this.reg_name_textbox.Text, password = this.reg_password_textbox.Text,
+                email = this.reg_email_textbox.Text;
+
+            var email_validate = Regex.IsMatch(this.reg_email_textbox.Text, @"^\w+@(?:gmail|mail).(?:ru|com)$");
+            if (username.Length < MinCharacter || password.Length < MinCharacter || !email_validate)
+            { 
+                MessageBox.Show("Неверный формат текстовых полей", "Ошибка"); 
+            }
             System.Guid? profile_id = default!;
             using (var register = new GraphServiceReference.ProfileControllerClient())
             {
                 try {
                     profile_id = register.Registration(new ProfileData()
                     {
-                        Email = this.reg_email_textbox.Text, Password = this.reg_password_textbox.Text,
-                        UserName = this.reg_name_textbox.Text, ProjectsPath = this.reg_filepath_textbox.Text
+                        Email = email, Password = password, UserName = username, 
+                        ProjectsPath = this.reg_filepath_textbox.Text
                     });
                 }
                 catch (FaultException<GraphServiceReference.ProfileControllerException> error) 

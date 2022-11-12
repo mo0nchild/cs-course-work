@@ -6,11 +6,11 @@ using System.Windows.Forms;
 using System.Net.Http.Headers;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.ServiceModel;
 
 using CSCourseWork.EditorComponents;
 using CSCourseWork.NodesControllers;
 using CSCourseWork.Connected_Services.GraphServiceReference;
-using System.ServiceModel;
 using CSCourseWork.Windows;
 using CSCourseWork.EditorConfiguration;
 
@@ -19,9 +19,10 @@ namespace CSCourseWork
     internal partial class ClientForm : Form
     {
         private EditorComponentBase<NodesController> EditorInstance { get; set; } = default!;
-        private System.Guid ProfileID { get; set; } = default;
+        private System.Guid? ProfileID { get; set; } = default;
+        private System.String? ProjectName { get; set; } = default;
 
-        public ClientForm(System.Guid profile_id)
+        public ClientForm(System.Guid? profile_id)
         {
             this.InitializeComponent(); this.InstallEditorComponent("editor_panel");
             this.ProfileID = profile_id;
@@ -54,19 +55,49 @@ namespace CSCourseWork
             };
             this.accountconf_toolstrip_menuitem.Click += new EventHandler(AccountConfigurationClick);
 
+            this.open_toolstrip_menuitem.Click += new EventHandler(OpenProjectClick);
+            this.save_toolstrip_menuitem.Click += new EventHandler(SaveProjectClick);
+            this.edit_toolstrip_menuitem.Click += new EventHandler(EditProjectClick);
+
             this.AddOperationButtonClick(this.addop_button, EventArgs.Empty);
+        }
+
+        private void EditProjectClick(object? sender, EventArgs args)
+        {
+            if (!this.ProfileID.HasValue) { MessageBox.Show("Необходимо авторизироваться", "Ошибка"); return; }
+        }
+
+        private void SaveProjectClick(object? sender, EventArgs args)
+        {
+            if (!this.ProfileID.HasValue) { MessageBox.Show("Необходимо авторизироваться", "Ошибка"); return; }
+            var project_save = new ProjectSave(this.ProfileID.Value, this.EditorInstance.Controller)
+            { ProjectName = this.ProjectName };
+
+            if (project_save.ShowDialog() == DialogResult.Cancel) return;
+            this.ProjectName = project_save.ProjectName;
+
+            this.status_toolstrip_label.Text = "Проект сохранён";
+        }
+
+        private void OpenProjectClick(object? sender, EventArgs args)
+        {
+            if (!this.ProfileID.HasValue) { MessageBox.Show("Необходимо авторизироваться", "Ошибка"); return; }
+            var project_open = new ProjectOpen(this.ProfileID.Value) { ProjectName = this.ProductName };
+
+            if (project_open.ShowDialog() == DialogResult.Cancel) return;
+            this.EditorInstance.Controller.NodesList = project_open.NodeList!.ConvertToClientData();
+            this.ProjectName = project_open.ProjectName;
+
+            this.InstallEditorComponent("editor_panel"); this.NodeInfoListUpdate();
+            this.status_toolstrip_label.Text = "Проект загружен";
         }
 
         private void AccountConfigurationClick(object? sender, EventArgs e)
         {
-            var profile_settings = new ProfileSettings(this.ProfileID);
-            var dialog_result = profile_settings.ShowDialog();
+            if (!this.ProfileID.HasValue) { MessageBox.Show("Необходимо авторизироваться", "Ошибка"); return; }
+            var profile_settings = new ProfileSettings(this.ProfileID.Value);
 
-            if(dialog_result == DialogResult.Abort)
-            {
-                this.Close();
-            }
-
+            if(profile_settings.ShowDialog() == DialogResult.Abort) this.Close();
             this.status_toolstrip_label.Text = "Данные учёной записи изменены";
         }
 
@@ -219,7 +250,10 @@ namespace CSCourseWork
                 if (graph_path.Length > 0)
                 { this.EditorInstance.BuildGraphPath(this.EditorInstance.Controller.ConvertToPath(graph_path)); }
             }
-            catch (FaultException<System.Exception> error) { MessageBox.Show(error.Detail.Message, "Ошибка"); }
+            catch (FaultException<GraphServiceReference.GraphCalculatorException> error) 
+            {
+                MessageBox.Show(error.Detail.Message, "Ошибка"); 
+            }
             catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); }
         }
 

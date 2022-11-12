@@ -30,6 +30,7 @@
         {
             this.auth_tabcontrol = new System.Windows.Forms.TabControl();
             this.authorization_tabpage = new System.Windows.Forms.TabPage();
+            this.skip_linklabel = new System.Windows.Forms.LinkLabel();
             this.auth_checkbox = new System.Windows.Forms.CheckBox();
             this.auth_password_label = new System.Windows.Forms.Label();
             this.auth_name_label = new System.Windows.Forms.Label();
@@ -65,6 +66,7 @@
             // 
             // authorization_tabpage
             // 
+            this.authorization_tabpage.Controls.Add(this.skip_linklabel);
             this.authorization_tabpage.Controls.Add(this.auth_checkbox);
             this.authorization_tabpage.Controls.Add(this.auth_password_label);
             this.authorization_tabpage.Controls.Add(this.auth_name_label);
@@ -79,6 +81,16 @@
             this.authorization_tabpage.TabIndex = 0;
             this.authorization_tabpage.Text = "Авторизация";
             this.authorization_tabpage.UseVisualStyleBackColor = true;
+            // 
+            // skip_linklabel
+            // 
+            this.skip_linklabel.AutoSize = true;
+            this.skip_linklabel.Location = new System.Drawing.Point(201, 147);
+            this.skip_linklabel.Name = "skip_linklabel";
+            this.skip_linklabel.Size = new System.Drawing.Size(171, 19);
+            this.skip_linklabel.TabIndex = 6;
+            this.skip_linklabel.TabStop = true;
+            this.skip_linklabel.Text = "Пропустить авторизацию";
             // 
             // auth_checkbox
             // 
@@ -280,6 +292,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(418, 349);
             this.Controls.Add(this.auth_tabcontrol);
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(434, 388);
             this.MinimumSize = new System.Drawing.Size(434, 388);
             this.Name = "AuthForm";
@@ -316,5 +329,6 @@
         private TextBox reg_name_textbox;
         private Button register_button;
         private CheckBox reg_checkbox;
+        private LinkLabel skip_linklabel;
     }
 }

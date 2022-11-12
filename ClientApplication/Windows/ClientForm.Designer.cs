@@ -62,6 +62,7 @@
             this.reset_button = new System.Windows.Forms.Button();
             this.pointer_panel = new System.Windows.Forms.Panel();
             this.editor_trackbar = new System.Windows.Forms.TrackBar();
+            this.edit_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
             this.app_toolstrip.SuspendLayout();
             this.nodestree_tabpage.SuspendLayout();
             this.app_tabcontrol.SuspendLayout();
@@ -102,7 +103,8 @@
             this.project_toolstrip_button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.project_toolstrip_button.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.open_toolstrip_menuitem,
-            this.save_toolstrip_menuitem});
+            this.save_toolstrip_menuitem,
+            this.edit_toolstrip_menuitem});
             this.project_toolstrip_button.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.project_toolstrip_button.Image = ((System.Drawing.Image)(resources.GetObject("project_toolstrip_button.Image")));
             this.project_toolstrip_button.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -113,13 +115,13 @@
             // open_toolstrip_menuitem
             // 
             this.open_toolstrip_menuitem.Name = "open_toolstrip_menuitem";
-            this.open_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
+            this.open_toolstrip_menuitem.Size = new System.Drawing.Size(180, 22);
             this.open_toolstrip_menuitem.Text = "Открыть проект";
             // 
             // save_toolstrip_menuitem
             // 
             this.save_toolstrip_menuitem.Name = "save_toolstrip_menuitem";
-            this.save_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
+            this.save_toolstrip_menuitem.Size = new System.Drawing.Size(180, 22);
             this.save_toolstrip_menuitem.Text = "Сохранить проект";
             // 
             // settings_toolstrip_button
@@ -394,6 +396,12 @@
             this.editor_trackbar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.editor_trackbar.Value = 50;
             // 
+            // edit_toolstrip_menuitem
+            // 
+            this.edit_toolstrip_menuitem.Name = "edit_toolstrip_menuitem";
+            this.edit_toolstrip_menuitem.Size = new System.Drawing.Size(180, 22);
+            this.edit_toolstrip_menuitem.Text = "Настроить проект";
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -469,5 +477,6 @@
         private Button reset_button;
         private Panel pointer_panel;
         private TrackBar editor_trackbar;
+        private ToolStripMenuItem edit_toolstrip_menuitem;
     }
 }

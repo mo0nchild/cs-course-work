@@ -14,10 +14,12 @@ using System.Xml.Linq;
 
 namespace ServiceLibrary.ServiceTypes
 {
+    [ServiceBehaviorAttribute(InstanceContextMode = InstanceContextMode.PerSession)]
     public class ProfileController : ServiceContracts.IProfileController
     {
+        public const System.String ProjectExtention = ".projects";
         protected virtual System.String FileName { get; private set; } = ".profiles";
-
+        
         public ProfileController() : base() { }
 
         protected static XmlDocument GetProfileDocument(string filepath)
@@ -35,6 +37,20 @@ namespace ServiceLibrary.ServiceTypes
         {
             using (var file_writer = File.Open(filepath, FileMode.Create))
             { xml_document.Save(XmlWriter.Create(file_writer)); }
+        }
+
+        private void ThrowExceptionIfPathNotEmpty(System.String profile_path)
+        {
+            var filesystem_entries = default(string[]);
+
+            try { filesystem_entries = Directory.GetFileSystemEntries(profile_path); }
+            catch (System.Exception error) { throw new FaultException(error.Message); }
+
+            if (filesystem_entries.Length != 0)
+            {
+                var error = new ProfileControllerException("Каталог не является пустым", ProfileControllerAction.Registration);
+                throw new FaultException<ProfileControllerException>(error);
+            }
         }
 
         public System.Guid? Authorization(string username, string password)
@@ -70,16 +86,7 @@ namespace ServiceLibrary.ServiceTypes
                 if (property.GetValue(profile_data) == null)
                 { throw new FaultException<ProfileControllerException>(new ProfileControllerException("Данные пустые")); }
             }
-            var filesystem_entries = default(string[]);
-
-            try { filesystem_entries = Directory.GetFileSystemEntries(profile_data.ProjectsPath); }
-            catch(System.Exception error) { throw new FaultException(error.Message); }
-
-            if (filesystem_entries.Length != 0)
-            { 
-                var error = new ProfileControllerException("Каталог не является пустым", ProfileControllerAction.Registration);
-                throw new FaultException<ProfileControllerException>(error);
-            }
+            this.ThrowExceptionIfPathNotEmpty(profile_data.ProjectsPath);
 
             var xml_document = ProfileController.GetProfileDocument($"{Directory.GetCurrentDirectory()}\\{FileName}");
             foreach (XmlNode profile in xml_document.DocumentElement.ChildNodes)
@@ -104,6 +111,7 @@ namespace ServiceLibrary.ServiceTypes
                 }
             }
             xml_document.DocumentElement.AppendChild(xml_profile);
+            using (var projects_file = File.Create($"{profile_data.ProjectsPath}\\{ProjectExtention}")) { }
 
             ProfileController.CommitProfileDocument(xml_document, $"{Directory.GetCurrentDirectory()}\\{FileName}");
             return profile_id;
@@ -126,7 +134,7 @@ namespace ServiceLibrary.ServiceTypes
             }
         }
 
-        public void SetupProfile(System.Guid userid, ServiceContracts.ProfileData profiledata)
+        public void SetupProfile(System.Guid userid, ServiceContracts.ProfileData profile_data)
         {
             var xml_document = ProfileController.GetProfileDocument($"{Directory.GetCurrentDirectory()}\\{FileName}");
 
@@ -142,24 +150,25 @@ namespace ServiceLibrary.ServiceTypes
                 throw new FaultException<ProfileControllerException>(error);
             }
 
-            if (profiledata.ProjectsPath != null)
+            if (profile_data.ProjectsPath != null)
             {
+                this.ThrowExceptionIfPathNotEmpty(profile_data.ProjectsPath);
                 var project_directory = new DirectoryInfo(this.ReadProfile(userid).ProjectsPath);
 
                 foreach (var file in project_directory.GetFiles())
-                { file.CopyTo($"{profiledata.ProjectsPath}\\{file.Name}", true); }
+                { file.CopyTo($"{profile_data.ProjectsPath}\\{file.Name}", true); }
             }
 
-            if (profiledata.UserName != null) searching_node.Attributes["name"].Value = profiledata.UserName;
+            if (profile_data.UserName != null) searching_node.Attributes["name"].Value = profile_data.UserName;
             foreach (XmlElement property_node in searching_node.ChildNodes)
             {
-                foreach (var profile_property in profiledata.GetType().GetProperties())
+                foreach (var profile_property in profile_data.GetType().GetProperties())
                 {
                     var property_attribute = profile_property.GetCustomAttribute<ProfilePropertyAttribute>();
                     if (property_attribute == null || property_attribute.PropertyName != property_node.Name) continue;
 
-                    if(profile_property.GetValue(profiledata) != null)
-                    { property_node.SetAttribute("value", profile_property.GetValue(profiledata).ToString()); }
+                    if(profile_property.GetValue(profile_data) != null)
+                    { property_node.SetAttribute("value", profile_property.GetValue(profile_data).ToString()); }
                 }
             }
             ProfileController.CommitProfileDocument(xml_document, $"{Directory.GetCurrentDirectory()}\\{FileName}");

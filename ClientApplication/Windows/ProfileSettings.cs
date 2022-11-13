@@ -8,15 +8,18 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace CSCourseWork.Windows
 {
     public partial class ProfileSettings : Form
     {
+        private const System.Int32 MinCharacter = 5;
         private System.Guid ProfileID { get; set; } = default;
-        public ProfileSettings(System.Guid profile_id)
+        public ProfileSettings(System.Guid profile_id) : base()
         {
             this.InitializeComponent(); this.ProfileID = profile_id;
             this.password_textbox.PasswordChar = '*';
@@ -53,9 +56,10 @@ namespace CSCourseWork.Windows
 
             this.username_textbox.Text = profile_data.UserName;
             this.password_textbox.Text = profile_data.Password;
-         
+
             this.projectpath_textbox.Text = profile_data.ProjectsPath;
-            this.email_textbox.Text = profile_data.Email;
+            this.email_textbox.Text = profile_data.EmailName;
+            this.emailkey_textbox.Text = profile_data.EmailKey;
         }
 
         private void ProjectpathButtonClick(object? sender, EventArgs args)
@@ -72,10 +76,18 @@ namespace CSCourseWork.Windows
 
         private void SaveButtonClick(object? sender, EventArgs args)
         {
+            string username = this.username_textbox.Text, password = this.password_textbox.Text,
+                emailname = this.email_textbox.Text, emailkey = this.emailkey_textbox.Text;
+
+            var email_validate = Regex.IsMatch(emailname, @"^[\w.]+@(?:gmail|mail).(?:ru|com)$");
+
+            if (username.Length < MinCharacter || password.Length < MinCharacter || emailkey.Length < MinCharacter
+                || !email_validate) { MessageBox.Show("Неверный формат текстовых полей", "Ошибка"); return; }
+
             var profile_data = new ProfileData()
             {
-                UserName = this.username_textbox.Text, Password = this.password_textbox.Text,
-                ProjectsPath = this.projectpath_textbox.Text, Email = this.email_textbox.Text
+                UserName = username, Password = password, EmailName = emailname, EmailKey = emailkey,
+                ProjectsPath = this.projectpath_textbox.Text,
             };
             using (var profile_contoller = new GraphServiceReference.ProfileControllerClient())
             {
@@ -93,6 +105,9 @@ namespace CSCourseWork.Windows
 
         private void DeleteButtonClick(object? sender, EventArgs args)
         {
+            if (MessageBox.Show("Вы уверены?", "Подтвердение", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) != DialogResult.Yes) return;
+
             using (var profile_contoller = new GraphServiceReference.ProfileControllerClient())
             {
                 try { profile_contoller.DeleteProfile(this.ProfileID); }

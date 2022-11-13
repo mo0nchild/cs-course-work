@@ -53,6 +53,8 @@
             this.addop_button = new System.Windows.Forms.Button();
             this.app_statusstrip = new System.Windows.Forms.StatusStrip();
             this.progressbar_toolstrip = new System.Windows.Forms.ToolStripProgressBar();
+            this.projectname_toolstrip_label = new System.Windows.Forms.ToolStripStatusLabel();
+            this.profileid_toolstrip_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.status_toolstrip_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.info_textbox = new System.Windows.Forms.TextBox();
             this.nodeorigin_combobox = new System.Windows.Forms.ComboBox();
@@ -62,7 +64,6 @@
             this.reset_button = new System.Windows.Forms.Button();
             this.pointer_panel = new System.Windows.Forms.Panel();
             this.editor_trackbar = new System.Windows.Forms.TrackBar();
-            this.edit_toolstrip_menuitem = new System.Windows.Forms.ToolStripMenuItem();
             this.app_toolstrip.SuspendLayout();
             this.nodestree_tabpage.SuspendLayout();
             this.app_tabcontrol.SuspendLayout();
@@ -103,8 +104,7 @@
             this.project_toolstrip_button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.project_toolstrip_button.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.open_toolstrip_menuitem,
-            this.save_toolstrip_menuitem,
-            this.edit_toolstrip_menuitem});
+            this.save_toolstrip_menuitem});
             this.project_toolstrip_button.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.project_toolstrip_button.Image = ((System.Drawing.Image)(resources.GetObject("project_toolstrip_button.Image")));
             this.project_toolstrip_button.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -115,13 +115,13 @@
             // open_toolstrip_menuitem
             // 
             this.open_toolstrip_menuitem.Name = "open_toolstrip_menuitem";
-            this.open_toolstrip_menuitem.Size = new System.Drawing.Size(180, 22);
+            this.open_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
             this.open_toolstrip_menuitem.Text = "Открыть проект";
             // 
             // save_toolstrip_menuitem
             // 
             this.save_toolstrip_menuitem.Name = "save_toolstrip_menuitem";
-            this.save_toolstrip_menuitem.Size = new System.Drawing.Size(180, 22);
+            this.save_toolstrip_menuitem.Size = new System.Drawing.Size(174, 22);
             this.save_toolstrip_menuitem.Text = "Сохранить проект";
             // 
             // settings_toolstrip_button
@@ -288,12 +288,14 @@
             this.app_statusstrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.app_statusstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.progressbar_toolstrip,
-            this.status_toolstrip_label});
-            this.app_statusstrip.Location = new System.Drawing.Point(0, 555);
+            this.status_toolstrip_label,
+            this.profileid_toolstrip_label,
+            this.projectname_toolstrip_label});
+            this.app_statusstrip.Location = new System.Drawing.Point(0, 551);
             this.app_statusstrip.Name = "app_statusstrip";
             this.app_statusstrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
             this.app_statusstrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.app_statusstrip.Size = new System.Drawing.Size(864, 24);
+            this.app_statusstrip.Size = new System.Drawing.Size(864, 28);
             this.app_statusstrip.SizingGrip = false;
             this.app_statusstrip.TabIndex = 25;
             this.app_statusstrip.Text = "Статус";
@@ -302,16 +304,31 @@
             // 
             this.progressbar_toolstrip.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.progressbar_toolstrip.Name = "progressbar_toolstrip";
-            this.progressbar_toolstrip.Size = new System.Drawing.Size(150, 18);
+            this.progressbar_toolstrip.Size = new System.Drawing.Size(150, 22);
             this.progressbar_toolstrip.Step = 1;
             this.progressbar_toolstrip.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             // 
+            // projectname_toolstrip_label
+            // 
+            this.projectname_toolstrip_label.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)));
+            this.projectname_toolstrip_label.Name = "projectname_toolstrip_label";
+            this.projectname_toolstrip_label.Size = new System.Drawing.Size(4, 23);
+            // 
+            // profileid_toolstrip_label
+            // 
+            this.profileid_toolstrip_label.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)));
+            this.profileid_toolstrip_label.Name = "profileid_toolstrip_label";
+            this.profileid_toolstrip_label.Size = new System.Drawing.Size(331, 23);
+            this.profileid_toolstrip_label.Spring = true;
+            // 
             // status_toolstrip_label
             // 
+            this.status_toolstrip_label.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)));
             this.status_toolstrip_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.status_toolstrip_label.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.status_toolstrip_label.Name = "status_toolstrip_label";
-            this.status_toolstrip_label.Size = new System.Drawing.Size(53, 19);
+            this.status_toolstrip_label.Size = new System.Drawing.Size(331, 23);
+            this.status_toolstrip_label.Spring = true;
             this.status_toolstrip_label.Text = "Готово";
             // 
             // info_textbox
@@ -396,12 +413,6 @@
             this.editor_trackbar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.editor_trackbar.Value = 50;
             // 
-            // edit_toolstrip_menuitem
-            // 
-            this.edit_toolstrip_menuitem.Name = "edit_toolstrip_menuitem";
-            this.edit_toolstrip_menuitem.Size = new System.Drawing.Size(180, 22);
-            this.edit_toolstrip_menuitem.Text = "Настроить проект";
-            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -477,6 +488,7 @@
         private Button reset_button;
         private Panel pointer_panel;
         private TrackBar editor_trackbar;
-        private ToolStripMenuItem edit_toolstrip_menuitem;
+        private ToolStripStatusLabel projectname_toolstrip_label;
+        private ToolStripStatusLabel profileid_toolstrip_label;
     }
 }

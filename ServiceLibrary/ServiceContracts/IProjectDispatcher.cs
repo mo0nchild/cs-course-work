@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -13,10 +14,10 @@ namespace ServiceLibrary.ServiceContracts
     public interface IProjectTransfer
     {
         [OperationContractAttribute, FaultContractAttribute(typeof(ProjectDispatcherException))]
-        void ExportProject(System.String project_name);
+        void ExportProject(System.String export_entity, TransferData transfer_data);
 
         [OperationContractAttribute, FaultContractAttribute(typeof(ProjectDispatcherException))]
-        void ImportProject(System.String project_name);
+        void ImportProject(System.String export_entity, TransferData transfer_data);
     }
 
     [ServiceContractAttribute(Name = "ProjectDispatcher")]
@@ -27,7 +28,7 @@ namespace ServiceLibrary.ServiceContracts
         ServiceContracts.ProjectInfo[] GetProjectsInfo();
 
         [OperationContractAttribute]
-        System.Boolean SetProjectsDirectory(System.String directory_path);
+        System.Boolean SetProjectsDirectory(System.Guid project_id);
 
         [FaultContractAttribute(typeof(ServiceContracts.ProjectDispatcherException))]
         [OperationContractAttribute]
@@ -43,7 +44,21 @@ namespace ServiceLibrary.ServiceContracts
 
         [FaultContractAttribute(typeof(ServiceContracts.ProjectDispatcherException))]
         [OperationContractAttribute]
-        void DeleteProject(System.String project_name);
+        void UpdateProject(System.String project_name, ServiceContracts.ProjectInfo project_info);
+
+        [FaultContractAttribute(typeof(ServiceContracts.ProjectDispatcherException))]
+        [OperationContractAttribute]
+        void DeleteProject(System.String project_name, System.Boolean delete_file);
+    }
+
+    [DataContractAttribute, SerializableAttribute]
+    public class TransferData : System.Object
+    {
+        [DataMemberAttribute]
+        public System.String ToPath { get; set; } = default(string);
+
+        [DataMemberAttribute]
+        public System.String FromPath { get; set; } = default(string);
     }
 
     [DataContractAttribute, SerializableAttribute]
@@ -75,7 +90,7 @@ namespace ServiceLibrary.ServiceContracts
             if(other_object is ServiceContracts.ProjectInfo other_info)
             {
                 return this.ProjectName == other_info.ProjectName 
-                    && this.FileName == other_info.FileName;
+                    || this.FileName == other_info.FileName;
             }
             return false;
         }

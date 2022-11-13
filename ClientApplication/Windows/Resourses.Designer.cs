@@ -93,6 +93,16 @@ namespace CSCourseWork.Windows {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap RefreshIcon {
+            get {
+                object obj = ResourceManager.GetObject("RefreshIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SelectIcon {
             get {
                 object obj = ResourceManager.GetObject("SelectIcon", resourceCulture);

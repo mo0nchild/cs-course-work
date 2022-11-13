@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataSerialization\NodesCollection.cs" />
+    <Compile Include="DataTransfer\DataTransferController.cs" />
+    <Compile Include="DataTransfer\INetworkTransfer.cs" />
     <Compile Include="ServiceEncoder\EncodingData.cs" />
     <Compile Include="ServiceContracts\IGraphCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,7 +65,9 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ServiceLocator\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <VSToolsPath Condition="'$(VSToolsPath)' == '' and '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' != '11.0'">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

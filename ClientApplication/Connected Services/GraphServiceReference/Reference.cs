@@ -122,7 +122,9 @@ namespace GraphServiceReference
     public partial class ProfileData : object
     {
         
-        private string EmailField;
+        private string EmailKeyField;
+        
+        private string EmailNameField;
         
         private string PasswordField;
         
@@ -131,15 +133,28 @@ namespace GraphServiceReference
         private string UserNameField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Email
+        public string EmailKey
         {
             get
             {
-                return this.EmailField;
+                return this.EmailKeyField;
             }
             set
             {
-                this.EmailField = value;
+                this.EmailKeyField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EmailName
+        {
+            get
+            {
+                return this.EmailNameField;
+            }
+            set
+            {
+                this.EmailNameField = value;
             }
         }
         
@@ -239,6 +254,43 @@ namespace GraphServiceReference
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Delete = 4,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="TransferData", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+    public partial class TransferData : object
+    {
+        
+        private string FromPathField;
+        
+        private string ToPathField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FromPath
+        {
+            get
+            {
+                return this.FromPathField;
+            }
+            set
+            {
+                this.FromPathField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ToPath
+        {
+            get
+            {
+                return this.ToPathField;
+            }
+            set
+            {
+                this.ToPathField = value;
+            }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -457,18 +509,24 @@ namespace GraphServiceReference
     public interface ProfileController
     {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Authorization", ReplyAction="http://tempuri.org/ProfileController/AuthorizationResponse")]
-        System.Nullable<System.Guid> Authorization(string username, string password);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Authorization", ReplyAction="http://tempuri.org/ProfileController/AuthorizationResponse")]
-        System.Threading.Tasks.Task<System.Nullable<System.Guid>> AuthorizationAsync(string username, string password);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Registration", ReplyAction="http://tempuri.org/ProfileController/RegistrationResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProfileControllerException), Action="http://tempuri.org/ProfileController/RegistrationProfileControllerExceptionFault", Name="ProfileControllerException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
         System.Guid Registration(GraphServiceReference.ProfileData profiledata);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Registration", ReplyAction="http://tempuri.org/ProfileController/RegistrationResponse")]
         System.Threading.Tasks.Task<System.Guid> RegistrationAsync(GraphServiceReference.ProfileData profiledata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Authorization", ReplyAction="http://tempuri.org/ProfileController/AuthorizationResponse")]
+        System.Nullable<System.Guid> Authorization(string username, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/Authorization", ReplyAction="http://tempuri.org/ProfileController/AuthorizationResponse")]
+        System.Threading.Tasks.Task<System.Nullable<System.Guid>> AuthorizationAsync(string username, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/GetProfilesName", ReplyAction="http://tempuri.org/ProfileController/GetProfilesNameResponse")]
+        string[] GetProfilesName();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/GetProfilesName", ReplyAction="http://tempuri.org/ProfileController/GetProfilesNameResponse")]
+        System.Threading.Tasks.Task<string[]> GetProfilesNameAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/SetupProfile", ReplyAction="http://tempuri.org/ProfileController/SetupProfileResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProfileControllerException), Action="http://tempuri.org/ProfileController/SetupProfileProfileControllerExceptionFault", Name="ProfileControllerException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
@@ -484,6 +542,8 @@ namespace GraphServiceReference
         System.Threading.Tasks.Task<GraphServiceReference.ProfileData> ReadProfileAsync(System.Guid userid);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/DeleteProfile", ReplyAction="http://tempuri.org/ProfileController/DeleteProfileResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProfileControllerException), Action="http://tempuri.org/ProfileController/DeleteProfileProfileControllerExceptionFault" +
+            "", Name="ProfileControllerException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
         void DeleteProfile(System.Guid userid);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProfileController/DeleteProfile", ReplyAction="http://tempuri.org/ProfileController/DeleteProfileResponse")]
@@ -540,6 +600,16 @@ namespace GraphServiceReference
         {
         }
         
+        public System.Guid Registration(GraphServiceReference.ProfileData profiledata)
+        {
+            return base.Channel.Registration(profiledata);
+        }
+        
+        public System.Threading.Tasks.Task<System.Guid> RegistrationAsync(GraphServiceReference.ProfileData profiledata)
+        {
+            return base.Channel.RegistrationAsync(profiledata);
+        }
+        
         public System.Nullable<System.Guid> Authorization(string username, string password)
         {
             return base.Channel.Authorization(username, password);
@@ -550,14 +620,14 @@ namespace GraphServiceReference
             return base.Channel.AuthorizationAsync(username, password);
         }
         
-        public System.Guid Registration(GraphServiceReference.ProfileData profiledata)
+        public string[] GetProfilesName()
         {
-            return base.Channel.Registration(profiledata);
+            return base.Channel.GetProfilesName();
         }
         
-        public System.Threading.Tasks.Task<System.Guid> RegistrationAsync(GraphServiceReference.ProfileData profiledata)
+        public System.Threading.Tasks.Task<string[]> GetProfilesNameAsync()
         {
-            return base.Channel.RegistrationAsync(profiledata);
+            return base.Channel.GetProfilesNameAsync();
         }
         
         public void SetupProfile(System.Guid userid, GraphServiceReference.ProfileData profile_data)
@@ -646,17 +716,17 @@ namespace GraphServiceReference
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ExportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ExportProjectResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectTransfer/ExportProjectProjectDispatcherExceptionFault", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
-        void ExportProject(string project_name);
+        void ExportProject(string export_entity, GraphServiceReference.TransferData transfer_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ExportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ExportProjectResponse")]
-        System.Threading.Tasks.Task ExportProjectAsync(string project_name);
+        System.Threading.Tasks.Task ExportProjectAsync(string export_entity, GraphServiceReference.TransferData transfer_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ImportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ImportProjectResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectTransfer/ImportProjectProjectDispatcherExceptionFault", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
-        void ImportProject(string project_name);
+        void ImportProject(string export_entity, GraphServiceReference.TransferData transfer_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ImportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ImportProjectResponse")]
-        System.Threading.Tasks.Task ImportProjectAsync(string project_name);
+        System.Threading.Tasks.Task ImportProjectAsync(string export_entity, GraphServiceReference.TransferData transfer_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/GetProjectsInfo", ReplyAction="http://tempuri.org/ProjectDispatcher/GetProjectsInfoResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/GetProjectsInfoProjectDispatcherExceptionFau" +
@@ -667,10 +737,10 @@ namespace GraphServiceReference
         System.Threading.Tasks.Task<GraphServiceReference.ProjectInfo[]> GetProjectsInfoAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/SetProjectsDirectory", ReplyAction="http://tempuri.org/ProjectDispatcher/SetProjectsDirectoryResponse")]
-        bool SetProjectsDirectory(string directory_path);
+        bool SetProjectsDirectory(System.Guid project_id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/SetProjectsDirectory", ReplyAction="http://tempuri.org/ProjectDispatcher/SetProjectsDirectoryResponse")]
-        System.Threading.Tasks.Task<bool> SetProjectsDirectoryAsync(string directory_path);
+        System.Threading.Tasks.Task<bool> SetProjectsDirectoryAsync(System.Guid project_id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/TakeProjectData", ReplyAction="http://tempuri.org/ProjectDispatcher/TakeProjectDataResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/TakeProjectDataProjectDispatcherExceptionFau" +
@@ -696,13 +766,21 @@ namespace GraphServiceReference
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/CreateProject", ReplyAction="http://tempuri.org/ProjectDispatcher/CreateProjectResponse")]
         System.Threading.Tasks.Task CreateProjectAsync(GraphServiceReference.ProjectInfo project_info);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/UpdateProject", ReplyAction="http://tempuri.org/ProjectDispatcher/UpdateProjectResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/UpdateProjectProjectDispatcherExceptionFault" +
+            "", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
+        void UpdateProject(string project_name, GraphServiceReference.ProjectInfo project_info);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/UpdateProject", ReplyAction="http://tempuri.org/ProjectDispatcher/UpdateProjectResponse")]
+        System.Threading.Tasks.Task UpdateProjectAsync(string project_name, GraphServiceReference.ProjectInfo project_info);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/DeleteProject", ReplyAction="http://tempuri.org/ProjectDispatcher/DeleteProjectResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/DeleteProjectProjectDispatcherExceptionFault" +
             "", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
-        void DeleteProject(string project_name);
+        void DeleteProject(string project_name, bool delete_file);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/DeleteProject", ReplyAction="http://tempuri.org/ProjectDispatcher/DeleteProjectResponse")]
-        System.Threading.Tasks.Task DeleteProjectAsync(string project_name);
+        System.Threading.Tasks.Task DeleteProjectAsync(string project_name, bool delete_file);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
@@ -755,24 +833,24 @@ namespace GraphServiceReference
         {
         }
         
-        public void ExportProject(string project_name)
+        public void ExportProject(string export_entity, GraphServiceReference.TransferData transfer_data)
         {
-            base.Channel.ExportProject(project_name);
+            base.Channel.ExportProject(export_entity, transfer_data);
         }
         
-        public System.Threading.Tasks.Task ExportProjectAsync(string project_name)
+        public System.Threading.Tasks.Task ExportProjectAsync(string export_entity, GraphServiceReference.TransferData transfer_data)
         {
-            return base.Channel.ExportProjectAsync(project_name);
+            return base.Channel.ExportProjectAsync(export_entity, transfer_data);
         }
         
-        public void ImportProject(string project_name)
+        public void ImportProject(string export_entity, GraphServiceReference.TransferData transfer_data)
         {
-            base.Channel.ImportProject(project_name);
+            base.Channel.ImportProject(export_entity, transfer_data);
         }
         
-        public System.Threading.Tasks.Task ImportProjectAsync(string project_name)
+        public System.Threading.Tasks.Task ImportProjectAsync(string export_entity, GraphServiceReference.TransferData transfer_data)
         {
-            return base.Channel.ImportProjectAsync(project_name);
+            return base.Channel.ImportProjectAsync(export_entity, transfer_data);
         }
         
         public GraphServiceReference.ProjectInfo[] GetProjectsInfo()
@@ -785,14 +863,14 @@ namespace GraphServiceReference
             return base.Channel.GetProjectsInfoAsync();
         }
         
-        public bool SetProjectsDirectory(string directory_path)
+        public bool SetProjectsDirectory(System.Guid project_id)
         {
-            return base.Channel.SetProjectsDirectory(directory_path);
+            return base.Channel.SetProjectsDirectory(project_id);
         }
         
-        public System.Threading.Tasks.Task<bool> SetProjectsDirectoryAsync(string directory_path)
+        public System.Threading.Tasks.Task<bool> SetProjectsDirectoryAsync(System.Guid project_id)
         {
-            return base.Channel.SetProjectsDirectoryAsync(directory_path);
+            return base.Channel.SetProjectsDirectoryAsync(project_id);
         }
         
         public GraphServiceReference.NodeData[] TakeProjectData(string project_name)
@@ -825,14 +903,24 @@ namespace GraphServiceReference
             return base.Channel.CreateProjectAsync(project_info);
         }
         
-        public void DeleteProject(string project_name)
+        public void UpdateProject(string project_name, GraphServiceReference.ProjectInfo project_info)
         {
-            base.Channel.DeleteProject(project_name);
+            base.Channel.UpdateProject(project_name, project_info);
         }
         
-        public System.Threading.Tasks.Task DeleteProjectAsync(string project_name)
+        public System.Threading.Tasks.Task UpdateProjectAsync(string project_name, GraphServiceReference.ProjectInfo project_info)
         {
-            return base.Channel.DeleteProjectAsync(project_name);
+            return base.Channel.UpdateProjectAsync(project_name, project_info);
+        }
+        
+        public void DeleteProject(string project_name, bool delete_file)
+        {
+            base.Channel.DeleteProject(project_name, delete_file);
+        }
+        
+        public System.Threading.Tasks.Task DeleteProjectAsync(string project_name, bool delete_file)
+        {
+            return base.Channel.DeleteProjectAsync(project_name, delete_file);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

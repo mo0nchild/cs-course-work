@@ -19,10 +19,22 @@ namespace CSCourseWork
     internal partial class ClientForm : Form
     {
         private EditorComponentBase<NodesController> EditorInstance { get; set; } = default!;
-        private System.Guid? ProfileID { get; set; } = default;
-        private System.String? ProjectName { get; set; } = default;
 
-        public ClientForm(System.Guid? profile_id)
+        private System.Guid? profile_id = default;
+        private System.Guid? ProfileID 
+        {
+            set { this.profileid_toolstrip_label.Text = (this.profile_id = value).ToString(); }
+            get { return this.profile_id; }
+        } 
+
+        private System.String? project_name = default;
+        private System.String? ProjectName
+        {
+            set { this.projectname_toolstrip_label.Text = (this.project_name = value); }
+            get { return this.project_name; }
+        }
+
+        public ClientForm(System.Guid? profile_id) : base()
         {
             this.InitializeComponent(); this.InstallEditorComponent("editor_panel");
             this.ProfileID = profile_id;
@@ -57,10 +69,13 @@ namespace CSCourseWork
 
             this.open_toolstrip_menuitem.Click += new EventHandler(OpenProjectClick);
             this.save_toolstrip_menuitem.Click += new EventHandler(SaveProjectClick);
-            this.edit_toolstrip_menuitem.Click += new EventHandler(EditProjectClick);
 
             this.AddOperationButtonClick(this.addop_button, EventArgs.Empty);
         }
+
+        private void LoggerPrintMessage(string message) => this.status_toolstrip_label.Text = message;
+
+        
 
         private void EditProjectClick(object? sender, EventArgs args)
         {
@@ -76,20 +91,22 @@ namespace CSCourseWork
             if (project_save.ShowDialog() == DialogResult.Cancel) return;
             this.ProjectName = project_save.ProjectName;
 
-            this.status_toolstrip_label.Text = "Проект сохранён";
+            this.LoggerPrintMessage("Проект сохранён");
         }
 
         private void OpenProjectClick(object? sender, EventArgs args)
         {
             if (!this.ProfileID.HasValue) { MessageBox.Show("Необходимо авторизироваться", "Ошибка"); return; }
-            var project_open = new ProjectOpen(this.ProfileID.Value) { ProjectName = this.ProductName };
 
-            if (project_open.ShowDialog() == DialogResult.Cancel) return;
-            this.EditorInstance.Controller.NodesList = project_open.NodeList!.ConvertToClientData();
+            var project_open = new ProjectOpen(this.ProfileID.Value) { ProjectName = this.ProjectName };
+            if (project_open.ShowDialog() == DialogResult.OK) 
+            {
+                this.EditorInstance.Controller.NodesList = project_open.NodeList!.ConvertToClientData();
+                this.EditorInstance.Invalidate(); 
+                
+                this.NodeInfoListUpdate(); this.LoggerPrintMessage("Проект загружен");
+            }
             this.ProjectName = project_open.ProjectName;
-
-            this.InstallEditorComponent("editor_panel"); this.NodeInfoListUpdate();
-            this.status_toolstrip_label.Text = "Проект загружен";
         }
 
         private void AccountConfigurationClick(object? sender, EventArgs e)
@@ -98,7 +115,7 @@ namespace CSCourseWork
             var profile_settings = new ProfileSettings(this.ProfileID.Value);
 
             if(profile_settings.ShowDialog() == DialogResult.Abort) this.Close();
-            this.status_toolstrip_label.Text = "Данные учёной записи изменены";
+            this.LoggerPrintMessage("Данные учёной записи изменены");
         }
 
         private void InstallEditorComponent(string editor_name)
@@ -110,7 +127,7 @@ namespace CSCourseWork
                 .AddEditorConfiguration(new EditorConfigProvider(null));
 
             if (this.EditorInstance != null) editor_builder.ControllerInstance = this.EditorInstance.Controller;
-            this.status_toolstrip_label.Text = "Настройки редактора загружены";
+            this.LoggerPrintMessage("Настройки редактора загружены");
 
             this.EditorInstance = editor_builder.BuildEditor(editor_name);
             this.EditorInstance.NodeScaled += new EditorActionEventHandler(EditorInstanceNodeScaled);
@@ -223,13 +240,11 @@ namespace CSCourseWork
             var controller = this.EditorInstance.Controller;
             while (controller.NodesList.Count > 0) controller.RemoveNode(1);
 
-            this.status_toolstrip_label.Text = "Поверхность редактора очищена";
+            this.LoggerPrintMessage("Поверхность редактора очищена");
             (this.EditorInstance as Panel)?.Invalidate();
 
             this.NodeInfoListUpdate();
         }
-
-        private void LoggerPrintMessage(string message) => this.info_textbox.Text = message;
 
         private void FindPathButtonClick(object? sender, EventArgs args)
         {
@@ -260,7 +275,7 @@ namespace CSCourseWork
         private void SelectOperationButtonClick(object? sender, EventArgs args)
         {
             this.EditorInstance.Mode = EditorModes.SelectNode;
-            this.status_toolstrip_label.Text = "Выбран инструмент соединения";
+            this.LoggerPrintMessage("Выбран инструмент соединения");
 
             this.addop_button.Enabled = this.deleteop_button.Enabled = true;
             (sender as Button)!.Enabled = false;
@@ -269,7 +284,7 @@ namespace CSCourseWork
         private void DeleteOperationButtonClick(object? sender, EventArgs args)
         {
             this.EditorInstance.Mode = EditorModes.RemoveNode;
-            this.status_toolstrip_label.Text = "Выбран инструмент удаления";
+            this.LoggerPrintMessage("Выбран инструмент удаления");
 
             this.addop_button.Enabled = this.selectop_button.Enabled = true;
             (sender as Button)!.Enabled = false;
@@ -278,7 +293,7 @@ namespace CSCourseWork
         private void AddOperationButtonClick(object? sender, EventArgs args)
         {
             this.EditorInstance.Mode = EditorModes.AddNode;
-            this.status_toolstrip_label.Text = "Выбран инструмент добавления";
+            this.LoggerPrintMessage("Выбран инструмент добавления");
 
             this.selectop_button.Enabled = this.deleteop_button.Enabled = true;
             (sender as Button)!.Enabled = false;

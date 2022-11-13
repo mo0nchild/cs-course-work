@@ -22,11 +22,13 @@ namespace CSCourseWork.NodesControllers
         [DescriptionAttribute("Значение идентификатора выбранного узла")]
         public System.Int32 NodeID { get; set; } = default;
 
-        [CategoryAttribute("Настройки вершины"), TypeConverterAttribute(typeof(List<int>))]
+        [CategoryAttribute("Настройки вершины"), ReadOnlyAttribute(true)]
         [DescriptionAttribute("Коллекция значений привязанных вершин")]
+        [TypeConverterAttribute(typeof(List<int>))]
         public List<System.Int32> NodeLinksID { get; set; } = new();
 
-        [CategoryAttribute("Настройки положения"), DescriptionAttribute("Текущее местоположение вершины")]
+        [CategoryAttribute("Настройки положения"), ReadOnlyAttribute(true)]
+        [DescriptionAttribute("Текущее местоположение вершины")]
         public System.Drawing.Point Position { get; set; } = new(0, 0);
 
         public NodeModel(int node_id) : base() => this.NodeID = node_id;

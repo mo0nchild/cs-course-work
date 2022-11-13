@@ -41,6 +41,8 @@
             this.email_label = new System.Windows.Forms.Label();
             this.load_button = new System.Windows.Forms.Button();
             this.password_checkbox = new System.Windows.Forms.CheckBox();
+            this.emailkey_label = new System.Windows.Forms.Label();
+            this.emailkey_textbox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // password_textbox
@@ -92,15 +94,15 @@
             this.email_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.email_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.email_textbox.Location = new System.Drawing.Point(12, 161);
-            this.email_textbox.MaxLength = 20;
+            this.email_textbox.MaxLength = 100;
             this.email_textbox.Name = "email_textbox";
-            this.email_textbox.Size = new System.Drawing.Size(394, 29);
+            this.email_textbox.Size = new System.Drawing.Size(190, 29);
             this.email_textbox.TabIndex = 4;
             // 
             // save_button
             // 
             this.save_button.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.save_button.Location = new System.Drawing.Point(12, 308);
+            this.save_button.Location = new System.Drawing.Point(12, 304);
             this.save_button.Name = "save_button";
             this.save_button.Size = new System.Drawing.Size(394, 29);
             this.save_button.TabIndex = 5;
@@ -114,7 +116,7 @@
             this.delete_button.Name = "delete_button";
             this.delete_button.Size = new System.Drawing.Size(190, 29);
             this.delete_button.TabIndex = 6;
-            this.delete_button.Text = "Удалить";
+            this.delete_button.Text = "Удалить профиль";
             this.delete_button.UseVisualStyleBackColor = true;
             // 
             // username_label
@@ -164,7 +166,7 @@
             this.load_button.Name = "load_button";
             this.load_button.Size = new System.Drawing.Size(190, 29);
             this.load_button.TabIndex = 11;
-            this.load_button.Text = "Загрузить";
+            this.load_button.Text = "Загрузить профиль";
             this.load_button.UseVisualStyleBackColor = true;
             // 
             // password_checkbox
@@ -178,11 +180,33 @@
             this.password_checkbox.Text = "Показать пароль";
             this.password_checkbox.UseVisualStyleBackColor = true;
             // 
+            // emailkey_label
+            // 
+            this.emailkey_label.AutoSize = true;
+            this.emailkey_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.emailkey_label.Location = new System.Drawing.Point(216, 139);
+            this.emailkey_label.Name = "emailkey_label";
+            this.emailkey_label.Size = new System.Drawing.Size(192, 19);
+            this.emailkey_label.TabIndex = 14;
+            this.emailkey_label.Text = "Пароль электронной почты: ";
+            // 
+            // emailkey_textbox
+            // 
+            this.emailkey_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.emailkey_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.emailkey_textbox.Location = new System.Drawing.Point(216, 161);
+            this.emailkey_textbox.MaxLength = 100;
+            this.emailkey_textbox.Name = "emailkey_textbox";
+            this.emailkey_textbox.Size = new System.Drawing.Size(190, 29);
+            this.emailkey_textbox.TabIndex = 13;
+            // 
             // ProfileSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(418, 349);
+            this.Controls.Add(this.emailkey_label);
+            this.Controls.Add(this.emailkey_textbox);
             this.Controls.Add(this.password_checkbox);
             this.Controls.Add(this.load_button);
             this.Controls.Add(this.email_label);
@@ -222,5 +246,7 @@
         private Label email_label;
         private Button load_button;
         private CheckBox password_checkbox;
+        private Label emailkey_label;
+        private TextBox emailkey_textbox;
     }
 }

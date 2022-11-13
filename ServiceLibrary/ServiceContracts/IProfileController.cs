@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
@@ -13,12 +14,15 @@ namespace ServiceLibrary.ServiceContracts
     [ServiceContractAttribute(Name = "ProfileController")]
     public interface IProfileController
     {
-        [OperationContractAttribute]
-        System.Guid? Authorization(System.String username, System.String password);
-
         [FaultContractAttribute(typeof(ProfileControllerException))]
         [OperationContractAttribute]
         System.Guid Registration(ServiceContracts.ProfileData profiledata);
+        
+        [OperationContractAttribute]
+        System.Guid? Authorization(System.String username, System.String password);
+
+        [OperationContractAttribute]
+        System.String[] GetProfilesName();
 
         [FaultContractAttribute(typeof(ProfileControllerException))]
         [OperationContractAttribute]
@@ -27,6 +31,7 @@ namespace ServiceLibrary.ServiceContracts
         [OperationContractAttribute]
         ServiceContracts.ProfileData ReadProfile(System.Guid userid);
 
+        [FaultContractAttribute(typeof(ProfileControllerException))]
         [OperationContractAttribute]
         void DeleteProfile(System.Guid userid);
     }
@@ -66,16 +71,17 @@ namespace ServiceLibrary.ServiceContracts
         [DataMemberAttribute]
         public System.String UserName { get; set; } = default(string);
 
-        [ProfilePropertyAttribute("email")]
-        [DataMemberAttribute]
-        public System.String Email { get; set; } = default(string);
+        [DataMemberAttribute, ProfilePropertyAttribute("email-name")]
+        public System.String EmailName { get; set; } = default(string);
 
-        [ProfilePropertyAttribute("project-path")]
-        [DataMemberAttribute]
+        [DataMemberAttribute, ProfilePropertyAttribute("email-key")]
+        public System.String EmailKey { get; set; } = default(string);
+
+        [DataMemberAttribute, ProfilePropertyAttribute("project-path")]
         public System.String ProjectsPath { get; set; } = default(string);
 
-        [ProfilePropertyAttribute("password")]
-        [DataMemberAttribute]
+        [DataMemberAttribute, ProfilePropertyAttribute("password")]
         public System.String Password { get; set; } = default(string);
+
     }
 }

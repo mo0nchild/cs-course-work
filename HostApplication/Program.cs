@@ -8,6 +8,8 @@ using System.Windows.Input;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Net.Mail;
+using System.Net;
 
 namespace HostApplication 
 {
@@ -18,8 +20,8 @@ namespace HostApplication
             using (var service_host = new ServiceHost(typeof(GraphService)))
             {
                 service_host.Open();
-
                 Console.WriteLine($"{typeof(GraphService).FullName} is hosting");
+                Console.WriteLine($"Resourse address: net.tcp://localhost:8733/GraphService");
                 Console.ReadKey();
             }
         }

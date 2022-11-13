@@ -30,13 +30,13 @@
         {
             this.auth_tabcontrol = new System.Windows.Forms.TabControl();
             this.authorization_tabpage = new System.Windows.Forms.TabPage();
+            this.auth_name_combobox = new System.Windows.Forms.ComboBox();
             this.skip_linklabel = new System.Windows.Forms.LinkLabel();
             this.auth_checkbox = new System.Windows.Forms.CheckBox();
             this.auth_password_label = new System.Windows.Forms.Label();
             this.auth_name_label = new System.Windows.Forms.Label();
             this.login_button = new System.Windows.Forms.Button();
             this.auth_password_textbox = new System.Windows.Forms.TextBox();
-            this.auth_name_textbox = new System.Windows.Forms.TextBox();
             this.registration_tabpage = new System.Windows.Forms.TabPage();
             this.reg_checkbox = new System.Windows.Forms.CheckBox();
             this.register_button = new System.Windows.Forms.Button();
@@ -49,6 +49,7 @@
             this.reg_password_textbox = new System.Windows.Forms.TextBox();
             this.reg_name_label = new System.Windows.Forms.Label();
             this.reg_name_textbox = new System.Windows.Forms.TextBox();
+            this.reg_emailkey_textbox = new System.Windows.Forms.TextBox();
             this.auth_tabcontrol.SuspendLayout();
             this.authorization_tabpage.SuspendLayout();
             this.registration_tabpage.SuspendLayout();
@@ -66,13 +67,13 @@
             // 
             // authorization_tabpage
             // 
+            this.authorization_tabpage.Controls.Add(this.auth_name_combobox);
             this.authorization_tabpage.Controls.Add(this.skip_linklabel);
             this.authorization_tabpage.Controls.Add(this.auth_checkbox);
             this.authorization_tabpage.Controls.Add(this.auth_password_label);
             this.authorization_tabpage.Controls.Add(this.auth_name_label);
             this.authorization_tabpage.Controls.Add(this.login_button);
             this.authorization_tabpage.Controls.Add(this.auth_password_textbox);
-            this.authorization_tabpage.Controls.Add(this.auth_name_textbox);
             this.authorization_tabpage.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.authorization_tabpage.Location = new System.Drawing.Point(4, 24);
             this.authorization_tabpage.Name = "authorization_tabpage";
@@ -81,6 +82,15 @@
             this.authorization_tabpage.TabIndex = 0;
             this.authorization_tabpage.Text = "Авторизация";
             this.authorization_tabpage.UseVisualStyleBackColor = true;
+            // 
+            // auth_name_combobox
+            // 
+            this.auth_name_combobox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.auth_name_combobox.FormattingEnabled = true;
+            this.auth_name_combobox.Location = new System.Drawing.Point(60, 47);
+            this.auth_name_combobox.Name = "auth_name_combobox";
+            this.auth_name_combobox.Size = new System.Drawing.Size(282, 29);
+            this.auth_name_combobox.TabIndex = 7;
             // 
             // skip_linklabel
             // 
@@ -142,18 +152,9 @@
             this.auth_password_textbox.Size = new System.Drawing.Size(282, 29);
             this.auth_password_textbox.TabIndex = 1;
             // 
-            // auth_name_textbox
-            // 
-            this.auth_name_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.auth_name_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.auth_name_textbox.Location = new System.Drawing.Point(60, 47);
-            this.auth_name_textbox.MaxLength = 20;
-            this.auth_name_textbox.Name = "auth_name_textbox";
-            this.auth_name_textbox.Size = new System.Drawing.Size(282, 29);
-            this.auth_name_textbox.TabIndex = 0;
-            // 
             // registration_tabpage
             // 
+            this.registration_tabpage.Controls.Add(this.reg_emailkey_textbox);
             this.registration_tabpage.Controls.Add(this.reg_checkbox);
             this.registration_tabpage.Controls.Add(this.register_button);
             this.registration_tabpage.Controls.Add(this.filepath_button);
@@ -213,9 +214,9 @@
             this.reg_filepath_label.AutoSize = true;
             this.reg_filepath_label.Location = new System.Drawing.Point(21, 158);
             this.reg_filepath_label.Name = "reg_filepath_label";
-            this.reg_filepath_label.Size = new System.Drawing.Size(180, 19);
+            this.reg_filepath_label.Size = new System.Drawing.Size(179, 19);
             this.reg_filepath_label.TabIndex = 11;
-            this.reg_filepath_label.Text = "Пользовательский католог:";
+            this.reg_filepath_label.Text = "Пользовательский каталог:";
             // 
             // reg_filepath_textbox
             // 
@@ -233,18 +234,18 @@
             this.reg_email_label.AutoSize = true;
             this.reg_email_label.Location = new System.Drawing.Point(21, 101);
             this.reg_email_label.Name = "reg_email_label";
-            this.reg_email_label.Size = new System.Drawing.Size(179, 19);
+            this.reg_email_label.Size = new System.Drawing.Size(146, 19);
             this.reg_email_label.TabIndex = 9;
-            this.reg_email_label.Text = "Адрес электронной почты:";
+            this.reg_email_label.Text = "Адрес email / Пароль:";
             // 
             // reg_email_textbox
             // 
             this.reg_email_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.reg_email_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.reg_email_textbox.Location = new System.Drawing.Point(21, 123);
-            this.reg_email_textbox.MaxLength = 50;
+            this.reg_email_textbox.MaxLength = 100;
             this.reg_email_textbox.Name = "reg_email_textbox";
-            this.reg_email_textbox.Size = new System.Drawing.Size(360, 29);
+            this.reg_email_textbox.Size = new System.Drawing.Size(169, 29);
             this.reg_email_textbox.TabIndex = 8;
             // 
             // reg_password_label
@@ -286,6 +287,16 @@
             this.reg_name_textbox.Size = new System.Drawing.Size(169, 29);
             this.reg_name_textbox.TabIndex = 4;
             // 
+            // reg_emailkey_textbox
+            // 
+            this.reg_emailkey_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.reg_emailkey_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.reg_emailkey_textbox.Location = new System.Drawing.Point(212, 123);
+            this.reg_emailkey_textbox.MaxLength = 40;
+            this.reg_emailkey_textbox.Name = "reg_emailkey_textbox";
+            this.reg_emailkey_textbox.Size = new System.Drawing.Size(169, 29);
+            this.reg_emailkey_textbox.TabIndex = 15;
+            // 
             // AuthForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -316,7 +327,6 @@
         private Label auth_name_label;
         private Button login_button;
         private TextBox auth_password_textbox;
-        private TextBox auth_name_textbox;
         private CheckBox auth_checkbox;
         private Button filepath_button;
         private Label reg_filepath_label;
@@ -330,5 +340,7 @@
         private Button register_button;
         private CheckBox reg_checkbox;
         private LinkLabel skip_linklabel;
+        private ComboBox auth_name_combobox;
+        private TextBox reg_emailkey_textbox;
     }
 }

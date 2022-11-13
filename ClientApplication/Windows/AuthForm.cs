@@ -10,14 +10,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace CSCourseWork.Windows
 {
     internal partial class AuthForm : Form
     {
-        private const System.Int32 MinCharacter = 5;
+        protected virtual System.Int32 MinCharacter { get; private set; } = 5;
 
-        public AuthForm()
+        public AuthForm() : base()
         {
             this.InitializeComponent();
             this.filepath_button.FlatAppearance.BorderSize = default(int);
@@ -36,6 +39,22 @@ namespace CSCourseWork.Windows
 
                 client_form.Show(); this.Hide();
             };
+            this.Load += AuthForm_Load;
+        }
+
+        private void AuthForm_Load(object? sender, EventArgs e)
+        {
+            using (var controller = new GraphServiceReference.ProfileControllerClient())
+            {
+                this.auth_name_combobox.Items.Clear();
+
+                try { foreach (var item in controller.GetProfilesName()) this.auth_name_combobox.Items.Add(item); }
+                catch (FaultException<GraphServiceReference.ProfileControllerException> error)
+                { 
+                    MessageBox.Show(error.Detail.Message, "Ошибка"); return; 
+                }
+                catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
+            }
         }
 
         private void CheckboxCheckedChanged(object? sender, EventArgs args)
@@ -58,20 +77,20 @@ namespace CSCourseWork.Windows
         private void RegisterButtonClick(object? sender, EventArgs args)
         {
             string username = this.reg_name_textbox.Text, password = this.reg_password_textbox.Text,
-                email = this.reg_email_textbox.Text;
+                emailname = this.reg_email_textbox.Text, emailkey = this.reg_emailkey_textbox.Text;
 
-            var email_validate = Regex.IsMatch(this.reg_email_textbox.Text, @"^\w+@(?:gmail|mail).(?:ru|com)$");
-            if (username.Length < MinCharacter || password.Length < MinCharacter || !email_validate)
-            { 
-                MessageBox.Show("Неверный формат текстовых полей", "Ошибка"); 
-            }
+            var email_validate = Regex.IsMatch(emailname, @"^[\w.]+@(?:gmail|mail).(?:ru|com)$");
+
+            if (username.Length < MinCharacter || password.Length < MinCharacter || emailkey.Length < MinCharacter
+                || !email_validate) { MessageBox.Show("Неверный формат текстовых полей", "Ошибка"); return; }
+
             System.Guid? profile_id = default!;
             using (var register = new GraphServiceReference.ProfileControllerClient())
             {
                 try {
                     profile_id = register.Registration(new ProfileData()
                     {
-                        Email = email, Password = password, UserName = username, 
+                        EmailName = emailname, Password = password, UserName = username, EmailKey = emailkey,
                         ProjectsPath = this.reg_filepath_textbox.Text
                     });
                 }
@@ -81,6 +100,7 @@ namespace CSCourseWork.Windows
                 catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
             }
             MessageBox.Show("Учётная запись была создана", "Готово");
+            this.auth_name_combobox.Items.Add(username);
 
             var client_form = new ClientForm(profile_id.Value);
             client_form.FormClosed += (sender, args) => this.Show();
@@ -90,7 +110,7 @@ namespace CSCourseWork.Windows
 
         private void LoginButtonClick(object? sender, EventArgs args)
         {
-            string username = this.auth_name_textbox.Text, password = this.auth_password_textbox.Text;
+            string username = this.auth_name_combobox.Text, password = this.auth_password_textbox.Text;
             System.Guid? profile_id = default!;
 
             using (var authorize = new GraphServiceReference.ProfileControllerClient())

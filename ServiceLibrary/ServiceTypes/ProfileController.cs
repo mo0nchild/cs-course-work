@@ -1,5 +1,4 @@
-﻿using ServiceLibrary.ServiceContracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,32 +10,51 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using ServiceLibrary.DataTransfer;
+using ServiceLibrary.ServiceContracts;
 
 namespace ServiceLibrary.ServiceTypes
 {
     [ServiceBehaviorAttribute(InstanceContextMode = InstanceContextMode.PerSession)]
     public class ProfileController : ServiceContracts.IProfileController
     {
-        public const System.String ProjectExtention = ".projects";
-        protected virtual System.String FileName { get; private set; } = ".profiles";
+        public const System.String ProjectFilename = ".projects";
+
+        protected INetworkTransfer<SmptMessageEnvelope> NetforkTransfer { get; private set; } = default;
+        protected virtual System.String FileName { get => ".profiles"; }
         
-        public ProfileController() : base() { }
+        public ProfileController() : base() { this.NetforkTransfer = new SmtpTransfer(); }
+
+        private void SetProfileDocumentIfNotFound(string directory)
+        {
+            if (!File.Exists($"{directory}\\{this.FileName}"))
+            {
+                using (var writer = new StreamWriter(File.Create($"{directory}\\{this.FileName}")))
+                { writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><profiles></profiles>"); }
+            }
+        }
 
         protected static XmlDocument GetProfileDocument(string filepath)
         {
+            var exception_instance = new ProfileControllerException("Файл профилей не найден");
+            if (!File.Exists(filepath))
+            {
+                throw new FaultException<ProfileControllerException>(exception_instance);
+            }
             var profile_document = new XmlDocument();
-
             using (var file_reader = File.OpenRead(filepath))
             {
                 var xml_reader = XmlReader.Create(file_reader, new XmlReaderSettings() { IgnoreWhitespace = true });
-                profile_document.Load(xml_reader); 
+
+                try { profile_document.Load(xml_reader); } 
+                catch { new FaultException<ProfileControllerException>(exception_instance); } 
             }
             return profile_document;
         }
+
         protected static void CommitProfileDocument(XmlDocument xml_document, string filepath)
         {
-            using (var file_writer = File.Open(filepath, FileMode.Create))
-            { xml_document.Save(XmlWriter.Create(file_writer)); }
+            using (var writer = File.Open(filepath, FileMode.Create)) { xml_document.Save(XmlWriter.Create(writer)); }
         }
 
         private void ThrowExceptionIfPathNotEmpty(System.String profile_path)
@@ -53,15 +71,46 @@ namespace ServiceLibrary.ServiceTypes
             }
         }
 
+        private void ThrowExceptionIfEmailBad(string email_name, string email_key)
+        {
+            var emailcheck_message = new DataTransfer.SmptMessageEnvelope()
+            {
+                SendingEmail = email_name, EmailCredentials = email_key
+            };
+            if (!this.NetforkTransfer.CheckChannel(emailcheck_message))
+            {
+                var exception_instance = new ProfileControllerException("Email не найден");
+                throw new FaultException<ProfileControllerException>(exception_instance);
+            }
+        }
+
+        public string[] GetProfilesName()
+        {
+            var profile_path = $"{Directory.GetCurrentDirectory()}\\{this.FileName}";
+            var result_list = new List<string>();
+
+            XmlDocument xml_document = default;
+            try { xml_document = ProfileController.GetProfileDocument(profile_path); } catch { return new string[] { }; }
+
+            foreach (XmlNode profile_node in xml_document.DocumentElement.ChildNodes)
+            {
+                if(profile_node.Attributes["name"] != null) result_list.Add(profile_node.Attributes["name"].Value);
+            }
+            return result_list.ToArray();
+        }
+
         public System.Guid? Authorization(string username, string password)
         {
-            var xml_document = ProfileController.GetProfileDocument($"{Directory.GetCurrentDirectory()}\\{FileName}");
+            var profile_path = $"{Directory.GetCurrentDirectory()}\\{this.FileName}";
+
+            XmlDocument xml_document = default;
+            try { xml_document = ProfileController.GetProfileDocument(profile_path); } catch { return null; }
 
             XmlNode searching_node = default;
             foreach (XmlNode node in xml_document.DocumentElement.ChildNodes)
             {
-                if (node.Attributes["name"] != null && node.Attributes["name"].Value == username
-                    && node.Attributes["id"] != null) { searching_node = node; break; }
+                if (node.Attributes["name"] != null && node.Attributes["id"] != null 
+                    && node.Attributes["name"].Value == username) { searching_node = node; break; }
             }
             if (searching_node == null) return null;
 
@@ -69,8 +118,8 @@ namespace ServiceLibrary.ServiceTypes
             {
                 var profile_data = searching_node.ChildNodes[index];
 
-                if (profile_data.Name == "password" && profile_data.Attributes["value"] != null 
-                    && profile_data.Attributes["value"].Value == password)
+                if (profile_data.Name == "password" && profile_data.Attributes["value"].Value == password 
+                    && profile_data.Attributes["value"] != null)
                 {
                     if (Guid.TryParse(searching_node.Attributes["id"].Value, out var guid_result))
                     { return guid_result; } else break;
@@ -87,6 +136,9 @@ namespace ServiceLibrary.ServiceTypes
                 { throw new FaultException<ProfileControllerException>(new ProfileControllerException("Данные пустые")); }
             }
             this.ThrowExceptionIfPathNotEmpty(profile_data.ProjectsPath);
+            this.ThrowExceptionIfEmailBad(profile_data.EmailName, profile_data.EmailKey);
+
+            this.SetProfileDocumentIfNotFound(Directory.GetCurrentDirectory());
 
             var xml_document = ProfileController.GetProfileDocument($"{Directory.GetCurrentDirectory()}\\{FileName}");
             foreach (XmlNode profile in xml_document.DocumentElement.ChildNodes)
@@ -111,7 +163,7 @@ namespace ServiceLibrary.ServiceTypes
                 }
             }
             xml_document.DocumentElement.AppendChild(xml_profile);
-            using (var projects_file = File.Create($"{profile_data.ProjectsPath}\\{ProjectExtention}")) { }
+            using (var projects_file = File.Create($"{profile_data.ProjectsPath}\\{ProjectFilename}")) { }
 
             ProfileController.CommitProfileDocument(xml_document, $"{Directory.GetCurrentDirectory()}\\{FileName}");
             return profile_id;
@@ -136,47 +188,57 @@ namespace ServiceLibrary.ServiceTypes
 
         public void SetupProfile(System.Guid userid, ServiceContracts.ProfileData profile_data)
         {
-            var xml_document = ProfileController.GetProfileDocument($"{Directory.GetCurrentDirectory()}\\{FileName}");
+            var exception_obj = new ProfileControllerException("Профиль не найден", ProfileControllerAction.Setup);
 
+            var previous_profiledata = this.ReadProfile(userid);
+            if (previous_profiledata == null) { throw new FaultException<ProfileControllerException>(exception_obj); }
+
+            var xml_document = ProfileController.GetProfileDocument($"{Directory.GetCurrentDirectory()}\\{FileName}");
             XmlNode searching_node = default;
+
             foreach (XmlNode node in xml_document.DocumentElement.ChildNodes)
             {
                 if (node.Attributes["id"] != null && node.Attributes["name"] != null 
                     && node.Attributes["id"].Value == userid.ToString()) { searching_node = node; break; }
             }
-            if (searching_node == null)
-            {
-                var error = new ProfileControllerException("Профиль не найден", ProfileControllerAction.Setup);
-                throw new FaultException<ProfileControllerException>(error);
-            }
+            if (searching_node == null) throw new FaultException<ProfileControllerException>(exception_obj);
 
-            if (profile_data.ProjectsPath != null)
+            if (profile_data.ProjectsPath != null && profile_data.ProjectsPath != previous_profiledata.ProjectsPath)
             {
                 this.ThrowExceptionIfPathNotEmpty(profile_data.ProjectsPath);
-                var project_directory = new DirectoryInfo(this.ReadProfile(userid).ProjectsPath);
+                var project_dir = new DirectoryInfo(previous_profiledata.ProjectsPath);
 
-                foreach (var file in project_directory.GetFiles())
-                { file.CopyTo($"{profile_data.ProjectsPath}\\{file.Name}", true); }
+                foreach (var file in project_dir.GetFiles()) { file.CopyTo($"{profile_data.ProjectsPath}\\{file.Name}", true); }
             }
 
             if (profile_data.UserName != null) searching_node.Attributes["name"].Value = profile_data.UserName;
-            foreach (XmlElement property_node in searching_node.ChildNodes)
+            foreach (var profile_property in profile_data.GetType().GetProperties())
             {
-                foreach (var profile_property in profile_data.GetType().GetProperties())
-                {
-                    var property_attribute = profile_property.GetCustomAttribute<ProfilePropertyAttribute>();
-                    if (property_attribute == null || property_attribute.PropertyName != property_node.Name) continue;
+                var property_attribute = profile_property.GetCustomAttribute<ProfilePropertyAttribute>();
+                if (property_attribute == null) continue;
 
-                    if(profile_property.GetValue(profile_data) != null)
-                    { property_node.SetAttribute("value", profile_property.GetValue(profile_data).ToString()); }
+                var founded_node = searching_node.ChildNodes.OfType<XmlElement>()
+                    .Where((XmlElement element) => property_attribute.PropertyName == element.Name).ToArray()[0];
+
+                var property_instance = profile_property.GetValue(profile_data);
+                if (founded_node == null)
+                {
+                    founded_node = xml_document.CreateElement(property_attribute.PropertyName);
+                    founded_node.SetAttribute("value", property_instance.ToString());
+
+                    searching_node.AppendChild(founded_node);
                 }
+                founded_node.SetAttribute("value", property_instance.ToString());
             }
             ProfileController.CommitProfileDocument(xml_document, $"{Directory.GetCurrentDirectory()}\\{FileName}");
         }
 
         public ServiceContracts.ProfileData ReadProfile(System.Guid userid)
         {
-            var xml_document = ProfileController.GetProfileDocument($"{Directory.GetCurrentDirectory()}\\{FileName}");
+            var profile_path = $"{Directory.GetCurrentDirectory()}\\{this.FileName}";
+
+            XmlDocument xml_document = default;
+            try { xml_document = ProfileController.GetProfileDocument(profile_path); } catch { return null; }
 
             XmlNode searching_node = default;
             foreach (XmlNode node in xml_document.DocumentElement.ChildNodes)
@@ -192,7 +254,7 @@ namespace ServiceLibrary.ServiceTypes
                 var property_attribute = profile_property.GetCustomAttribute<ProfilePropertyAttribute>();
                 if (property_attribute == null) continue;
 
-                foreach (XmlElement property_node in searching_node.ChildNodes)
+                foreach (XmlNode property_node in searching_node.ChildNodes)
                 {
                     if (property_node.Name != property_attribute.PropertyName 
                         || property_node.Attributes["value"] == null) continue;

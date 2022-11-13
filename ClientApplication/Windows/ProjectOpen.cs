@@ -7,8 +7,10 @@ using System.Drawing;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace CSCourseWork.Windows
 {
@@ -18,18 +20,54 @@ namespace CSCourseWork.Windows
         public System.String? ProjectName { get; set; } = default;
 
         protected System.Guid ProfileID { get; private set; } = default;
-        protected System.String ProfilePath { get; private set; } = default!;
 
-        public ProjectOpen(System.Guid profile_id)
+        public ProjectOpen(System.Guid profile_id) : base()
         {
             this.InitializeComponent(); this.ProfileID = profile_id;
-            this.Load += new EventHandler(ProjectOpenLoad);
+            this.Load += delegate (object? sender, EventArgs args) { this.UpdateProjectListView(); };
 
             this.delete_button.Click += new EventHandler(DeleteButtonClick);
             this.open_button.Click += new EventHandler(OpenButtonClick);
+            this.export_button.Click += new EventHandler(ExportButtonClick);
 
-            this.projects_listview.DoubleClick += delegate (object? sender, EventArgs args) 
-            { this.OpenButtonClick(this, args); };
+            this.projects_listview.SelectedIndexChanged += new EventHandler(Projects_listview_SelectedIndexChanged);
+            this.projects_listview.DoubleClick += new EventHandler(OpenButtonClick);
+        }
+
+        private void ExportButtonClick(object? sender, EventArgs args)
+        {
+            if (this.projects_listview.SelectedItems.Count <= 0) return;
+
+            var target_email = this.email_textbox.Text;
+            var loading_project = this.projects_listview.SelectedItems[0].Text;
+
+            if (!Regex.IsMatch(target_email, @"^[\w.]+@(?:gmail|mail).(?:ru|com)$"))
+            {
+                MessageBox.Show("Неверный формат email почты", "Ошибка"); return;
+            }
+            using (var project_dispatcher = new ProjectDispatcherClient())
+            {
+                var transfer_data = new TransferData() { FromPath = $"{this.ProfileID}",ToPath = target_email };
+
+                if (!project_dispatcher.SetProjectsDirectory(this.ProfileID))
+                { MessageBox.Show("Невозможно использовать каталог с проектами", "Ошибка"); return; }
+
+                try {project_dispatcher.ExportProject(loading_project, transfer_data); }
+                catch (FaultException<ProjectDispatcherException> error)
+                {
+                    MessageBox.Show(error.Detail.Message, "Ошибка"); return;
+                }
+                catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
+            }
+            MessageBox.Show("Проект экспортирован на указанную почту", "Готово");
+        }
+
+        private void Projects_listview_SelectedIndexChanged(object? sender, EventArgs args)
+        {
+            if (this.projects_listview.SelectedItems.Count <= 0) return;
+
+            this.file_textbox.Text = this.projects_listview.SelectedItems[0].SubItems[1].Text;
+            this.datetime_textbox.Text = this.projects_listview.SelectedItems[0].SubItems[2].Text;
         }
 
         private void UpdateProjectListView()
@@ -38,7 +76,7 @@ namespace CSCourseWork.Windows
             using (var project_dispatcher = new ProjectDispatcherClient())
             {
                 try { 
-                    if (project_dispatcher.SetProjectsDirectory(this.ProfilePath)) 
+                    if (project_dispatcher.SetProjectsDirectory(this.ProfileID)) 
                     { projects_list = project_dispatcher.GetProjectsInfo(); }
                 }
                 catch (FaultException<ProjectDispatcherException> error)
@@ -60,20 +98,6 @@ namespace CSCourseWork.Windows
             }
         }
 
-        private void ProjectOpenLoad(object? sender, EventArgs args)
-        {
-            using (var profile_controller = new ProfileControllerClient())
-            {
-                try { this.ProfilePath = profile_controller.ReadProfile(this.ProfileID).ProjectsPath; }
-                catch (FaultException<ProfileControllerException> error)
-                {
-                    MessageBox.Show(error.Detail.Message, "Ошибка"); this.Close();
-                }
-                catch(CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); this.Close(); }
-            }
-            this.UpdateProjectListView();
-        }
-
         private void OpenButtonClick(object? sender, EventArgs args)
         {
             if (this.projects_listview.SelectedItems.Count <= 0) return;
@@ -82,17 +106,20 @@ namespace CSCourseWork.Windows
             using (var project_dispatcher = new ProjectDispatcherClient())
             {
                 try {
-                    if (project_dispatcher.SetProjectsDirectory(this.ProfilePath))
+                    if (project_dispatcher.SetProjectsDirectory(this.ProfileID))
                     { this.NodeList = project_dispatcher.TakeProjectData(loading_project); }
                 }
                 catch (FaultException<ProjectDispatcherException> error)
                 {
-                    MessageBox.Show(error.Detail.Message, "Ошибка"); return;
+                    MessageBox.Show(error.Detail.Message, "Ошибка"); this.UpdateProjectListView(); return;
                 }
-                catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
+                catch (CommunicationException error) 
+                { 
+                    MessageBox.Show(error.Message, "Ошибка"); this.UpdateProjectListView(); return;
+                }
             }
-
             MessageBox.Show($"Проект {loading_project} загружен", "Готово");
+
             this.ProjectName = loading_project; this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -102,11 +129,14 @@ namespace CSCourseWork.Windows
             if (this.projects_listview.SelectedItems.Count <= 0) return;
             var deleted_project = this.projects_listview.SelectedItems[0].Text;
 
+            if (MessageBox.Show("Вы уверены?", "Подтвердение", MessageBoxButtons.YesNo, 
+                MessageBoxIcon.Question) != DialogResult.Yes) return;
+
             using (var project_dispatcher = new ProjectDispatcherClient())
             {
                 try {
-                    if (project_dispatcher.SetProjectsDirectory(this.ProfilePath))
-                    { project_dispatcher.DeleteProject(deleted_project); }
+                    if (project_dispatcher.SetProjectsDirectory(this.ProfileID))
+                    { project_dispatcher.DeleteProject(deleted_project, true); }
                 }
                 catch (FaultException<ProjectDispatcherException> error)
                 {
@@ -114,8 +144,8 @@ namespace CSCourseWork.Windows
                 }
                 catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
             }
-            if (this.ProjectName != null && this.ProjectName == deleted_project) this.ProjectName = null;
-            this.UpdateProjectListView();
+            MessageBox.Show($"Проект {deleted_project} удалён", "Готово");
+            this.ProjectName = null; this.UpdateProjectListView();
         }
     }
 }

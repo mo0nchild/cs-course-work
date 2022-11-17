@@ -71,16 +71,19 @@ namespace CSCourseWork.EditorComponents
 
         public IEditorComponentBuilder<NodesController> AddEditorConfiguration(IEditorConfigProvider provider) 
         {
-            foreach (var property in provider.TakeConfig()) 
-            {
-                this.AddEditorProperty(property.Name, property.Value);
-                //if(property.Name == "TestType")
-                //{
-                //    var testtype = (EditorTestType)property.Value;
-                //    Console.WriteLine($"\n\tTestType - Text: {testtype.Text}, Range: [min={testtype.Range.Min}], [max={testtype.Range.Max}]\n");
-                //}
-            }
-            return this;
+            try { foreach (var property in provider.TakeConfig()) this.AddEditorProperty(property.Name, property.Value); }
+            catch (EditorConfiguration.EditorConfigException error) { Console.WriteLine(error.Message); } return this;
+
+            //foreach (var property in provider.TakeConfig()) 
+            //{
+            //this.AddEditorProperty(property.Name, property.Value);
+            //if(property.Name == "TestType")
+            //{
+            //    var testtype = (EditorTestType)property.Value;
+            //    Console.WriteLine($"\n\tTestType - Text: {testtype.Text}, Range: [min={testtype.Range.Min}],
+            //      [max={testtype.Range.Max}]\n");
+            //}
+            //}
         }
 
         public EditorComponentBase<NodesController> BuildEditor(string name)

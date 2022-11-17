@@ -18,7 +18,7 @@ namespace ServiceLibrary.ServiceTypes
     [ServiceBehaviorAttribute(InstanceContextMode = InstanceContextMode.PerSession)]
     public class ProfileController : ServiceContracts.IProfileController
     {
-        public const System.String ProjectFilename = ".projects";
+        public static System.String ProjectFilename { get => ".projects"; }
 
         protected INetworkTransfer<SmptMessageEnvelope> NetforkTransfer { get; private set; } = default;
         protected virtual System.String FileName { get => ".profiles"; }

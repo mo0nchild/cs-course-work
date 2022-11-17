@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.projects_listview = new System.Windows.Forms.ListView();
             this.projectname_column = new System.Windows.Forms.ColumnHeader();
             this.projectfile_column = new System.Windows.Forms.ColumnHeader();
@@ -45,9 +46,20 @@
             this.export_button = new System.Windows.Forms.Button();
             this.email_label = new System.Windows.Forms.Label();
             this.email_textbox = new System.Windows.Forms.TextBox();
+            this.import_tabpage = new System.Windows.Forms.TabPage();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.filename_label = new System.Windows.Forms.Label();
+            this.projectname_textbox = new System.Windows.Forms.TextBox();
+            this.filename_textbox = new System.Windows.Forms.TextBox();
+            this.projectname_label = new System.Windows.Forms.Label();
+            this.importfile_label = new System.Windows.Forms.Label();
+            this.importfile_textbox = new System.Windows.Forms.TextBox();
+            this.openfile_button = new System.Windows.Forms.Button();
+            this.import_button = new System.Windows.Forms.Button();
             this.main_tabcontrol.SuspendLayout();
             this.open_tabpage.SuspendLayout();
             this.export_tabpage.SuspendLayout();
+            this.import_tabpage.SuspendLayout();
             this.SuspendLayout();
             // 
             // projects_listview
@@ -158,6 +170,7 @@
             // 
             this.main_tabcontrol.Controls.Add(this.open_tabpage);
             this.main_tabcontrol.Controls.Add(this.export_tabpage);
+            this.main_tabcontrol.Controls.Add(this.import_tabpage);
             this.main_tabcontrol.Location = new System.Drawing.Point(12, 192);
             this.main_tabcontrol.Name = "main_tabcontrol";
             this.main_tabcontrol.SelectedIndex = 0;
@@ -226,6 +239,111 @@
             this.email_textbox.Size = new System.Drawing.Size(397, 29);
             this.email_textbox.TabIndex = 25;
             // 
+            // import_tabpage
+            // 
+            this.import_tabpage.Controls.Add(this.import_button);
+            this.import_tabpage.Controls.Add(this.openfile_button);
+            this.import_tabpage.Controls.Add(this.importfile_label);
+            this.import_tabpage.Controls.Add(this.importfile_textbox);
+            this.import_tabpage.Controls.Add(this.filename_label);
+            this.import_tabpage.Controls.Add(this.projectname_label);
+            this.import_tabpage.Controls.Add(this.projectname_textbox);
+            this.import_tabpage.Controls.Add(this.filename_textbox);
+            this.import_tabpage.Location = new System.Drawing.Point(4, 24);
+            this.import_tabpage.Name = "import_tabpage";
+            this.import_tabpage.Size = new System.Drawing.Size(412, 130);
+            this.import_tabpage.TabIndex = 2;
+            this.import_tabpage.Text = "Импорт";
+            this.import_tabpage.UseVisualStyleBackColor = true;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // filename_label
+            // 
+            this.filename_label.AutoSize = true;
+            this.filename_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.filename_label.Location = new System.Drawing.Point(212, 3);
+            this.filename_label.Name = "filename_label";
+            this.filename_label.Size = new System.Drawing.Size(115, 19);
+            this.filename_label.TabIndex = 29;
+            this.filename_label.Text = "Название файла:";
+            // 
+            // projectname_textbox
+            // 
+            this.projectname_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.projectname_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.projectname_textbox.Location = new System.Drawing.Point(9, 25);
+            this.projectname_textbox.MaxLength = 20;
+            this.projectname_textbox.Name = "projectname_textbox";
+            this.projectname_textbox.Size = new System.Drawing.Size(188, 29);
+            this.projectname_textbox.TabIndex = 26;
+            // 
+            // filename_textbox
+            // 
+            this.filename_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.filename_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.filename_textbox.Location = new System.Drawing.Point(212, 25);
+            this.filename_textbox.MaxLength = 40;
+            this.filename_textbox.Name = "filename_textbox";
+            this.filename_textbox.Size = new System.Drawing.Size(188, 29);
+            this.filename_textbox.TabIndex = 28;
+            // 
+            // projectname_label
+            // 
+            this.projectname_label.AutoSize = true;
+            this.projectname_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.projectname_label.Location = new System.Drawing.Point(9, 3);
+            this.projectname_label.Name = "projectname_label";
+            this.projectname_label.Size = new System.Drawing.Size(127, 19);
+            this.projectname_label.TabIndex = 27;
+            this.projectname_label.Text = "Название проекта:";
+            // 
+            // importfile_label
+            // 
+            this.importfile_label.AutoSize = true;
+            this.importfile_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.importfile_label.Location = new System.Drawing.Point(9, 57);
+            this.importfile_label.Name = "importfile_label";
+            this.importfile_label.Size = new System.Drawing.Size(155, 19);
+            this.importfile_label.TabIndex = 31;
+            this.importfile_label.Text = "Путь к файлу импорта:";
+            // 
+            // importfile_textbox
+            // 
+            this.importfile_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.importfile_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.importfile_textbox.Location = new System.Drawing.Point(9, 79);
+            this.importfile_textbox.MaxLength = 200;
+            this.importfile_textbox.Name = "importfile_textbox";
+            this.importfile_textbox.ReadOnly = true;
+            this.importfile_textbox.Size = new System.Drawing.Size(188, 29);
+            this.importfile_textbox.TabIndex = 30;
+            // 
+            // openfile_button
+            // 
+            this.openfile_button.BackgroundImage = global::CSCourseWork.Windows.Resourses.FolderIcon;
+            this.openfile_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.openfile_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.openfile_button.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.openfile_button.Location = new System.Drawing.Point(212, 79);
+            this.openfile_button.Name = "openfile_button";
+            this.openfile_button.Size = new System.Drawing.Size(30, 29);
+            this.openfile_button.TabIndex = 32;
+            this.openfile_button.UseVisualStyleBackColor = true;
+            // 
+            // import_button
+            // 
+            this.import_button.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.import_button.Location = new System.Drawing.Point(254, 79);
+            this.import_button.Name = "import_button";
+            this.import_button.Size = new System.Drawing.Size(146, 29);
+            this.import_button.TabIndex = 33;
+            this.import_button.Text = "Импорт проекта";
+            this.import_button.UseVisualStyleBackColor = true;
+            // 
             // ProjectOpen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -245,6 +363,8 @@
             this.open_tabpage.PerformLayout();
             this.export_tabpage.ResumeLayout(false);
             this.export_tabpage.PerformLayout();
+            this.import_tabpage.ResumeLayout(false);
+            this.import_tabpage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -269,5 +389,15 @@
         private Button export_button;
         private TextBox email_textbox;
         private Label email_label;
+        private TabPage import_tabpage;
+        private Button import_button;
+        private Button openfile_button;
+        private Label importfile_label;
+        private TextBox importfile_textbox;
+        private Label filename_label;
+        private Label projectname_label;
+        private TextBox projectname_textbox;
+        private TextBox filename_textbox;
+        private ContextMenuStrip contextMenuStrip1;
     }
 }

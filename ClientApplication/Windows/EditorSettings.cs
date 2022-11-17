@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 using CSCourseWork.EditorComponents;
@@ -21,7 +22,7 @@ namespace CSCourseWork.Windows
     public partial class EditorSettings<TNodeController> : System.Windows.Forms.Form
          where TNodeController : NodesControllers.INodesControllerWithConnectors, new()
     {
-        public delegate void TypeSettingHandler(Panel group, EditorConfiguration.EditorConfigProperty property);
+        public delegate Control TypeSettingHandler(EditorConfiguration.EditorConfigProperty property);
 
         private EditorComponentBase<TNodeController> EditorInstance { get; set; } = default!;
         private IEditorConfigProvider ConfigProvider { get; set; } = default!;
@@ -62,7 +63,6 @@ namespace CSCourseWork.Windows
                 if (configfile_dialog.ShowDialog() != DialogResult.OK) return;
                 export_config = new EditorConfigProvider(configfile_dialog.FileName);
             }
-
             List<EditorConfiguration.EditorConfigProperty> export_properies = default!;
 
             try { export_properies = export_config.TakeConfig(); }
@@ -88,21 +88,22 @@ namespace CSCourseWork.Windows
         {
             foreach (var item in this.SettingsBuffer)
             {
-                this.ConfigProvider.PutConfigProperty(item.Value.Name, item.Value.Value);
+                try { this.ConfigProvider.PutConfigProperty(item.Value.Name, item.Value.Value); } 
+                catch { continue; }
             }
             this.DialogResult = DialogResult.OK;
         }
 
-        private static void Int32SettingHandler(Panel group, EditorConfigProperty property)
+        private static Control Int32SettingHandler(EditorConfigProperty property)
         {
             var int_control = new NumericUpDown() { Value = (int)property.Value, 
                 Minimum = 1, Maximum = 100, Width = 75, Font = new Font("Segoe UI", 10) };
 
             int_control.ValueChanged += delegate { property.Value = (int)int_control.Value; };
-            group.Controls.Add(int_control);
+            return int_control;
         }
 
-        private static void EditorFontFamilySettingHandler(Panel group, EditorConfigProperty property)
+        private static Control EditorFontFamilySettingHandler(EditorConfigProperty property)
         {
             var font_control = new ComboBox() { DropDownStyle = ComboBoxStyle.DropDownList,
                 Width = 200, Font = new Font("Segoe UI", 10) };
@@ -115,10 +116,10 @@ namespace CSCourseWork.Windows
                 var font_value = new EditorFontFamily() { FontFamily = font_control.Text };
                 property.Value = font_value;
             };
-            group.Controls.Add(font_control);
+            return (font_control);
         }
 
-        private static void EditorScaleSettingHandler(Panel group, EditorConfigProperty property)
+        private static Control EditorScaleSettingHandler(EditorConfigProperty property)
         {
             var scale_value = (EditorScale)property.Value;
 
@@ -148,10 +149,10 @@ namespace CSCourseWork.Windows
             controls_group.Controls.Add(min_control);
             controls_group.Controls.Add(max_control);
 
-            group.Controls.Add(controls_group);
+            return controls_group;
         }
 
-        private static void EditorColorSettingHandler(Panel group, EditorConfigProperty property)
+        private static Control EditorColorSettingHandler(EditorConfigProperty property)
         {
             var color_control = new Button() { Text = string.Empty, Font = new Font("Segoe UI", 10),
                 BackColor = ((EditorColor)property.Value), Size = new(75, 30) };
@@ -164,7 +165,7 @@ namespace CSCourseWork.Windows
                 color_control.BackColor = color_dialog.Color;
                 property.Value = new EditorColor(color_dialog.Color.R, color_dialog.Color.G, color_dialog.Color.B);
             };
-            group.Controls.Add(color_control);
+            return color_control;
         }
 
         private void SettinglistTreeviewNodeMouseClick(object? sender, TreeNodeMouseClickEventArgs args)
@@ -188,12 +189,12 @@ namespace CSCourseWork.Windows
             {
                 this.properties_panel.Controls.Add(new Label() { Text = $"{name}:", AutoSize = true });
 
-                (TypeHandlers[property_config.Type.Name] as TypeSettingHandler)?.Invoke(
-                    this.properties_panel, property_config);
+                var type_setting = (TypeHandlers[property_config.Type.Name] as TypeSettingHandler)?.Invoke(property_config);
+                this.properties_panel.Controls.Add(type_setting);
             }
         }
 
-        private void SettingListInitialize(string find_setting)
+        private void SettingListInitialize(string find_setting = "")
         {
             this.settinglist_treeview.Nodes.Clear();
             this.properties_panel.Controls.Clear();

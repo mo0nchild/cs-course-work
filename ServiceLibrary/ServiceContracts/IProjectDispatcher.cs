@@ -17,7 +17,7 @@ namespace ServiceLibrary.ServiceContracts
         void ExportProject(System.String export_entity, TransferData transfer_data);
 
         [OperationContractAttribute, FaultContractAttribute(typeof(ProjectDispatcherException))]
-        void ImportProject(System.String export_entity, TransferData transfer_data);
+        void ImportProject(System.String import_entity, TransferData transfer_data);
     }
 
     [ServiceContractAttribute(Name = "ProjectDispatcher")]

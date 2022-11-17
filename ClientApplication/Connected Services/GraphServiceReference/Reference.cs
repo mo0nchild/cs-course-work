@@ -723,10 +723,10 @@ namespace GraphServiceReference
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ImportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ImportProjectResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectTransfer/ImportProjectProjectDispatcherExceptionFault", Name="ProjectDispatcherException", Namespace="http://schemas.datacontract.org/2004/07/ServiceLibrary.ServiceContracts")]
-        void ImportProject(string export_entity, GraphServiceReference.TransferData transfer_data);
+        void ImportProject(string import_entity, GraphServiceReference.TransferData transfer_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectTransfer/ImportProject", ReplyAction="http://tempuri.org/ProjectTransfer/ImportProjectResponse")]
-        System.Threading.Tasks.Task ImportProjectAsync(string export_entity, GraphServiceReference.TransferData transfer_data);
+        System.Threading.Tasks.Task ImportProjectAsync(string import_entity, GraphServiceReference.TransferData transfer_data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ProjectDispatcher/GetProjectsInfo", ReplyAction="http://tempuri.org/ProjectDispatcher/GetProjectsInfoResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(GraphServiceReference.ProjectDispatcherException), Action="http://tempuri.org/ProjectDispatcher/GetProjectsInfoProjectDispatcherExceptionFau" +
@@ -843,14 +843,14 @@ namespace GraphServiceReference
             return base.Channel.ExportProjectAsync(export_entity, transfer_data);
         }
         
-        public void ImportProject(string export_entity, GraphServiceReference.TransferData transfer_data)
+        public void ImportProject(string import_entity, GraphServiceReference.TransferData transfer_data)
         {
-            base.Channel.ImportProject(export_entity, transfer_data);
+            base.Channel.ImportProject(import_entity, transfer_data);
         }
         
-        public System.Threading.Tasks.Task ImportProjectAsync(string export_entity, GraphServiceReference.TransferData transfer_data)
+        public System.Threading.Tasks.Task ImportProjectAsync(string import_entity, GraphServiceReference.TransferData transfer_data)
         {
-            return base.Channel.ImportProjectAsync(export_entity, transfer_data);
+            return base.Channel.ImportProjectAsync(import_entity, transfer_data);
         }
         
         public GraphServiceReference.ProjectInfo[] GetProjectsInfo()

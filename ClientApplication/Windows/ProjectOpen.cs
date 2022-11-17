@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.ServiceModel;
@@ -20,6 +21,7 @@ namespace CSCourseWork.Windows
         public System.String? ProjectName { get; set; } = default;
 
         protected System.Guid ProfileID { get; private set; } = default;
+        protected virtual System.Int32 MinCharacter { get; private set; } = 5;
 
         public ProjectOpen(System.Guid profile_id) : base()
         {
@@ -30,28 +32,62 @@ namespace CSCourseWork.Windows
             this.open_button.Click += new EventHandler(OpenButtonClick);
             this.export_button.Click += new EventHandler(ExportButtonClick);
 
+            this.openfile_button.Click += new EventHandler(OpenfileButtonClick);
+            this.import_button.Click += new EventHandler(ImportButtonClick);
+
             this.projects_listview.SelectedIndexChanged += new EventHandler(Projects_listview_SelectedIndexChanged);
             this.projects_listview.DoubleClick += new EventHandler(OpenButtonClick);
+        }
+
+        private void ImportButtonClick(object? sender, EventArgs args)
+        {
+            string projectname = this.projectname_textbox.Text, filename = this.filename_textbox.Text,
+                importfile = this.importfile_textbox.Text;
+
+            if (projectname.Length < MinCharacter || filename.Length < MinCharacter) return;
+            using (var project_dispatcher = new ProjectDispatcherClient())
+            {
+                if (!project_dispatcher.SetProjectsDirectory(this.ProfileID))
+                { MessageBox.Show("Невозможно использовать каталог с проектами", "Ошибка"); return; }
+                try {
+                    project_dispatcher.ImportProject(projectname, new TransferData() { FromPath = importfile, ToPath = filename });
+                }
+                catch (FaultException<ProjectDispatcherException> error)
+                {
+                    MessageBox.Show(error.Detail.Message, "Ошибка"); return;
+                }
+                catch (CommunicationException error) { MessageBox.Show(error.Message, "Ошибка"); return; }
+            }
+            MessageBox.Show("Проект успешно импортирован", "Готово");
+            this.UpdateProjectListView();
+        }
+
+        private void OpenfileButtonClick(object? sender, EventArgs args)
+        {
+            using (var openfile_dialog = new OpenFileDialog() { Filter = "(*.graphproj) |*.graphproj| (*.json) |*.json" })
+            {
+                if (openfile_dialog.ShowDialog() != DialogResult.OK) { return; }
+                this.importfile_textbox.Text = openfile_dialog.FileName;
+            }
         }
 
         private void ExportButtonClick(object? sender, EventArgs args)
         {
             if (this.projects_listview.SelectedItems.Count <= 0) return;
 
-            var target_email = this.email_textbox.Text;
             var loading_project = this.projects_listview.SelectedItems[0].Text;
+            var target_email = this.email_textbox.Text;
 
             if (!Regex.IsMatch(target_email, @"^[\w.]+@(?:gmail|mail).(?:ru|com)$"))
-            {
-                MessageBox.Show("Неверный формат email почты", "Ошибка"); return;
-            }
+            { MessageBox.Show("Неверный формат email почты", "Ошибка"); return; }
+
             using (var project_dispatcher = new ProjectDispatcherClient())
             {
                 var transfer_data = new TransferData() { FromPath = $"{this.ProfileID}",ToPath = target_email };
-
                 if (!project_dispatcher.SetProjectsDirectory(this.ProfileID))
-                { MessageBox.Show("Невозможно использовать каталог с проектами", "Ошибка"); return; }
-
+                {
+                    MessageBox.Show("Невозможно использовать каталог с проектами", "Ошибка"); return; 
+                }
                 try {project_dispatcher.ExportProject(loading_project, transfer_data); }
                 catch (FaultException<ProjectDispatcherException> error)
                 {
@@ -90,8 +126,8 @@ namespace CSCourseWork.Windows
                 this.projects_listview.Items.Clear();
                 foreach (var project in projects_list)
                 {
-                    var listview_row = new ListViewItem(new string[] { 
-                        project.ProjectName, project.FileName, project.CreateTime.ToString() });
+                    var listview_row = new ListViewItem(new string[] { project.ProjectName, project.FileName, 
+                        project.CreateTime.ToString() });
 
                     this.projects_listview.Items.Add(listview_row);
                 }
@@ -129,8 +165,8 @@ namespace CSCourseWork.Windows
             if (this.projects_listview.SelectedItems.Count <= 0) return;
             var deleted_project = this.projects_listview.SelectedItems[0].Text;
 
-            if (MessageBox.Show("Вы уверены?", "Подтвердение", MessageBoxButtons.YesNo, 
-                MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (MessageBox.Show("Вы уверены?", "Подтвердение", MessageBoxButtons.YesNo, MessageBoxIcon.Question) 
+                != DialogResult.Yes) return;
 
             using (var project_dispatcher = new ProjectDispatcherClient())
             {

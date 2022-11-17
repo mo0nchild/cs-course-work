@@ -44,7 +44,7 @@ namespace ServiceLibrary.DataTransfer
             using (var smtp_message = this.MessageBuild(envelope.SendingEmail, envelope.SendingEmail, this.CheckMessage))
             {
                 this.SmptTransferClient.Credentials = new NetworkCredential(envelope.SendingEmail, envelope.EmailCredentials);
-                try { this.SmptTransferClient.Send(smtp_message); } catch { return false; } return true;
+                try { this.SmptTransferClient.Send(smtp_message); } catch (System.Exception) { return false; } return true;
             }
         }
 

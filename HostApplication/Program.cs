@@ -10,12 +10,18 @@ using System.IO;
 using System.Text;
 using System.Net.Mail;
 using System.Net;
+using ServiceLibrary.DataSerializations;
+using System.Xml.Serialization;
+using System.Runtime.Remoting.Messaging;
+using ServiceLibrary.ServiceContracts;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace HostApplication 
 {
     public static class Host : System.Object
     {
-        public static void Main(string[] args) 
+        public static void Main(string[] args)
         {
             using (var service_host = new ServiceHost(typeof(GraphService)))
             {

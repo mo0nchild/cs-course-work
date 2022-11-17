@@ -10,8 +10,13 @@ using System.IO;
 using ServiceLibrary.ServiceContracts;
 using System.ServiceModel.Channels;
 using System.Xml.Serialization;
-using ServiceLibrary.DataSerialization;
+using ServiceLibrary.DataSerializations;
 using ServiceLibrary.DataTransfer;
+using System.Runtime.Serialization;
+
+using TransferDataPackage.DataSerializations;
+using System.Runtime.Serialization.Json;
+using System.Text.Json;
 
 namespace ServiceLibrary.ServiceTypes
 {
@@ -20,15 +25,13 @@ namespace ServiceLibrary.ServiceTypes
     {
         protected System.String ProfileProjectsPath { get; set; } = default;
         protected ServiceEncoder.IServiceDataEncoder<ProjectInfo> ProjectDataEncoder { get; set; } = default;
-        protected ServiceContracts.IProjectTransfer ProjectTransmitter { get; set; } = default;
 
         protected virtual System.String ProjectFileExtension { get => "graphproj"; }
+        protected virtual System.String ImportFileExtension { get => "json"; }
 
         public ProjectDispatcher() : base()
         {
             this.ProjectDataEncoder = new ServiceEncoder.ServiceDataEncoder();
-            this.ProjectTransmitter = new DataTransfer.DataTransferController(
-                new SmtpTransfer());
         }
 
         public bool SetProjectsDirectory(System.Guid project_id)
@@ -50,11 +53,10 @@ namespace ServiceLibrary.ServiceTypes
         {
             foreach (var item in project_info.GetType().GetProperties())
             {
-                if (item.GetValue(project_info) == null)
-                {
-                    var exception_instance = new ProjectDispatcherException($"Пустое значение свойства: {item.Name}");
-                    throw new FaultException<ProjectDispatcherException>(exception_instance);
-                }
+                if (item.GetValue(project_info) != null) continue;
+                
+                var exception_instance = new ProjectDispatcherException($"Пустое значение свойства: {item.Name}");
+                throw new FaultException<ProjectDispatcherException>(exception_instance);
             }
         }
 
@@ -138,10 +140,11 @@ namespace ServiceLibrary.ServiceTypes
             if(project_info.Length <= 0) 
             { throw new FaultException<ProjectDispatcherException>(new ProjectDispatcherException("Проект не найден")); }
 
-            var xml_formatter = new XmlSerializer(typeof(DataSerialization.NodesCollection));
+            var xml_formatter = new DataContractSerializer(typeof(TransferDataPackage.DataSerializations.DataSerializationBase));
             using (var writer = File.Create($"{this.ProfileProjectsPath}\\{project_info[0].FileName}.{this.ProjectFileExtension}"))
             {
-                xml_formatter.Serialize(writer, new NodesCollection(nodes_field.ToList()));
+                var transfer_data = new DataSerializationAdapter(new NodesCollection(nodes_field.ToList()));
+                xml_formatter.WriteObject(writer, transfer_data.StateInstaller());
             }
         }
 
@@ -158,17 +161,20 @@ namespace ServiceLibrary.ServiceTypes
                 this.DeleteProject(project_name);
                 throw new FaultException<ProjectDispatcherException>(new ProjectDispatcherException("Файл проекта не найден"));
             }
-
-            var xml_formatter = new XmlSerializer(typeof(DataSerialization.NodesCollection));
-            DataSerialization.NodesCollection nodes_collection = default;
+            var xml_formatter = new DataContractSerializer(typeof(TransferDataPackage.DataSerializations.DataSerializationBase));
+            DataSerializations.NodesCollection nodes_collection = default;
 
             using (var reader = File.OpenRead(project_path))
-            { 
-                nodes_collection = xml_formatter.Deserialize(reader) as NodesCollection; 
+            {
+                var data_deserialized = ((DataSerializationBase)xml_formatter.ReadObject(reader))
+                    .StateExtraction<DataSerializationAdapter>();
+
+                nodes_collection = data_deserialized.NodesList;
             }
             return nodes_collection.NodesData.ToArray();
         }
-        // (export_entity - название_проекта, transfer_data - {ид_профиля + пароль, эл_почта})
+
+        // (export_entity - название_проекта, transfer_data - {ид_профиля, эл_почта})
         public void ExportProject(string export_entity, TransferData transfer_data)
         {
             this.ThrowExceptionIfPathNull("Путь к каталогу с проектами не установлен");
@@ -182,14 +188,15 @@ namespace ServiceLibrary.ServiceTypes
             { throw new FaultException<ProjectDispatcherException>(new ProjectDispatcherException("Проект не найден")); }
 
             var profile_info = this.ReadProfile(Guid.Parse(transfer_data.FromPath));
-            var transfer_updated = new TransferData() 
-            { 
-                FromPath = $"{profile_info.EmailName};{profile_info.EmailKey}", ToPath = transfer_data.ToPath
-            };
             var entity_path = $"{this.ProfileProjectsPath}\\{project_filename}.{this.ProjectFileExtension}";
-
-            // (export_entity - путь к файлу, transfer_data - {эл_почта откуда, эл_почта куда})
-            try { this.ProjectTransmitter.ExportProject(entity_path, transfer_updated); }
+            try {
+                NetforkTransfer.SendData(new SmptMessageEnvelope()
+                {
+                    SendingEmail = profile_info.EmailName, EmailCredentials = profile_info.EmailKey,
+                    ReceivingEmail = transfer_data.ToPath, AttachmentObject = entity_path
+                },
+                transfer_message: "Проект был экспортирован на вашу почту, используйте его в приложении");
+            }
             catch (System.Exception error)
             {
                 var exception_instance = new ProjectDispatcherException(error.Message);
@@ -197,13 +204,38 @@ namespace ServiceLibrary.ServiceTypes
             }
         }
 
-        public void ImportProject(string export_entity, TransferData transfer_data)
+        // (import_entity - название_проекта, transfer_data - { путь к файлу, название файла })
+        public void ImportProject(string import_entity, TransferData transfer_data)
         {
-            
-        }
-        public bool PathVerification(TransferData transfer_data)
-        {
-            throw new NotImplementedException();
+            this.ThrowExceptionIfPathNull("Путь к каталогу с проектами не установлен");
+
+            if (!File.Exists(transfer_data.FromPath))
+            { throw new FaultException<ProjectDispatcherException>(new ProjectDispatcherException("Файл импорта не найден")); }
+
+            DataSerializations.NodesCollection node_data = default;
+            var file_info = new FileInfo(transfer_data.FromPath);
+
+            using (var reader = file_info.OpenRead())
+            {
+                var data_contact = typeof(TransferDataPackage.DataSerializations.DataSerializationBase);
+                XmlObjectSerializer data_serializer = default;
+
+                if ($".{this.ImportFileExtension}" == file_info.Extension) data_serializer = new DataContractJsonSerializer(data_contact);
+                else if ($".{this.ProjectFileExtension}" == file_info.Extension) data_serializer = new DataContractSerializer(data_contact);
+                else {
+                    var exception_instance = new ProjectDispatcherException("Расширение не поддерживается");
+                    throw new FaultException<ProjectDispatcherException>(exception_instance);
+                }
+                var data_serialization = ((DataSerializationBase)data_serializer.ReadObject(reader))
+                    .StateExtraction<DataSerializationAdapter>();
+
+                node_data = data_serialization.NodesList;
+            }
+           
+            this.CreateProject(new ProjectInfo() { CreateTime = DateTime.Now, FileName = transfer_data.ToPath, 
+                ProjectName = import_entity });
+
+            this.PutProjectData(import_entity, node_data.ToArray());
         }
 
         public IEnumerator<ProjectInfo> GetEnumerator()

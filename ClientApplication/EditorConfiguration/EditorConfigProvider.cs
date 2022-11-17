@@ -83,7 +83,9 @@ namespace CSCourseWork.EditorConfiguration
         public IEditorConfigProvider PutConfigProperty(string name, object property)
         {
             var config = IEditorConfigProvider.GetConfiguration(this.ConfigFilePath);
+
             var section = (EditorConfigSection)config.GetSection("editor.settings");
+            if (section == null) throw new EditorConfigException("Секция не найдена", string.Empty);
 
             var property_namespace = property.GetType().Namespace!;
             var config_has_namespace = default(bool);
@@ -122,7 +124,9 @@ namespace CSCourseWork.EditorConfiguration
         public List<EditorConfigProperty> TakeConfig()
         {
             var config = IEditorConfigProvider.GetConfiguration(this.ConfigFilePath);
+
             var section = (EditorConfigSection)config.GetSection("editor.settings");
+            if (section == null) throw new EditorConfigException("Секция не найдена", string.Empty);
 
             var result_list = new List<EditorConfigProperty>();
             this.UsingNamespaces.Clear();

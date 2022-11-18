@@ -17,6 +17,8 @@ using System.Runtime.Serialization;
 using TransferDataPackage.DataSerializations;
 using System.Runtime.Serialization.Json;
 using System.Text.Json;
+using ServiceLibrary.DataEncoder;
+using ServiceLibrary.ServiceLocatorTool;
 
 namespace ServiceLibrary.ServiceTypes
 {
@@ -24,14 +26,15 @@ namespace ServiceLibrary.ServiceTypes
     public class ProjectDispatcher : ProfileController, ServiceContracts.IProjectDispatcher
     {
         protected System.String ProfileProjectsPath { get; set; } = default;
-        protected ServiceEncoder.IServiceDataEncoder<ProjectInfo> ProjectDataEncoder { get; set; } = default;
+        protected DataEncoder.IServiceDataEncoder<ProjectInfo> ProjectDataEncoder { get; set; } = default;
 
         protected virtual System.String ProjectFileExtension { get => "graphproj"; }
         protected virtual System.String ImportFileExtension { get => "json"; }
 
         public ProjectDispatcher() : base()
         {
-            this.ProjectDataEncoder = new ServiceEncoder.ServiceDataEncoder();
+            // this.ProjectDataEncoder = new DataEncoder.ServiceDataEncoder();
+            this.ProjectDataEncoder = ServiceLocator.GetService<IServiceDataEncoder<ProjectInfo>>();
         }
 
         public bool SetProjectsDirectory(System.Guid project_id)

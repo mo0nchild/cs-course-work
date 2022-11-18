@@ -7,10 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using ServiceLibrary.ServiceLocatorTool;
 
 namespace ServiceLibrary.DataTransfer
 {
-    public interface INetworkTransfer<TMessageEnvelope> : IDisposable where TMessageEnvelope : class
+    public interface INetworkTransfer<TMessageEnvelope> : System.IDisposable, ServiceLocatorTool.IServiceContract
+        where TMessageEnvelope : class
     {
         void SendData(TMessageEnvelope envelope, System.String transfer_message);
         System.Boolean CheckChannel(TMessageEnvelope envelope);
@@ -25,13 +27,21 @@ namespace ServiceLibrary.DataTransfer
         public System.String AttachmentObject { get; set; } = default(string);
     }
 
-    public class SmtpTransfer : System.Object, DataTransfer.INetworkTransfer<SmptMessageEnvelope>
+    public sealed class SmtpTransferFactory : ServiceLocatorTool.ServiceFactoryBase
+    {
+        public override ServiceLocatorTool.ServiceBase BuildService() => new SmtpTransfer();
+    }
+
+    public class SmtpTransfer : ServiceLocatorTool.ServiceBase, DataTransfer.INetworkTransfer<SmptMessageEnvelope>
     {
         protected virtual System.String DataTransferName { get; } = "NodeMapApp";
         protected virtual System.String CheckMessage { get; } = "Подтвердение почты";
         protected SmtpClient SmptTransferClient { get; private set; } = default;
 
-        public SmtpTransfer() : base() { this.SmptTransferClient = new SmtpClient("smtp.gmail.com", 587) { EnableSsl = true}; }
+        public System.Type FactoryType { get => typeof(SmtpTransferFactory); }
+
+        public SmtpTransfer() : base(typeof(SmtpTransfer).Name) 
+        { this.SmptTransferClient = new SmtpClient("smtp.gmail.com", 587) { EnableSsl = true}; }
 
         protected virtual MailMessage MessageBuild(string sendfrom, string sendto, string message)
         {

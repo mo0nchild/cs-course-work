@@ -10,8 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using ServiceLibrary.DataEncoder;
 using ServiceLibrary.DataTransfer;
 using ServiceLibrary.ServiceContracts;
+using ServiceLibrary.ServiceLocatorTool;
 
 namespace ServiceLibrary.ServiceTypes
 {
@@ -23,7 +25,11 @@ namespace ServiceLibrary.ServiceTypes
         protected INetworkTransfer<SmptMessageEnvelope> NetforkTransfer { get; private set; } = default;
         protected virtual System.String FileName { get => ".profiles"; }
         
-        public ProfileController() : base() { this.NetforkTransfer = new SmtpTransfer(); }
+        public ProfileController() : base()
+        {
+            //this.NetforkTransfer = new SmtpTransfer();
+            this.NetforkTransfer = ServiceLocator.GetService<INetworkTransfer<SmptMessageEnvelope>>();
+        }
 
         private void SetProfileDocumentIfNotFound(string directory)
         {

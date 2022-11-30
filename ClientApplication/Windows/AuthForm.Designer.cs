@@ -38,6 +38,7 @@
             this.login_button = new System.Windows.Forms.Button();
             this.auth_password_textbox = new System.Windows.Forms.TextBox();
             this.registration_tabpage = new System.Windows.Forms.TabPage();
+            this.reg_emailkey_textbox = new System.Windows.Forms.TextBox();
             this.reg_checkbox = new System.Windows.Forms.CheckBox();
             this.register_button = new System.Windows.Forms.Button();
             this.filepath_button = new System.Windows.Forms.Button();
@@ -49,7 +50,10 @@
             this.reg_password_textbox = new System.Windows.Forms.TextBox();
             this.reg_name_label = new System.Windows.Forms.Label();
             this.reg_name_textbox = new System.Windows.Forms.TextBox();
-            this.reg_emailkey_textbox = new System.Windows.Forms.TextBox();
+            this.reg_name_panel = new System.Windows.Forms.Panel();
+            this.reg_password_panel = new System.Windows.Forms.Panel();
+            this.reg_email_panel = new System.Windows.Forms.Panel();
+            this.reg_emailkey_panel = new System.Windows.Forms.Panel();
             this.auth_tabcontrol.SuspendLayout();
             this.authorization_tabpage.SuspendLayout();
             this.registration_tabpage.SuspendLayout();
@@ -154,6 +158,10 @@
             // 
             // registration_tabpage
             // 
+            this.registration_tabpage.Controls.Add(this.reg_emailkey_panel);
+            this.registration_tabpage.Controls.Add(this.reg_email_panel);
+            this.registration_tabpage.Controls.Add(this.reg_password_panel);
+            this.registration_tabpage.Controls.Add(this.reg_name_panel);
             this.registration_tabpage.Controls.Add(this.reg_emailkey_textbox);
             this.registration_tabpage.Controls.Add(this.reg_checkbox);
             this.registration_tabpage.Controls.Add(this.register_button);
@@ -174,6 +182,16 @@
             this.registration_tabpage.TabIndex = 1;
             this.registration_tabpage.Text = "Регистрация";
             this.registration_tabpage.UseVisualStyleBackColor = true;
+            // 
+            // reg_emailkey_textbox
+            // 
+            this.reg_emailkey_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.reg_emailkey_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.reg_emailkey_textbox.Location = new System.Drawing.Point(212, 123);
+            this.reg_emailkey_textbox.MaxLength = 40;
+            this.reg_emailkey_textbox.Name = "reg_emailkey_textbox";
+            this.reg_emailkey_textbox.Size = new System.Drawing.Size(169, 29);
+            this.reg_emailkey_textbox.TabIndex = 15;
             // 
             // reg_checkbox
             // 
@@ -287,15 +305,37 @@
             this.reg_name_textbox.Size = new System.Drawing.Size(169, 29);
             this.reg_name_textbox.TabIndex = 4;
             // 
-            // reg_emailkey_textbox
+            // reg_name_panel
             // 
-            this.reg_emailkey_textbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.reg_emailkey_textbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.reg_emailkey_textbox.Location = new System.Drawing.Point(212, 123);
-            this.reg_emailkey_textbox.MaxLength = 40;
-            this.reg_emailkey_textbox.Name = "reg_emailkey_textbox";
-            this.reg_emailkey_textbox.Size = new System.Drawing.Size(169, 29);
-            this.reg_emailkey_textbox.TabIndex = 15;
+            this.reg_name_panel.BackColor = System.Drawing.Color.Salmon;
+            this.reg_name_panel.Location = new System.Drawing.Point(21, 72);
+            this.reg_name_panel.Name = "reg_name_panel";
+            this.reg_name_panel.Size = new System.Drawing.Size(169, 4);
+            this.reg_name_panel.TabIndex = 16;
+            // 
+            // reg_password_panel
+            // 
+            this.reg_password_panel.BackColor = System.Drawing.Color.Salmon;
+            this.reg_password_panel.Location = new System.Drawing.Point(212, 72);
+            this.reg_password_panel.Name = "reg_password_panel";
+            this.reg_password_panel.Size = new System.Drawing.Size(169, 4);
+            this.reg_password_panel.TabIndex = 17;
+            // 
+            // reg_email_panel
+            // 
+            this.reg_email_panel.BackColor = System.Drawing.Color.Salmon;
+            this.reg_email_panel.Location = new System.Drawing.Point(21, 148);
+            this.reg_email_panel.Name = "reg_email_panel";
+            this.reg_email_panel.Size = new System.Drawing.Size(169, 4);
+            this.reg_email_panel.TabIndex = 17;
+            // 
+            // reg_emailkey_panel
+            // 
+            this.reg_emailkey_panel.BackColor = System.Drawing.Color.Salmon;
+            this.reg_emailkey_panel.Location = new System.Drawing.Point(212, 148);
+            this.reg_emailkey_panel.Name = "reg_emailkey_panel";
+            this.reg_emailkey_panel.Size = new System.Drawing.Size(169, 4);
+            this.reg_emailkey_panel.TabIndex = 17;
             // 
             // AuthForm
             // 
@@ -342,5 +382,9 @@
         private LinkLabel skip_linklabel;
         private ComboBox auth_name_combobox;
         private TextBox reg_emailkey_textbox;
+        private Panel reg_emailkey_panel;
+        private Panel reg_email_panel;
+        private Panel reg_password_panel;
+        private Panel reg_name_panel;
     }
 }

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<profiles>
+    <profile name="testprofile" id="ff7055d1-673c-4d66-86e7-d9713e1191fb">
+        <email-name value="kursprojecttask.tulenev@gmail.com" />
+        <email-key value="qklswjwxhwymwxhf" />
+        <project-path value="C:\Users\Byter\Desktop\Проекты" />
+        <password value="12345" />
+    </profile>
+</profiles>
